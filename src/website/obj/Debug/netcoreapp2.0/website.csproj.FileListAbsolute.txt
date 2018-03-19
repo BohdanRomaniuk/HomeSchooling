@@ -1,0 +1,11 @@
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\bin\Debug\netcoreapp2.0\website.deps.json
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\bin\Debug\netcoreapp2.0\website.runtimeconfig.json
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\bin\Debug\netcoreapp2.0\website.runtimeconfig.dev.json
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\bin\Debug\netcoreapp2.0\website.dll
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\bin\Debug\netcoreapp2.0\website.pdb
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\obj\Debug\netcoreapp2.0\website.csprojResolveAssemblyReference.cache
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\obj\Debug\netcoreapp2.0\website.csproj.CoreCompileInputs.cache
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\obj\Debug\netcoreapp2.0\website.AssemblyInfoInputs.cache
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\obj\Debug\netcoreapp2.0\website.AssemblyInfo.cs
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\obj\Debug\netcoreapp2.0\website.dll
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\website\obj\Debug\netcoreapp2.0\website.pdb
