@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - website</title>
+    <title>@ViewData["Title"] - HomeSchooling</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -17,7 +17,7 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: #222222ed;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -26,13 +26,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">website</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">HomeSchooling</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                <ul class="nav navbar-nav" style="float:none;">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Головна</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">Про проект</a></li>
+                    <form class="navbar-form navbar-right">
+                        <div class="form-group">
+                            <input type="text" class="form-control input-sm" placeholder="Введіть назву курсу">
+                        </div>
+                        <button type="submit" class="btn btn-default btn-sm">Шукати</button>
+                    </form>
+                    <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Login" style="float:right;">Вхід</a></li>
+                    <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Register" style="float:right;">Реєстрація</a></li>
                 </ul>
             </div>
         </div>
@@ -41,10 +48,9 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - website</p>
+            <p>&copy; 2018 - HomeSchooling</p>
         </footer>
     </div>
-
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>

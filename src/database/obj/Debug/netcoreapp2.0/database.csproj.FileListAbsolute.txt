@@ -8,3 +8,4 @@ D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\databa
 D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.AssemblyInfo.cs
 D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.dll
 D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.pdb
+D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.csprojResolveAssemblyReference.cache
