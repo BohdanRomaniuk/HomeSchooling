@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+@model database.Models.User
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+    <div class="panel panel-success">
+        <div class="panel-heading text-center"><h4>Вхід</h4></div>
+        <div class="panel-body">
+            <form class="form-horizontal" asp-action="Login" method="post">
+                
+                <div  @{ var c = (ViewBag.IncorrectLogin != null) ? "form-group has-error" : "form-group"; } class="@c">
+                    <label class="col-sm-2 control-label" asp-for="UserName">Ваш логін:</label>
+                    <div class="col-sm-10">
+                        <input  class ="form-control" asp-for="UserName" />
+                    </div>
+                </div>
+                <div @{ var d = (ViewBag.IncorrectPassword != null) ? "form-group has-error" : "form-group"; } class="@d">
+                    <label class="col-sm-2 control-label" asp-for="Password">Ваш пароль:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="password" asp-for="Password" />
+                    </div>
+                </div>
+                <div style="text-align:center">
+                    <button class="btn btn-success" type="submit">Увійти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="alert-info">
+        @ViewBag.Info
+    </div>
+</body>
+</html>
