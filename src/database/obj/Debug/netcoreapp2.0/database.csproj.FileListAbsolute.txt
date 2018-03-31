@@ -9,3 +9,14 @@ D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\databa
 D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.dll
 D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.pdb
 D:\Хмара\ЛНУ\3 курс\ППС (Музичук)\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.csprojResolveAssemblyReference.cache
+D:\Prog\Homeschooling\HomeSchooling\src\database\bin\Debug\netcoreapp2.0\database.deps.json
+D:\Prog\Homeschooling\HomeSchooling\src\database\bin\Debug\netcoreapp2.0\database.runtimeconfig.json
+D:\Prog\Homeschooling\HomeSchooling\src\database\bin\Debug\netcoreapp2.0\database.runtimeconfig.dev.json
+D:\Prog\Homeschooling\HomeSchooling\src\database\bin\Debug\netcoreapp2.0\database.dll
+D:\Prog\Homeschooling\HomeSchooling\src\database\bin\Debug\netcoreapp2.0\database.pdb
+D:\Prog\Homeschooling\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.csprojResolveAssemblyReference.cache
+D:\Prog\Homeschooling\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.csproj.CoreCompileInputs.cache
+D:\Prog\Homeschooling\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.AssemblyInfoInputs.cache
+D:\Prog\Homeschooling\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.AssemblyInfo.cs
+D:\Prog\Homeschooling\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.dll
+D:\Prog\Homeschooling\HomeSchooling\src\database\obj\Debug\netcoreapp2.0\database.pdb

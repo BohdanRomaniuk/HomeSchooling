@@ -13147,7 +13147,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Bohdan\\.nuget\\packages\\": {},
+    "C:\\Users\\User\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
@@ -13157,18 +13157,18 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "D:\\Хмара\\ЛНУ\\3 курс\\ППС (Музичук)\\HomeSchooling\\src\\website\\website.csproj",
+      "projectUniqueName": "D:\\Prog\\Homeschooling\\HomeSchooling\\src\\website\\website.csproj",
       "projectName": "website",
-      "projectPath": "D:\\Хмара\\ЛНУ\\3 курс\\ППС (Музичук)\\HomeSchooling\\src\\website\\website.csproj",
-      "packagesPath": "C:\\Users\\Bohdan\\.nuget\\packages\\",
-      "outputPath": "D:\\Хмара\\ЛНУ\\3 курс\\ППС (Музичук)\\HomeSchooling\\src\\website\\obj\\",
+      "projectPath": "D:\\Prog\\Homeschooling\\HomeSchooling\\src\\website\\website.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "D:\\Prog\\Homeschooling\\HomeSchooling\\src\\website\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Bohdan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
       ],
@@ -13182,8 +13182,8 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "D:\\Хмара\\ЛНУ\\3 курс\\ППС (Музичук)\\HomeSchooling\\src\\database\\database.csproj": {
-              "projectPath": "D:\\Хмара\\ЛНУ\\3 курс\\ППС (Музичук)\\HomeSchooling\\src\\database\\database.csproj"
+            "D:\\Prog\\Homeschooling\\HomeSchooling\\src\\database\\database.csproj": {
+              "projectPath": "D:\\Prog\\Homeschooling\\HomeSchooling\\src\\database\\database.csproj"
             }
           }
         }

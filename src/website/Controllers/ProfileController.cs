@@ -84,5 +84,10 @@ namespace website.Controllers
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
             }
         }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToRoute(new { controller = "Home", action = "Index" });
+        }
     }
 }
