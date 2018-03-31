@@ -1709,10 +1709,10 @@
           "lib/netstandard2.0/Microsoft.EntityFrameworkCore.dll": {}
         }
       },
-      "Microsoft.EntityFrameworkCore.Design/2.0.1": {
+      "Microsoft.EntityFrameworkCore.Design/2.0.2": {
         "type": "package",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "2.0.1"
+          "Microsoft.EntityFrameworkCore.Relational": "2.0.2"
         },
         "compile": {
           "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Design.dll": {}
@@ -1780,10 +1780,10 @@
           "lib/netstandard2.0/Microsoft.EntityFrameworkCore.SqlServer.dll": {}
         }
       },
-      "Microsoft.EntityFrameworkCore.Tools/2.0.1": {
+      "Microsoft.EntityFrameworkCore.Tools/2.0.2": {
         "type": "package",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design": "2.0.1"
+          "Microsoft.EntityFrameworkCore.Design": "2.0.2"
         },
         "compile": {
           "lib/netstandard2.0/_._": {}
@@ -5028,6 +5028,22 @@
         "runtime": {
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
+      },
+      "database/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "2.0.2",
+          "Microsoft.EntityFrameworkCore.SqlServer": "2.0.2",
+          "Microsoft.EntityFrameworkCore.Tools": "2.0.2",
+          "Microsoft.NETCore.App": "2.0.0"
+        },
+        "compile": {
+          "bin/placeholder/database.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/database.dll": {}
+        }
       }
     }
   },
@@ -6378,16 +6394,16 @@
         "microsoft.entityframeworkcore.nuspec"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Design/2.0.1": {
-      "sha512": "gEdT/YSI/buO15X/UN+gQY6D7qeozRYU80WuesZCj33jJBw4wCHHn8SYcp38k2BPOBDC4I2AfsOFH6Vaf8CeLQ==",
+    "Microsoft.EntityFrameworkCore.Design/2.0.2": {
+      "sha512": "cEqvei8LTLxJavvOH5OwQRjtfAlJF6RhnUyetv3M7hByXktkpedvhykH0TeJS0IQMfP3pU+9qclQpyrq9Ej4lQ==",
       "type": "package",
-      "path": "microsoft.entityframeworkcore.design/2.0.1",
+      "path": "microsoft.entityframeworkcore.design/2.0.2",
       "files": [
         "lib/net461/Microsoft.EntityFrameworkCore.Design.dll",
         "lib/net461/Microsoft.EntityFrameworkCore.Design.xml",
         "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Design.dll",
         "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Design.xml",
-        "microsoft.entityframeworkcore.design.2.0.1.nupkg.sha512",
+        "microsoft.entityframeworkcore.design.2.0.2.nupkg.sha512",
         "microsoft.entityframeworkcore.design.nuspec"
       ]
     },
@@ -6444,13 +6460,13 @@
         "microsoft.entityframeworkcore.sqlserver.nuspec"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Tools/2.0.1": {
-      "sha512": "/z1xawAD0oL5AyFd3vn9E7L6mE2UfEU91KwMDWEp8o0+AOrP4ZocJS5Kot5VYJMfDUeAzDBBZPmJs+r6/YUEiA==",
+    "Microsoft.EntityFrameworkCore.Tools/2.0.2": {
+      "sha512": "GBgyVDSZhYwja4cy+muVBocjlgbLhV5m29J3tHHf02utM8zo1jDSuarDGKV0O+kj5d3bgBuHe+0/Tf78GanTHQ==",
       "type": "package",
-      "path": "microsoft.entityframeworkcore.tools/2.0.1",
+      "path": "microsoft.entityframeworkcore.tools/2.0.2",
       "files": [
         "lib/netstandard2.0/_._",
-        "microsoft.entityframeworkcore.tools.2.0.1.nupkg.sha512",
+        "microsoft.entityframeworkcore.tools.2.0.2.nupkg.sha512",
         "microsoft.entityframeworkcore.tools.nuspec",
         "tools/EntityFrameworkCore.PowerShell2.psd1",
         "tools/EntityFrameworkCore.PowerShell2.psm1",
@@ -13113,6 +13129,11 @@
         "windowsazure.storage.8.1.4.nupkg.sha512",
         "windowsazure.storage.nuspec"
       ]
+    },
+    "database/1.0.0": {
+      "type": "project",
+      "path": "../database/database.csproj",
+      "msbuildProject": "../database/database.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -13121,7 +13142,8 @@
       "Microsoft.EntityFrameworkCore >= 2.0.2",
       "Microsoft.EntityFrameworkCore.SqlServer >= 2.0.2",
       "Microsoft.NETCore.App >= 2.0.0",
-      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.0.2"
+      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.0.2",
+      "database >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -13159,7 +13181,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Хмара\\ЛНУ\\3 курс\\ППС (Музичук)\\HomeSchooling\\src\\database\\database.csproj": {
+              "projectPath": "D:\\Хмара\\ЛНУ\\3 курс\\ППС (Музичук)\\HomeSchooling\\src\\database\\database.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

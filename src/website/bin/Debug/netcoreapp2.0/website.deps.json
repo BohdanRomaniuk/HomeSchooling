@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "cea3abe5344110dcdbf31316745da6b51ebcc396"
+    "signature": "eb7f273c0a0df984e93830c78dfb90d0a1633f7b"
   },
   "compilationOptions": {
     "defines": [
@@ -27,7 +27,8 @@
           "Microsoft.EntityFrameworkCore": "2.0.2",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.0.2",
           "Microsoft.NETCore.App": "2.0.0",
-          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.0.2"
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.0.2",
+          "database": "1.0.0"
         },
         "runtime": {
           "website.dll": {}
@@ -236,13 +237,13 @@
           "Microsoft.Data.Sqlite": "2.0.0",
           "Microsoft.Data.Sqlite.Core": "2.0.0",
           "Microsoft.EntityFrameworkCore": "2.0.2",
-          "Microsoft.EntityFrameworkCore.Design": "2.0.1",
+          "Microsoft.EntityFrameworkCore.Design": "2.0.2",
           "Microsoft.EntityFrameworkCore.InMemory": "2.0.1",
           "Microsoft.EntityFrameworkCore.Relational": "2.0.2",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.0.2",
           "Microsoft.EntityFrameworkCore.Sqlite": "2.0.1",
           "Microsoft.EntityFrameworkCore.Sqlite.Core": "2.0.1",
-          "Microsoft.EntityFrameworkCore.Tools": "2.0.1",
+          "Microsoft.EntityFrameworkCore.Tools": "2.0.2",
           "Microsoft.Extensions.Caching.Abstractions": "2.0.1",
           "Microsoft.Extensions.Caching.Memory": "2.0.1",
           "Microsoft.Extensions.Caching.Redis": "2.0.0",
@@ -1621,7 +1622,7 @@
           "lib/netstandard2.0/Microsoft.EntityFrameworkCore.dll": {}
         }
       },
-      "Microsoft.EntityFrameworkCore.Design/2.0.1": {
+      "Microsoft.EntityFrameworkCore.Design/2.0.2": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "2.0.2"
         },
@@ -1686,9 +1687,9 @@
           "lib/netstandard2.0/Microsoft.EntityFrameworkCore.SqlServer.dll": {}
         }
       },
-      "Microsoft.EntityFrameworkCore.Tools/2.0.1": {
+      "Microsoft.EntityFrameworkCore.Tools/2.0.2": {
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design": "2.0.1"
+          "Microsoft.EntityFrameworkCore.Design": "2.0.2"
         }
       },
       "Microsoft.Extensions.Caching.Abstractions/2.0.1": {
@@ -4055,6 +4056,20 @@
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
+      "database/1.0.0": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "2.0.2",
+          "Microsoft.EntityFrameworkCore.SqlServer": "2.0.2",
+          "Microsoft.EntityFrameworkCore.Tools": "2.0.2",
+          "Microsoft.NETCore.App": "2.0.0"
+        },
+        "runtime": {
+          "database.dll": {}
+        },
+        "compile": {
+          "database.dll": {}
+        }
+      },
       "Microsoft.NETCore.App/2.0.0": {
         "dependencies": {
           "Microsoft.NETCore.DotNetHostPolicy": "2.0.0",
@@ -4953,12 +4968,12 @@
       "path": "microsoft.entityframeworkcore/2.0.2",
       "hashPath": "microsoft.entityframeworkcore.2.0.2.nupkg.sha512"
     },
-    "Microsoft.EntityFrameworkCore.Design/2.0.1": {
+    "Microsoft.EntityFrameworkCore.Design/2.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gEdT/YSI/buO15X/UN+gQY6D7qeozRYU80WuesZCj33jJBw4wCHHn8SYcp38k2BPOBDC4I2AfsOFH6Vaf8CeLQ==",
-      "path": "microsoft.entityframeworkcore.design/2.0.1",
-      "hashPath": "microsoft.entityframeworkcore.design.2.0.1.nupkg.sha512"
+      "sha512": "sha512-cEqvei8LTLxJavvOH5OwQRjtfAlJF6RhnUyetv3M7hByXktkpedvhykH0TeJS0IQMfP3pU+9qclQpyrq9Ej4lQ==",
+      "path": "microsoft.entityframeworkcore.design/2.0.2",
+      "hashPath": "microsoft.entityframeworkcore.design.2.0.2.nupkg.sha512"
     },
     "Microsoft.EntityFrameworkCore.InMemory/2.0.1": {
       "type": "package",
@@ -4995,12 +5010,12 @@
       "path": "microsoft.entityframeworkcore.sqlserver/2.0.2",
       "hashPath": "microsoft.entityframeworkcore.sqlserver.2.0.2.nupkg.sha512"
     },
-    "Microsoft.EntityFrameworkCore.Tools/2.0.1": {
+    "Microsoft.EntityFrameworkCore.Tools/2.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/z1xawAD0oL5AyFd3vn9E7L6mE2UfEU91KwMDWEp8o0+AOrP4ZocJS5Kot5VYJMfDUeAzDBBZPmJs+r6/YUEiA==",
-      "path": "microsoft.entityframeworkcore.tools/2.0.1",
-      "hashPath": "microsoft.entityframeworkcore.tools.2.0.1.nupkg.sha512"
+      "sha512": "sha512-GBgyVDSZhYwja4cy+muVBocjlgbLhV5m29J3tHHf02utM8zo1jDSuarDGKV0O+kj5d3bgBuHe+0/Tf78GanTHQ==",
+      "path": "microsoft.entityframeworkcore.tools/2.0.2",
+      "hashPath": "microsoft.entityframeworkcore.tools.2.0.2.nupkg.sha512"
     },
     "Microsoft.Extensions.Caching.Abstractions/2.0.1": {
       "type": "package",
@@ -6366,6 +6381,11 @@
       "sha512": "sha512-W6ZZ0/o7+3Qb77mRAQyLjPudHG3OMeeQ4p9yY13PUdJArmRCx2cLMm5F4tpIjJXxzHC0ew0oK7DMDGILMdfCnw==",
       "path": "windowsazure.storage/8.1.4",
       "hashPath": "windowsazure.storage.8.1.4.nupkg.sha512"
+    },
+    "database/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Microsoft.NETCore.App/2.0.0": {
       "type": "package",

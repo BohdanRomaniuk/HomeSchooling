@@ -15,6 +15,9 @@ namespace database.Models
         public DateTime Date { get; set; }
         [Required]
         public bool IsControlWork { get; set; }
+        
+        public string LessonDescription { get; set; }
+        public string HomeWorkDescription { get; set; }
 
         public Lesson()
         {

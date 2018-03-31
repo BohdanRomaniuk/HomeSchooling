@@ -5,27 +5,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using website.Models;
+using database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace website.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly HomeSchoolingContext _context;
+
+        public HomeController(HomeSchoolingContext context)
         {
-            return View();
+            _context = context;
+        }
+
+        public IActionResult Index(int page=1)
+        {
+            IQueryable<Course> allCourses = _context.Courses.Include(o => o.Teacher);
+            return View(allCourses);
         }
 
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
             return View();
         }
 
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 

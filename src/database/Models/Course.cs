@@ -14,6 +14,10 @@ namespace database.Models
         [Required]
         public string Name { get; set; }
         [Required]
+        public string Description { get; set; }
+        [Required]
         public User Teacher { get; set; }
+        
+        public List<Lesson> CourseLessons { get; set; }
     }
 }

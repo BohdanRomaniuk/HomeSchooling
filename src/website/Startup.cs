@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using website.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace website
 {
@@ -21,6 +23,7 @@ namespace website
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<HomeSchoolingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("HomeSchooling")));
             services.AddMvc();
         }
 

@@ -11,9 +11,10 @@ using System;
 namespace database.Migrations
 {
     [DbContext(typeof(Repository))]
-    partial class RepositoryModelSnapshot : ModelSnapshot
+    [Migration("20180331151240_CourseChanges")]
+    partial class CourseChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,11 +50,7 @@ namespace database.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("HomeWorkDescription");
-
                     b.Property<bool>("IsControlWork");
-
-                    b.Property<string>("LessonDescription");
 
                     b.Property<string>("Name")
                         .IsRequired();

@@ -31,7 +31,6 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav" style="float:none;">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Головна</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">Про проект</a></li>
                     <form class="navbar-form navbar-right">
                         <div class="form-group">
                             <input type="text" class="form-control input-sm" placeholder="Введіть назву курсу">
@@ -48,7 +47,11 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - HomeSchooling</p>
+            <p>&copy; 2018 - HomeSchooling
+                <span style="float:right;">
+                    <a asp-controller="Home" asp-action="About" style="margin-right: 10px;">Про проект</a> <a asp-controller="Home" asp-action="Contact">Звязок з нами</a>
+                </span>
+            </p>
         </footer>
     </div>
     <environment include="Development">

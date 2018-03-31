@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewData["Title"] = "Перегляд уроку - " + Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.Name</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title" style="font-size: 14px;">
+            <ul class="nav nav-pills" role="tablist">
+                <li role="presentation" class="active"><a href="#">Інформація про урок</a></li>
+                <li role="presentation"><a href="#">Обговорення <span class="badge">42 нових повідомлення</span></a></li>
+            </ul>
+        </h3>
+    </div>
+    <div class="panel-body">
+        @Model.LessonDescription
+
+        <h5><b>Прикріплені файли:</b></h5>
+        <div class="list-group">
+            <a href="#" class="list-group-item">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                Презентація.pptx
+            </a>
+            <a href="#" class="list-group-item">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> 
+                Приклади.rar
+            </a>
+        </div>
+    </div>
+</div>
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title" style="font-size: 14px;">
+            <ul class="nav nav-pills" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#" class="alert-link" style="background-color: #f0ad4e;">Домашня робота</a>
+                </li>
+            </ul>
+        </h3>
+    </div>
+    <div class="panel-body">
+        @Model.HomeWorkDescription
+        <h5><b>Прикріплені файли:</b></h5>
+        <div class="list-group">
+            <a href="#" class="list-group-item">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                Індивідуальне завдання 1.docx
+            </a>
+        </div>
+        <hr />
+        <h3>Відправити домашнє завдання</h3>
+        <form>
+            <div class="form-group">
+                <label for="InputComment">Короткий звіт про виконе домашнє завдання</label>
+                <textarea class="form-control" id="InputComment" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="InputFile">Прикріпити файли</label>
+                <input type="file" id="InputFile">
+                <p class="help-block">Тут ви можете прикріпити файли з розширенням *.doc, *.docx, *.txt, *.ppt, *.pptx</p>
+            </div>
+            <button type="submit" class="btn btn-success">Надіслати на перевірку</button>
+        </form>
+    </div>
+</div>
