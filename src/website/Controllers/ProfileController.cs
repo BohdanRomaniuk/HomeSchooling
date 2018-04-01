@@ -23,8 +23,62 @@ namespace website.Controllers
             ViewBag.Info = "Введіть необхідні дані для реєстрації";
             return View();
         }
-
-
+        [HttpPost]
+        public IActionResult Register(User user)
+        {
+            bool wrong = false;
+            if (user.UserName == null)
+            {
+                ViewBag.IncorrectLogin = true;
+                ViewBag.Info = "Потрібно заповнити поле з іменем користувача \n";
+                wrong = true;
+            }
+            if (user.Password == null)
+            {
+                ViewBag.IncorrectPassword = true;
+                ViewBag.Info1 = "Потрібно заповнити поле з паролем \n";
+                wrong = true;
+            }
+            if (user.Name == null)
+            {
+                ViewBag.IncorrectName = true;
+                ViewBag.Info2 = "Потрібно заповнити поле з іменем та прізвищем";
+                wrong = true;
+            }
+            if (wrong)
+            {
+                return View();
+            }
+            else
+            {
+                IQueryable<User> users = db.Users;
+                foreach (User u in users)
+                {
+                    if (u.UserName == user.UserName)
+                    {
+                        ViewBag.IncorrectName = true;
+                        ViewBag.Info = "Користувач з таким логіном уже зареєстрований в системі. Будь ласка, виберіть інший";
+                        return View();
+                    }
+                }
+                User toAdd = new User();
+                toAdd.Name = user.Name;
+                toAdd.Password = user.Password;
+                toAdd.UserName = user.UserName;
+                toAdd.UserRole = "student";
+                db.Users.Add(toAdd);
+                db.SaveChanges();
+                IQueryable<User> inDb = from u in db.Users
+                                        where u.UserName == user.UserName
+                                        select u;
+                HttpContext.Session.SetString("username", toAdd.UserName);
+                HttpContext.Session.SetString("role", toAdd.UserRole);
+                HttpContext.Session.SetString("name", toAdd.Name);
+                HttpContext.Session.SetInt32("id", inDb.Last().Id);
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+        }
+        
         [HttpGet]
         public IActionResult Login()
         {
