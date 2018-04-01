@@ -37,8 +37,19 @@
                         </div>
                         <button type="submit" class="btn btn-default btn-sm">Шукати</button>
                     </form>
-                    <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Login" style="float:right;">Вхід</a></li>
-                    <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Register" style="float:right;">Реєстрація</a></li>
+                    @{ byte[] username = new byte[30];}
+                    @if (!Context.Session.TryGetValue("username", out username))
+                    {
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Login" style="float:right;">Вхід</a></li>
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Register" style="float:right;">Реєстрація</a></li>
+                    }
+                    else
+                    {
+                        string un = System.Text.Encoding.Default.GetString(username);
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Logout" style="float:right;">Вихід</a></li>
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="View" style="float:right; font-weight:bold">@un</a></li>
+                    }
+                    
                 </ul>
             </div>
         </div>
