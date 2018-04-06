@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using website.Models;
@@ -74,11 +75,11 @@ namespace website.Controllers
                 HttpContext.Session.SetString("username", toAdd.UserName);
                 HttpContext.Session.SetString("role", toAdd.UserRole);
                 HttpContext.Session.SetString("name", toAdd.Name);
-                HttpContext.Session.SetInt32("id", inDb.Last().Id);
+                HttpContext.Session.SetString("id", inDb.Last().Id.ToString());
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
             }
         }
-        
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -104,7 +105,7 @@ namespace website.Controllers
             IQueryable<User> users = db.Users;
             bool exists = false;
             bool correctpassword = false;
-            
+
             foreach (User u in users)
             {
                 if (u.UserName == user.UserName)
@@ -117,7 +118,7 @@ namespace website.Controllers
                         HttpContext.Session.SetString("username", u.UserName);
                         HttpContext.Session.SetString("role", u.UserRole);
                         HttpContext.Session.SetString("name", u.Name);
-                        HttpContext.Session.SetInt32("id", u.Id);
+                        HttpContext.Session.SetString("id", u.Id.ToString());
                     }
                     break;
                 }
@@ -142,6 +143,28 @@ namespace website.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToRoute(new { controller = "Home", action = "Index" });
+        }
+        public IActionResult View(int id)
+        {
+           try
+            {
+                ViewData["name"] = db.Users.Where(u => u.Id == id).SingleOrDefault().Name;
+                ViewData["username"] = db.Users.Where(u => u.Id == id).SingleOrDefault().UserName;
+                string role = db.Users.Where(u => u.Id == id).SingleOrDefault().UserRole;
+                ViewData["role"] = role;
+                if (role == "teacher")
+                {
+                    return View(db.Courses.Include(o => o.Teacher).Where(c => c.Teacher.Id == id));
+                }
+                else
+                {
+                    return View(db.Courses.Include(o => o.Teacher));
+                }
+             }
+             catch (Exception e)
+             {
+                 return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+             }
         }
     }
 }
