@@ -32,12 +32,13 @@ namespace website.Controllers
         {
             if(HttpContext.Session.GetInt32("role") !=null)
             {
-                string role = HttpContext.Session.GetString("role");
-                int studId = Convert.ToInt32(HttpContext.Session.GetString("id"),0);
+                //string role = HttpContext.Session.GetString("role");
+                //int studId = Convert.ToInt32(HttpContext.Session.GetString("id"),0);
+                string role = "student";
                 if(role=="student")
                 {
                     //db.CoursesListeners.Add(new database.Models.CoursesListener(3, 5, id));
-                    return View("RequestCourse", "Вас успішно записано на курс"+studId);
+                    return View("RequestCourse", "Вас успішно записано на курс");
                 }
                 else
                 {
