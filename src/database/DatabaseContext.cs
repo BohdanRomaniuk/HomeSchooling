@@ -10,6 +10,7 @@ namespace HomeSchooling
         public DbSet<Course> Courses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<CoursesListener> CoursesListeners { get; set; }
 
         public Repository()
         {
@@ -26,6 +27,7 @@ namespace HomeSchooling
             modelBuilder.Entity<Course>().ToTable("Courses");
             modelBuilder.Entity<Lesson>().ToTable("Lessons");
             modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<CoursesListener>().ToTable("CoursesListeners");
         }
     }
 
