@@ -6,16 +6,15 @@ using System.Text;
 
 namespace database.Models
 {
-    public class Post
+    public class Attachment
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public User PostedBy { get; set; }
-        public string Text { get; set; }
         [Required]
-        public DateTime PostedDate { get; set; }
-
-        List<Attachment> PostAtachments { get; set; }
+        public DateTime UploadDate { get; set; }
+        public User UploadedBy { get; set; }
+        [Required]
+        public string FileName { get; set; }
     }
 }
