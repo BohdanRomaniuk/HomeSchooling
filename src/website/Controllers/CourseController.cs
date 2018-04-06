@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using website.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace website.Controllers
 {
@@ -25,6 +26,25 @@ namespace website.Controllers
         public IActionResult ViewLesson(int id)
         {
             return View(db.Lessons.Where(l=>l.Id==id).SingleOrDefault());
+        }
+
+        public IActionResult RequestCourse(int id)
+        {
+            if(HttpContext.Session.GetInt32("role") !=null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                int studId = Convert.ToInt32(HttpContext.Session.GetString("id"),0);
+                if(role=="student")
+                {
+                    //db.CoursesListeners.Add(new database.Models.CoursesListener(3, 5, id));
+                    return View("RequestCourse", "Вас успішно записано на курс"+studId);
+                }
+                else
+                {
+                    return View("RequestCourse", "Вибачте ви не студент!");
+                }
+            }
+            return View("Виникла помилка при записуванні на курс");
         }
     }
 }

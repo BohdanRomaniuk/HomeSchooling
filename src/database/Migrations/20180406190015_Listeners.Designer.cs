@@ -11,33 +11,15 @@ using System;
 namespace database.Migrations
 {
     [DbContext(typeof(Repository))]
-    partial class RepositoryModelSnapshot : ModelSnapshot
+    [Migration("20180406190015_Listeners")]
+    partial class Listeners
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("database.Models.Attachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("FileName")
-                        .IsRequired();
-
-                    b.Property<DateTime>("UploadDate");
-
-                    b.Property<int?>("UploadedById");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UploadedById");
-
-                    b.ToTable("Attachments");
-                });
 
             modelBuilder.Entity("database.Models.Course", b =>
                 {
@@ -88,7 +70,11 @@ namespace database.Migrations
 
                     b.Property<DateTime>("Date");
 
+                    b.Property<string>("HomeWorkDescription");
+
                     b.Property<bool>("IsControlWork");
+
+                    b.Property<string>("LessonDescription");
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -98,28 +84,6 @@ namespace database.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Lessons");
-                });
-
-            modelBuilder.Entity("database.Models.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("LessonId");
-
-                    b.Property<int?>("PostedById");
-
-                    b.Property<DateTime>("PostedDate");
-
-                    b.Property<string>("Text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LessonId");
-
-                    b.HasIndex("PostedById");
-
-                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("database.Models.User", b =>
@@ -142,13 +106,6 @@ namespace database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("database.Models.Attachment", b =>
-                {
-                    b.HasOne("database.Models.User", "UploadedBy")
-                        .WithMany()
-                        .HasForeignKey("UploadedById");
                 });
 
             modelBuilder.Entity("database.Models.Course", b =>
@@ -175,17 +132,6 @@ namespace database.Migrations
                     b.HasOne("database.Models.Course")
                         .WithMany("CourseLessons")
                         .HasForeignKey("CourseId");
-                });
-
-            modelBuilder.Entity("database.Models.Post", b =>
-                {
-                    b.HasOne("database.Models.Lesson")
-                        .WithMany("Posts")
-                        .HasForeignKey("LessonId");
-
-                    b.HasOne("database.Models.User", "PostedBy")
-                        .WithMany()
-                        .HasForeignKey("PostedById");
                 });
 #pragma warning restore 612, 618
         }

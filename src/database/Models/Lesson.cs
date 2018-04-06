@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,15 +16,13 @@ namespace database.Models
         [Required]
         public DateTime Date { get; set; }
         [Required]
+        [DefaultValue("false")]
         public bool IsControlWork { get; set; }
-        
-        public string LessonDescription { get; set; }
-        public string HomeWorkDescription { get; set; }
 
-        public Lesson()
-        {
-            IsControlWork = false;
-        }
+        public List<Post> Posts { get; set; }
+        
+        //public string LessonDescription { get; set; }
+        //public string HomeWorkDescription { get; set; }
 
         public Lesson(string _name, DateTime _date, bool _isCOntrolWork=false)
         {
