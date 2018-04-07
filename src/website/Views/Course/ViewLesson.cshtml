@@ -16,17 +16,23 @@
     </div>
     <div class="panel-body">
         @((Model.LessonDescription != null)?Model.LessonDescription.Text:"")
-        <h5><b>Прикріплені файли:</b></h5>
+        <h5><b>Прикріплені файли (@Model.LessonDescription.PostAtachments.Count):</b></h5>
+        @if(Model.LessonDescription.PostAtachments.Count==0)
+        {
+            <div class="alert alert-danger" style="padding: 5px;">Немає прикріплень</div>
+        }
+        else
+        {
         <div class="list-group">
+            @foreach(var attach in Model.LessonDescription.PostAtachments)
+            {
             <a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                Презентація.pptx
+                @attach.FileName
             </a>
-            <a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                Приклади.rar
-            </a>
+            }
         </div>
+        }
     </div>
 </div>
 <br />
@@ -42,13 +48,23 @@
     </div>
     <div class="panel-body">
         @((Model.HomeWorkDescription != null)?Model.HomeWorkDescription.Text:"")
-        <h5><b>Прикріплені файли:</b></h5>
+        <h5><b>Прикріплені файли (@Model.HomeWorkDescription.PostAtachments.Count):</b></h5>
+        @if(Model.HomeWorkDescription.PostAtachments.Count==0)
+        {
+            <div class="alert alert-danger" style="padding: 5px;">Немає прикріплень</div>
+        }
+        else
+        {
         <div class="list-group">
+            @foreach(var attach in Model.HomeWorkDescription.PostAtachments)
+            {
             <a href="#" class="list-group-item">
                 <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                Індивідуальне завдання 1.docx
+                @attach.FileName
             </a>
+            }
         </div>
+        }
         <hr />
         <h3>Відправити домашнє завдання</h3>
         <form>

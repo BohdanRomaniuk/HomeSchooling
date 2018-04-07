@@ -26,7 +26,7 @@ namespace website.Controllers
 
         public IActionResult ViewLesson(int id)
         {
-            Lesson currentLesson = db.Lessons.Include(l => l.Posts).Where(l => l.Id == id).SingleOrDefault();
+            Lesson currentLesson = db.Lessons.Include(l => l.Posts).ThenInclude(l=>l.PostAtachments).Where(l => l.Id == id).SingleOrDefault();
             return View(new LessonViewModel(currentLesson.Name, currentLesson.Posts));
         }
 
