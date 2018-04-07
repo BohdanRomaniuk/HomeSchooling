@@ -75,5 +75,35 @@ namespace website.Controllers
             }
             return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
+        public IActionResult ViewRequests()
+        {
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                int id = int.Parse(HttpContext.Session.GetString("id"));
+                if (role == "teacher")
+                {
+                    var model = from courses in db.Courses.Include(o => o.Teacher)
+                                where courses.Teacher.Id == id
+                                join listeners in db.CoursesListeners.Include(o => o.Student) on courses.Id equals listeners.RequestedCourse.Id
+                                where listeners.Accepted == false
+                                select new
+                                {
+                                    CourseId = courses.Id,
+                                    CourseName = courses.Name,
+                                    StudentName = listeners.Student.Name,
+                                    StudentUserName = listeners.Student.UserName,
+                                    StudentId = listeners.Student.Id
+                                };
+                    List<CourseRequestModel> vm = new List<CourseRequestModel>();
+                    foreach (var m in model)
+                    {
+                        vm.Add(new CourseRequestModel(m.CourseId, m.StudentId, m.CourseName, m.StudentName, m.StudentUserName));
+                    }
+                    return View(vm);
+                }
+            }
+            return RedirectToRoute(new { controller = "Profile", action = "Login" });
+        }
     }
 }

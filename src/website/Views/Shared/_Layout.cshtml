@@ -39,8 +39,9 @@
                     </form>
                     @{ byte[] username = new byte[30];
                         byte[] userId = new byte[4];
+                        byte[] userRole = new byte[40];
                     }
-                    @if (!Context.Session.TryGetValue("username", out username) || !Context.Session.TryGetValue("id", out userId))
+                    @if (!Context.Session.TryGetValue("username", out username) || !Context.Session.TryGetValue("id", out userId) || !Context.Session.TryGetValue("role", out userRole))
                     {
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Login" style="float:right;">Вхід</a></li>
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Register" style="float:right;">Реєстрація</a></li>
@@ -49,8 +50,10 @@
                     {
                         string un = System.Text.Encoding.Default.GetString(username);
                         string id = System.Text.Encoding.Default.GetString(userId);
-                        
+                        string role = System.Text.Encoding.Default.GetString(userRole);
+
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Logout" style="float:right;">Вихід</a></li>
+                         @if (role == "teacher") {<li style="float:right;"><a asp-area="" asp-controller="Course" asp-action="ViewRequests" style="float:right;">Заявки</a></li>}
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="View" asp-route-id="@Convert.ToInt32(id)" style="float:right; font-weight:bold">@un</a></li>
                     }
                     
