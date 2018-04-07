@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using website.Models;
 using Microsoft.AspNetCore.Http;
+using database.Models;
 
 namespace website.Controllers
 {

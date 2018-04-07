@@ -10,7 +10,7 @@
 <hr />
 <h4>Всього уроків @Model.CourseLessons.Count</h4>
 <hr />
-@for(int i=0; i<Model.CourseLessons.Count; ++i)
+@for (int i = 0; i < Model.CourseLessons.Count; ++i)
 {
     <div class="panel panel-default">
         <div class="panel-body" style="@((Model.CourseLessons[i].IsControlWork)?"background-color: #ffedf0;":"")">

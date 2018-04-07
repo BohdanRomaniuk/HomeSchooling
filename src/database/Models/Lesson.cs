@@ -23,12 +23,5 @@ namespace database.Models
         
         //public string LessonDescription { get; set; }
         //public string HomeWorkDescription { get; set; }
-
-        public Lesson(string _name, DateTime _date, bool _isCOntrolWork=false)
-        {
-            Name = _name;
-            Date = _date;
-            IsControlWork = _isCOntrolWork;
-        }
     }
 }
