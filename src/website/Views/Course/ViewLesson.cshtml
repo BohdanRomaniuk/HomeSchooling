@@ -1,33 +1,42 @@
 ﻿
 @{
-    ViewData["Title"] = "Перегляд уроку - " + Model.Name;
+    ViewData["Title"] = "Перегляд уроку - " + Model.LessonName;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>@Model.Name</h3>
+<h3>@Model.LessonName</h3>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title" style="font-size: 14px;">
             <ul class="nav nav-pills" role="tablist">
                 <li role="presentation" class="active"><a href="#">Інформація про урок</a></li>
-                <li role="presentation"><a href="#">Обговорення <span class="badge">42 нових повідомлення</span></a></li>
+                <!--<li role="presentation"><a href="#">Обговорення <span class="badge">42 нових повідомлення</span></a></li>-->
             </ul>
         </h3>
     </div>
     <div class="panel-body">
-        @Model.LessonDescription
-
-        <h5><b>Прикріплені файли:</b></h5>
-        <div class="list-group">
-            <a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                Презентація.pptx
-            </a>
-            <a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> 
-                Приклади.rar
-            </a>
-        </div>
+        @if (Model.LessonDescription != null)
+        {
+            @Model.LessonDescription.Text 
+            @if (Model.LessonDescription.PostAtachments != null && Model.LessonDescription.PostAtachments.Count != 0)
+            {
+                <h5><b>Прикріплені файли (@Model.LessonDescription.PostAtachments.Count):</b></h5>
+                <div class="list-group">
+                    @foreach (var attach in Model.LessonDescription.PostAtachments)
+                    {
+                    <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
+                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                        @attach.FileName
+                        <div style="float:right;">
+                            <span style="font-weight:bold;font-size: 13px;">Додано:</span>
+                            <span class="label label-primary">@attach.UploadedBy.Name</span>
+                            <span class="label label-default">@attach.UploadDate</span>
+                        </div>
+                    </a>
+                    }
+                </div>
+            }
+        }
     </div>
 </div>
 <br />
@@ -42,26 +51,77 @@
         </h3>
     </div>
     <div class="panel-body">
-        @Model.HomeWorkDescription
-        <h5><b>Прикріплені файли:</b></h5>
-        <div class="list-group">
-            <a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                Індивідуальне завдання 1.docx
-            </a>
-        </div>
+        @if (Model.HomeWorkDescription != null)
+        {
+            @Model.HomeWorkDescription.Text
+            @if (Model.HomeWorkDescription.PostAtachments != null && Model.HomeWorkDescription.PostAtachments.Count != 0)
+            {
+                <h5><b>Прикріплені файли (@Model.HomeWorkDescription.PostAtachments.Count):</b></h5>
+                <div class="list-group">
+                    @foreach (var attach in Model.HomeWorkDescription.PostAtachments)
+                    {
+                    <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
+                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                        @attach.FileName
+                        <div style="float:right;">
+                            <span style="font-weight:bold;font-size: 13px;">Додано:</span>
+                            <span class="label label-primary">@attach.UploadedBy.Name</span>
+                            <span class="label label-default">@attach.UploadDate</span>
+                        </div>
+                    </a>
+                    }
+                </div>
+            }
+        }
+        <hr />
+        <h3>Виконане домашнє завдання:</h3>
+        @if (Model.HomeWorks != null && Model.HomeWorks.Count!=0)
+        {
+            @foreach(var homework in Model.HomeWorks)
+            {
+            <div class="panel panel-default">
+                <div style="padding: 10px;">
+                <a asp-controller="Profile" asp-action="View" asp-route-id="@homework.PostedBy.Id" class="label label-primary">@homework.PostedBy.Name</a> <span class="label label-default">@homework.PostedDate</span><br>
+                <div style="padding: 5px 0;">@homework.Text</div>
+                    @if(homework.PostAtachments!=null && homework.PostAtachments.Count!=0)
+                    {
+                        <h5><b>Прикріплені файли (@homework.PostAtachments.Count):</b></h5>
+                        <div class="list-group">
+                        @foreach (var attach in homework.PostAtachments)
+                        {
+                            <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
+                                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                @attach.FileName
+                                <div style="float:right;">
+                                    <span style="font-weight:bold;font-size: 13px;">Додано:</span>
+                                    <span class="label label-primary">@attach.UploadedBy.Name</span>
+                                    <span class="label label-default">@attach.UploadDate</span>
+                                </div>
+                            </a>
+                        }
+                        </div>
+                    }
+                </div>
+            </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-danger" style="padding: 5px;">Ніхто ще не відправив домашнє завдання на перевірку</div>
+        }
         <hr />
         <h3>Відправити домашнє завдання</h3>
-        <form>
+        <form method="post" asp-controller="Course" asp-action="AddHomeWork">
             <div class="form-group">
-                <label for="InputComment">Короткий звіт про виконе домашнє завдання</label>
-                <textarea class="form-control" id="InputComment" rows="5"></textarea>
+                <label for="inputComment">Короткий звіт про виконе домашнє завдання</label>
+                <textarea name="homeWorkDescription" class="form-control" id="inputComment" rows="5" required="required"></textarea>
             </div>
             <div class="form-group">
                 <label for="InputFile">Прикріпити файли</label>
                 <input type="file" id="InputFile">
                 <p class="help-block">Тут ви можете прикріпити файли з розширенням *.doc, *.docx, *.txt, *.ppt, *.pptx</p>
             </div>
+            <input type="hidden" name="lessonId" value="@Model.LessonId"/>
             <button type="submit" class="btn btn-success">Надіслати на перевірку</button>
         </form>
     </div>

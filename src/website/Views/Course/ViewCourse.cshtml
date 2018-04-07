@@ -8,7 +8,7 @@
     @Model.Name <span style="float:right;">Викладач: <a asp-controller="Profile" asp-action="VieProfile" asp-route-id="@Model.Teacher.Id">@Model.Teacher.Name</a></span>
 </h3>
 <hr />
-<h4>Всього уроків @Model.CourseLessons.Count</h4>
+<h4>Всього уроків @Model.CourseLessons.Count <a asp-controller="Course" asp-action="AddLesson" asp-route-id="@Model.Id" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий урок</a></h4>
 <hr />
 @for (int i = 0; i < Model.CourseLessons.Count; ++i)
 {

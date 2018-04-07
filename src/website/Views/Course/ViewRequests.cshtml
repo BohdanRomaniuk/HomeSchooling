@@ -1,0 +1,17 @@
+﻿@model IEnumerable<CourseRequestModel>
+@{
+    ViewData["Title"] = "Запити на курс";
+}
+
+<h2>ViewRequests</h2>
+@foreach (var m in Model)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">@m.StudentName (@m.StudentUserName)</div>
+        <div class="panel-body">
+            Хоче записатись на курс: <span style="font-weight:bold">@m.CourseName</span> 
+            <a asp-controller="Course" asp-action="AcceptCourse" asp-route-student_id="@m.StudentId" asp-route-course_id ="@m.CourseId" class="btn btn-success" style="float:right;">Прийняти заявку</a>
+            <a asp-controller="Course" asp-action="RefuseCourse" asp-route-student_id="@m.StudentId" asp-route-course_id ="@m.CourseId" class="btn btn-primary" style="float:right;margin-right:10px;">Відхилити заявку</a>
+        </div>
+    </div>
+}

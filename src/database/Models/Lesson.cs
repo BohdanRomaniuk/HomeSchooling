@@ -20,8 +20,18 @@ namespace database.Models
         public bool IsControlWork { get; set; }
 
         public List<Post> Posts { get; set; }
-        
-        //public string LessonDescription { get; set; }
-        //public string HomeWorkDescription { get; set; }
+
+        public Lesson()
+        {
+            Posts = new List<Post>();
+        }
+
+        public Lesson(string _name, DateTime _date, bool _isCOntrolWork=false)
+        {
+            Posts = new List<Post>();
+            Name = _name;
+            Date = _date;
+            IsControlWork = _isCOntrolWork;
+        }
     }
 }

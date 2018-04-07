@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "Додавання нового уроку";
+}
+
+<h3>Додавання нового уроку</h3>
+<hr />
+@if (Model != null)
+{
+    <div class="alert alert-success" role="alert">@Model</div>
+}
+    <form method="post" asp-controller="Course" asp-action="AddLesson">
+        <div class="form-group">
+            <label for="inputLessonName">Назва уроку:</label>
+            <input type="text" name="lessonName" class="form-control" id="inputLessonName" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="inputDate">Дата проведення:</label>
+            <input type="text" name="lessonDatetime" class="form-control" id="inputDate" placeholder="Наприклад: 07.04.2018 13:00:00">
+        </div>
+        <div class="form-group">
+            <label for="inputDecription">Опис уроку(план):</label>
+            <textarea name="lessonDescription" class="form-control" id="inputDecription"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="inputLessonFiles">Прикріпити файли уроку:</label>
+            <input name="lessonFiles[]" type="file" id="inputLessonFiles" />
+        </div>
+        <div class="form-group">
+            <label for="inputHomeworkDecription">Опис домашньої роботи(план):</label>
+            <textarea name="homeworkDescription" class="form-control" id="inputHomeworkDecription"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="inputLessonHWFiles">Прикріпити файли домашньої роботи:</label>
+            <input name="lessonHWFiles[]" type="file" id="inputLessonHWFiles" />
+        </div>
+        <div class="form-group">
+            <label for="inputIsControllWork">Тип уроку:</label>
+            <select name="isControllWork" class="form-control" id="inputIsControllWork">
+                <option value="false">Звичайний урок</option>
+                <option value="true">Контрольна робота</option>
+            </select>
+        </div>
+        <input type="hidden" name="courseId" value="@ViewData["CourseId"]" />
+        <button type="submit" class="btn btn-primary">Додати урок</button>
+    </form>
+

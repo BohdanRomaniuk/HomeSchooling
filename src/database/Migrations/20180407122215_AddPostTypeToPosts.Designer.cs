@@ -11,9 +11,10 @@ using System;
 namespace database.Migrations
 {
     [DbContext(typeof(Repository))]
-    partial class RepositoryModelSnapshot : ModelSnapshot
+    [Migration("20180407122215_AddPostTypeToPosts")]
+    partial class AddPostTypeToPosts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,15 +29,11 @@ namespace database.Migrations
                     b.Property<string>("FileName")
                         .IsRequired();
 
-                    b.Property<int?>("PostId");
-
                     b.Property<DateTime>("UploadDate");
 
                     b.Property<int?>("UploadedById");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PostId");
 
                     b.HasIndex("UploadedById");
 
@@ -153,10 +150,6 @@ namespace database.Migrations
 
             modelBuilder.Entity("database.Models.Attachment", b =>
                 {
-                    b.HasOne("database.Models.Post")
-                        .WithMany("PostAtachments")
-                        .HasForeignKey("PostId");
-
                     b.HasOne("database.Models.User", "UploadedBy")
                         .WithMany()
                         .HasForeignKey("UploadedById");

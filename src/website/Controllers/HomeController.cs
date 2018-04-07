@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using website.Models;
 using database.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace website.Controllers
 {
@@ -21,7 +22,7 @@ namespace website.Controllers
 
         public IActionResult Index(int page=1)
         {
-            IQueryable<Course> allCourses = _context.Courses.Include(o => o.Teacher);
+            IQueryable<Course> allCourses = _context.Courses.Include(o => o.Teacher).Include(o=>o.CourseLessons);
             return View(allCourses);
         }
 
