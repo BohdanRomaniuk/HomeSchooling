@@ -44,6 +44,22 @@ namespace website.Controllers
             return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
         }
 
+        [HttpGet]
+        public IActionResult AddLesson(int id)
+        {
+            ViewData["CourseId"] = id;
+            return View("AddLesson");
+        }
+
+        [HttpPost]
+        public IActionResult AddLesson(int courseId, string lessonName, string lessonDatetime, string isControllWork)
+        {
+            Course current = db.Courses.Include(c=>c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
+            current.CourseLessons.Add(new Lesson(lessonName, Convert.ToDateTime(lessonDatetime), Convert.ToBoolean(isControllWork)));
+            db.SaveChanges();
+            return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!",lessonName));
+        }
+
         public IActionResult RequestCourse(int id)
         {
             if(HttpContext.Session.GetInt32("role") !=null)
