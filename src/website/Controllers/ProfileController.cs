@@ -160,7 +160,6 @@ namespace website.Controllers
                 {
                     return View(db.Courses.Include(o => o.Teacher));
                 }
-                //Bodia testing
              }
              catch (Exception e)
              {
