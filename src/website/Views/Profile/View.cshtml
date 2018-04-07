@@ -2,15 +2,25 @@
 @{
     ViewData["Title"] = "View";
 }
-<h3>Профіль @if (ViewData["role"].ToString() == "teacher"){<span>вчителя</span> }else{ <span>учня</span> }</h3>
+
+<h3>Профіль @if (ViewData["role"].ToString() == "teacher")
+{<span>вчителя</span> }
+else
+{ <span>учня</span>}</h3>
 <h4>Нікнейм: @ViewData["username"]</h4>
 <h4>@ViewData["name"]</h4>
 <br />
-<h2>Курси, які @if (ViewData["role"].ToString() == "teacher") { <span>читає </span>} else { <span>відвідує </span>} користувач:</h2>
+
+<h2>Курси, які @if (ViewData["role"].ToString() == "teacher")
+{<span>читає </span>}
+else
+{ <span>відвідує </span>} користувач:</h2>
 
 <hr />
+@{ bool attends = false;}
 @foreach (var elem in Model)
 {
+    attends = true;
     <div class="panel panel-default">
         <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id">@elem.Name</a></div>
         <div class="panel-body">
@@ -21,5 +31,14 @@
             <b>Викладач:</b> <a asp-controller="Profile" asp-action="ViewProfile" asp-route-id="@elem.Teacher.Id"><span class="label label-primary">@elem.Teacher.Name</span></a>
             <b style="margin-left:20px;">Записано на курс:</b> <span class="label label-success">122</span>
         </div>
+    </div>
+}
+@if (!attends)
+{
+    <div class="alert-info">
+        <p> Користувач ще не @if (ViewData["role"].ToString() == "teacher")
+        {<span>читає </span>}
+        else
+        { <span>відвідує </span>} жодного курсу.</p>
     </div>
 }
