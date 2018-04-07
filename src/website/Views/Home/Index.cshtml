@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Головна сторінка";
 }
-<h3>Усі курси</h3>
+<h3>Усі курси <a asp-controller="Course" asp-action="AddCourse" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий курс</a></h3>
 <hr />
 @foreach(var elem in Model)
 {

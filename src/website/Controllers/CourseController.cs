@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using website.Models;
 using Microsoft.AspNetCore.Http;
+using database.Models;
 
 namespace website.Controllers
 {
@@ -26,6 +27,21 @@ namespace website.Controllers
         public IActionResult ViewLesson(int id)
         {
             return View(db.Lessons.Where(l=>l.Id==id).SingleOrDefault());
+        }
+
+        [HttpGet]
+        public IActionResult AddCourse()
+        {
+            return View("AddCourse");
+        }
+
+        [HttpPost]
+        public IActionResult AddCourse(string courseName, string courseDescription)
+        {
+            User teacher = db.Users.Where(u => u.Id == 2).SingleOrDefault();
+            db.Courses.Add(new Course(courseName, courseDescription, teacher));
+            db.SaveChanges();
+            return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
         }
 
         public IActionResult RequestCourse(int id)

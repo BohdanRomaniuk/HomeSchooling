@@ -19,5 +19,16 @@ namespace database.Models
         public User Teacher { get; set; }
         
         public List<Lesson> CourseLessons { get; set; }
+
+        public Course()
+        {
+        }
+
+        public Course(string _name, string _description, User _teacher)
+        {
+            Name = _name;
+            Description = _description;
+            Teacher = _teacher;
+        }
     }
 }
