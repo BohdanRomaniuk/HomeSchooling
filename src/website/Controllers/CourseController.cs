@@ -26,8 +26,10 @@ namespace website.Controllers
 
         public IActionResult ViewLesson(int id)
         {
-            Lesson currentLesson = db.Lessons.Include(l => l.Posts).ThenInclude(l=>l.PostAtachments).Where(l => l.Id == id).SingleOrDefault();
-            return View(new LessonViewModel(currentLesson.Name, currentLesson.Posts));
+            Lesson currentLesson = db.Lessons
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach=>attach.UploadedBy)
+                .Include(lesson => lesson.Posts).ThenInclude(post=>post.PostedBy).Where(lesson => lesson.Id == id).SingleOrDefault();
+            return View(new LessonViewModel(currentLesson.Id, currentLesson.Name, currentLesson.Posts));
         }
 
         [HttpGet]
@@ -65,6 +67,17 @@ namespace website.Controllers
             currentCourse.CourseLessons.Add(newLesson);
             db.SaveChanges();
             return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!",lessonName));
+        }
+
+        [HttpPost]
+        public IActionResult AddHomeWork(int lessonId, string homeWorkDescription)
+        {
+            //Needed session handling
+            User currentStudent = db.Users.Where(u => u.Id == 2).SingleOrDefault();
+            Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
+            currentLesson.Posts.Add(new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now));
+            db.SaveChanges();
+            return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
         }
 
         public IActionResult RequestCourse(int id)

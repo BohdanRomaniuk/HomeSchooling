@@ -21,8 +21,6 @@ namespace database.Models
 
         public List<Post> Posts { get; set; }
         
-        //public string LessonDescription { get; set; }
-        //public string HomeWorkDescription { get; set; }
 
         public Lesson()
         {
