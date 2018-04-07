@@ -105,5 +105,49 @@ namespace website.Controllers
             }
             return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
+        public IActionResult AcceptCourse(int student_id, int course_id)
+        {
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "teacher")
+                {
+                    try
+                    {
+                        database.Models.CoursesListener listener = (from listeners in db.CoursesListeners
+                                        where listeners.Student.Id == student_id && listeners.RequestedCourse.Id == course_id
+                                        select listeners).SingleOrDefault();
+                        listener.Accepted = true;
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+            }
+            return RedirectToRoute(new { controller = "Course", action = "ViewRequests" });
+        }
+        public IActionResult RefuseCourse(int student_id, int course_id)
+        {
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "teacher")
+                {
+                    try
+                    {
+                        database.Models.CoursesListener listener = (from listeners in db.CoursesListeners
+                                                                    where listeners.Student.Id == student_id && listeners.RequestedCourse.Id == course_id
+                                                                    select listeners).SingleOrDefault();
+                        db.CoursesListeners.Remove(listener);
+                        db.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+            }
+            return RedirectToRoute(new { controller = "Course", action = "ViewRequests" });
+        }
     }
 }
