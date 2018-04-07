@@ -56,6 +56,7 @@ namespace website.Controllers
         {
             Course current = db.Courses.Include(c=>c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
             current.CourseLessons.Add(new Lesson(lessonName, Convert.ToDateTime(lessonDatetime), Convert.ToBoolean(isControllWork)));
+
             db.SaveChanges();
             return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!",lessonName));
         }
