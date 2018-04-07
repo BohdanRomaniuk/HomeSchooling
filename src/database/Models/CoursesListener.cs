@@ -21,5 +21,8 @@ namespace database.Models
             Id = _id;
             Student = _student;
         }
+        public CoursesListener()
+        {
+        }
     }
 }

@@ -158,7 +158,12 @@ namespace website.Controllers
                 }
                 else
                 {
-                    return View(db.Courses.Include(o => o.Teacher));
+                    var courses = from course in db.Courses.Include(c => c.Teacher)
+                                  join listener in db.CoursesListeners on course.Id equals listener.RequestedCourse.Id
+                                  where listener.Student.Id == id
+                                  where listener.Accepted == true
+                                  select course;
+                    return View(courses);
                 }
              }
              catch (Exception e)
