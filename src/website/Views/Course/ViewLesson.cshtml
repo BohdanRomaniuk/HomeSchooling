@@ -1,10 +1,10 @@
 ﻿
 @{
-    ViewData["Title"] = "Перегляд уроку - " + Model.Name;
+    ViewData["Title"] = "Перегляд уроку - " + Model.LessonName;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>@Model.Name</h3>
+<h3>@Model.LessonName</h3>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title" style="font-size: 14px;">
@@ -15,8 +15,7 @@
         </h3>
     </div>
     <div class="panel-body">
-        @Model.LessonDescription
-
+        @((Model.LessonDescription != null)?Model.LessonDescription.Text:"")
         <h5><b>Прикріплені файли:</b></h5>
         <div class="list-group">
             <a href="#" class="list-group-item">
@@ -24,7 +23,7 @@
                 Презентація.pptx
             </a>
             <a href="#" class="list-group-item">
-                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> 
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
                 Приклади.rar
             </a>
         </div>
@@ -42,7 +41,7 @@
         </h3>
     </div>
     <div class="panel-body">
-        @Model.HomeWorkDescription
+        @((Model.HomeWorkDescription != null)?Model.HomeWorkDescription.Text:"")
         <h5><b>Прикріплені файли:</b></h5>
         <div class="list-group">
             <a href="#" class="list-group-item">

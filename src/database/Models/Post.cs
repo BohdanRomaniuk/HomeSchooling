@@ -24,6 +24,7 @@ namespace database.Models
 
         public Post()
         {
+            Text = "";
         }
 
         public Post(string _text, string _postType, User _postedBy, DateTime _postedData)

@@ -26,10 +26,12 @@ namespace database.Models
 
         public Lesson()
         {
+            Posts = new List<Post>();
         }
 
         public Lesson(string _name, DateTime _date, bool _isCOntrolWork=false)
         {
+            Posts = new List<Post>();
             Name = _name;
             Date = _date;
             IsControlWork = _isCOntrolWork;

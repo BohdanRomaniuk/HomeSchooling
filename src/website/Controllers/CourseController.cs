@@ -26,7 +26,8 @@ namespace website.Controllers
 
         public IActionResult ViewLesson(int id)
         {
-            return View(db.Lessons.Where(l=>l.Id==id).SingleOrDefault());
+            Lesson currentLesson = db.Lessons.Include(l => l.Posts).Where(l => l.Id == id).SingleOrDefault();
+            return View(new LessonViewModel(currentLesson.Name, currentLesson.Posts));
         }
 
         [HttpGet]
@@ -38,6 +39,7 @@ namespace website.Controllers
         [HttpPost]
         public IActionResult AddCourse(string courseName, string courseDescription)
         {
+            //Needed session handling
             User teacher = db.Users.Where(u => u.Id == 2).SingleOrDefault();
             db.Courses.Add(new Course(courseName, courseDescription, teacher));
             db.SaveChanges();
@@ -52,11 +54,15 @@ namespace website.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddLesson(int courseId, string lessonName, string lessonDatetime, string isControllWork)
+        public IActionResult AddLesson(int courseId, string lessonName, string lessonDatetime, string lessonDescription, string homeworkDescription, string isControllWork)
         {
-            Course current = db.Courses.Include(c=>c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
-            current.CourseLessons.Add(new Lesson(lessonName, Convert.ToDateTime(lessonDatetime), Convert.ToBoolean(isControllWork)));
-
+            Course currentCourse = db.Courses.Include(c=>c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
+            //Needed session handling
+            User postedBy = db.Users.Where(u => u.Id == 2).SingleOrDefault();
+            Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonDatetime), Convert.ToBoolean(isControllWork));
+            newLesson.Posts.Add(new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now));
+            newLesson.Posts.Add(new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now));
+            currentCourse.CourseLessons.Add(newLesson);
             db.SaveChanges();
             return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!",lessonName));
         }
