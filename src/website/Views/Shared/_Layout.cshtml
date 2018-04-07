@@ -37,8 +37,10 @@
                         </div>
                         <button type="submit" class="btn btn-default btn-sm">Шукати</button>
                     </form>
-                    @{ byte[] username = new byte[30];}
-                    @if (!Context.Session.TryGetValue("username", out username))
+                    @{ byte[] username = new byte[30];
+                        byte[] userId = new byte[4];
+                    }
+                    @if (!Context.Session.TryGetValue("username", out username) || !Context.Session.TryGetValue("id", out userId))
                     {
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Login" style="float:right;">Вхід</a></li>
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Register" style="float:right;">Реєстрація</a></li>
@@ -46,8 +48,10 @@
                     else
                     {
                         string un = System.Text.Encoding.Default.GetString(username);
+                        string id = System.Text.Encoding.Default.GetString(userId);
+                        
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Logout" style="float:right;">Вихід</a></li>
-                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="View" style="float:right; font-weight:bold">@un</a></li>
+                        <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="View" asp-route-id="@Convert.ToInt32(id)" style="float:right; font-weight:bold">@un</a></li>
                     }
                     
                 </ul>

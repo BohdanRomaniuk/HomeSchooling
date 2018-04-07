@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "View";
+}
+<h3>Профіль @if (ViewData["role"].ToString() == "teacher"){<span>вчителя</span> }else{ <span>учня</span> }</h3>
+<h4>Нікнейм: @ViewData["username"]</h4>
+<h4>@ViewData["name"]</h4>
+<br />
+<h2>Курси, які @if (ViewData["role"].ToString() == "teacher") { <span>читає </span>} else { <span>відвідує </span>} користувач:</h2>
+
+<hr />
+@foreach (var elem in Model)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id">@elem.Name</a></div>
+        <div class="panel-body">
+            Опис курсу
+            <a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>
+            <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
+            <br>
+            <b>Викладач:</b> <a asp-controller="Profile" asp-action="ViewProfile" asp-route-id="@elem.Teacher.Id"><span class="label label-primary">@elem.Teacher.Name</span></a>
+            <b style="margin-left:20px;">Записано на курс:</b> <span class="label label-success">122</span>
+        </div>
+    </div>
+}
