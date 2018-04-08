@@ -7,10 +7,10 @@
     Профіль @if (ViewData["role"].ToString() == "teacher")
     {<span>вчителя</span> }
     else
-    { <span>учня</span>}
+    { <span>учня</span>} 
+    @ViewData["name"]
 </h3>
 <h4>Нікнейм: @ViewData["username"]</h4>
-<h4>@ViewData["name"]</h4>
 <br />
 @{ bool attends = false;
     byte[] roleB = new byte[40];
