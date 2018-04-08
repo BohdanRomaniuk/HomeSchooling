@@ -1,9 +1,5 @@
 ﻿@{
     ViewData["Title"] = "Головна сторінка";
-}
-<h3>Усі курси <a asp-controller="Course" asp-action="AddCourse" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий курс</a></h3>
-<hr />
-@{ 
     byte[] roleB = new byte[40];
     string role = "";
     if (Context.Session.TryGetValue("role", out roleB))
@@ -11,6 +7,8 @@
         role = System.Text.Encoding.Default.GetString(roleB);
     }
 }
+<h3>Усі курси @if (role == "teacher") {<a asp-controller="Course" asp-action="AddCourse" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий курс</a>}</h3>
+<hr />
 @foreach(var elem in Model)
 {
 <div class="panel panel-default">

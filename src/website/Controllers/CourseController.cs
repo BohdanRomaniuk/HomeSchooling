@@ -21,7 +21,19 @@ namespace website.Controllers
         
         public IActionResult ViewCourse(int id)
         {
-            return View(db.Courses.Include(c=>c.Teacher).Include(c=>c.CourseLessons).Where(o=>o.Id==id).SingleOrDefault());
+            Course currentCourse = db.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(o => o.Id == id).SingleOrDefault();
+            bool isCourseOwner = false;
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "teacher")
+                {
+                    int teacherId = int.Parse(HttpContext.Session.GetString("id"));
+                    isCourseOwner = (currentCourse.Teacher.Id==teacherId) ? true : false;
+                }
+            }
+            ViewData["IsCourseOwner"] = isCourseOwner;
+            return View(currentCourse);
         }
 
         public IActionResult ViewLesson(int id)
@@ -35,49 +47,104 @@ namespace website.Controllers
         [HttpGet]
         public IActionResult AddCourse()
         {
-            return View("AddCourse");
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "teacher")
+                {
+                    return View("AddCourse");
+                }
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+            return RedirectToRoute(new { controller = "Profile", action = "Login" });
+            
         }
 
         [HttpPost]
         public IActionResult AddCourse(string courseName, string courseDescription)
         {
-            //Needed session handling
-            User teacher = db.Users.Where(u => u.Id == 2).SingleOrDefault();
-            db.Courses.Add(new Course(courseName, courseDescription, teacher));
-            db.SaveChanges();
-            return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if(role=="teacher")
+                {
+                    int teacherId = int.Parse(HttpContext.Session.GetString("id"));
+                    User teacher = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
+                    db.Courses.Add(new Course(courseName, courseDescription, teacher));
+                    db.SaveChanges();
+                    return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
+                }
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+            return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
 
         [HttpGet]
         public IActionResult AddLesson(int id)
         {
-            ViewData["CourseId"] = id;
-            return View("AddLesson");
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "teacher")
+                {
+                    int teacherId = int.Parse(HttpContext.Session.GetString("id"));
+                    Course currentCourse = db.Courses.Include(c => c.Teacher).Where(c => c.Id == id).SingleOrDefault();
+                    if(teacherId==currentCourse.Teacher.Id)
+                    {
+                        ViewData["CourseId"] = id;
+                        return View("AddLesson");
+                    }
+                    else
+                    {
+                        return RedirectToRoute(new { controller = "Home", action = "Index" });
+                    }
+                }
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+            return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
 
         [HttpPost]
         public IActionResult AddLesson(int courseId, string lessonName, string lessonDatetime, string lessonDescription, string homeworkDescription, string isControllWork)
         {
-            Course currentCourse = db.Courses.Include(c=>c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
-            //Needed session handling
-            User postedBy = db.Users.Where(u => u.Id == 2).SingleOrDefault();
-            Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonDatetime), Convert.ToBoolean(isControllWork));
-            newLesson.Posts.Add(new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now));
-            newLesson.Posts.Add(new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now));
-            currentCourse.CourseLessons.Add(newLesson);
-            db.SaveChanges();
-            return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!",lessonName));
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "teacher")
+                {
+                    int teacherId = int.Parse(HttpContext.Session.GetString("id"));
+                    Course currentCourse = db.Courses.Include(c => c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
+                    User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
+                    Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonDatetime), Convert.ToBoolean(isControllWork));
+                    newLesson.Posts.Add(new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now));
+                    newLesson.Posts.Add(new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now));
+                    currentCourse.CourseLessons.Add(newLesson);
+                    db.SaveChanges();
+                    return View("AddLesson", String.Format("Урок \"{0}\" успішно додано! <a href=\"Home/Index\">Повернутися до курсу</a>", lessonName));
+                }
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+            return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
 
         [HttpPost]
         public IActionResult AddHomeWork(int lessonId, string homeWorkDescription)
         {
-            //Needed session handling
-            User currentStudent = db.Users.Where(u => u.Id == 2).SingleOrDefault();
-            Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
-            currentLesson.Posts.Add(new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now));
-            db.SaveChanges();
-            return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "student")
+                {
+                    int studentId = int.Parse(HttpContext.Session.GetString("id"));
+                    User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
+                    Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
+                    currentLesson.Posts.Add(new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now));
+                    db.SaveChanges();
+                    return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
+                }
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+            return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
 
         public IActionResult RequestCourse(int id)

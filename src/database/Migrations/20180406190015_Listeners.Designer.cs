@@ -70,11 +70,11 @@ namespace database.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("HomeWorkDescription");
+                    //b.Property<string>("HomeWorkDescription");
 
                     b.Property<bool>("IsControlWork");
 
-                    b.Property<string>("LessonDescription");
+                    //b.Property<string>("LessonDescription");
 
                     b.Property<string>("Name")
                         .IsRequired();
