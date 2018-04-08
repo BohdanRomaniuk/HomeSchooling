@@ -30,5 +30,33 @@ namespace website.Controllers
             }
             return RedirectToRoute(new { controller = "Profile", action = "View", id = id });
         }
+        public IActionResult DeleteCourse(int id)
+        {
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "admin")
+                {
+
+                    Course course = db.Courses.Include(c => c.CourseLessons).ThenInclude(l => l.Posts).Where(c=>c.Id == id).SingleOrDefault();
+                    var listeners = db.CoursesListeners.Where(c => c.RequestedCourse.Id == id);
+                    foreach (var l in listeners)
+                    {
+                        db.CoursesListeners.Remove(l);
+                    }
+                    foreach (var l in course.CourseLessons)
+                    {
+                        foreach (var p in l.Posts)
+                        {
+                            db.Posts.Remove(p);
+                        }
+                        db.Lessons.Remove(l);
+                    }
+                    db.Remove(course);
+                    db.SaveChanges();
+                }
+            }
+            return RedirectToRoute(new { controller = "Home", action = "Index" });
+        }
     }
 }
