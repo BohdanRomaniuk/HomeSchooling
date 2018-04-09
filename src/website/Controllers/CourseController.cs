@@ -170,7 +170,7 @@ namespace website.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddHomeWork(int lessonId, string homeWorkDescription, List<IFormFile> files)
+        public async Task<IActionResult> AddHomeWork(int lessonId, string homeWorkDescription, List<IFormFile> files)
         {
             if (HttpContext.Session.GetInt32("role") != null)
             {
@@ -194,7 +194,7 @@ namespace website.Controllers
 
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
-                            file.CopyToAsync(stream);
+                            await file.CopyToAsync(stream);
                         }
                         new_post.PostAtachments.Add(new Attachment(file.GetFilename(),currentStudent,DateTime.Now));
                     }
