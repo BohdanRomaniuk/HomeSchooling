@@ -150,6 +150,7 @@ namespace website.Controllers
             {
                 ViewData["name"] = db.Users.Where(u => u.Id == id).SingleOrDefault().Name;
                 ViewData["username"] = db.Users.Where(u => u.Id == id).SingleOrDefault().UserName;
+                ViewData["id"] = id;
                 string role = db.Users.Where(u => u.Id == id).SingleOrDefault().UserRole;
                 ViewData["role"] = role;
                 if (role == "teacher")
