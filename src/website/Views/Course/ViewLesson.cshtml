@@ -111,14 +111,14 @@
         }
         <hr />
         <h3>Відправити домашнє завдання</h3>
-        <form method="post" asp-controller="Course" asp-action="AddHomeWork">
+        <form method="post" asp-controller="Course" asp-action="AddHomeWork" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="inputComment">Короткий звіт про виконе домашнє завдання</label>
                 <textarea name="homeWorkDescription" class="form-control" id="inputComment" rows="5" required="required"></textarea>
             </div>
             <div class="form-group">
                 <label for="InputFile">Прикріпити файли</label>
-                <input type="file" id="InputFile">
+                <input type="file" name="files" id="InputFile" multiple />
                 <p class="help-block">Тут ви можете прикріпити файли з розширенням *.doc, *.docx, *.txt, *.ppt, *.pptx</p>
             </div>
             <input type="hidden" name="lessonId" value="@Model.LessonId"/>

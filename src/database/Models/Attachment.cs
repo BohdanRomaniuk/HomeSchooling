@@ -16,5 +16,13 @@ namespace database.Models
         public User UploadedBy { get; set; }
         [Required]
         public string FileName { get; set; }
+        public Attachment()
+        { }
+        public Attachment ( string name,User user,DateTime upload_date)
+        {
+            FileName = name;
+            UploadedBy = user;
+            UploadDate = upload_date;
+        }
     }
 }

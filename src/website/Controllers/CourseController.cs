@@ -7,16 +7,20 @@ using Microsoft.EntityFrameworkCore;
 using website.Models;
 using Microsoft.AspNetCore.Http;
 using database.Models;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace website.Controllers
 {
     public class CourseController : Controller
     {
         private readonly HomeSchoolingContext db;
+        private readonly IFileProvider fileProvider;
 
-        public CourseController(HomeSchoolingContext _db)
+        public CourseController(HomeSchoolingContext _db, IFileProvider _fileProvider)
         {
             db = _db;
+            fileProvider = _fileProvider;
         }
         
         public IActionResult ViewCourse(int id)
@@ -128,7 +132,7 @@ namespace website.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddHomeWork(int lessonId, string homeWorkDescription)
+        public IActionResult AddHomeWork(int lessonId, string homeWorkDescription, List<IFormFile> files)
         {
             if (HttpContext.Session.GetInt32("role") != null)
             {
@@ -138,7 +142,26 @@ namespace website.Controllers
                     int studentId = int.Parse(HttpContext.Session.GetString("id"));
                     User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
                     Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
-                    currentLesson.Posts.Add(new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now));
+                    Post new_post = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
+                    new_post.PostAtachments = new List<Attachment>();
+                    //Files upload begin
+                    if (files == null || files.Count == 0)
+                        return Content("files not selected");
+
+                    foreach (var file in files)
+                    {
+                        var path = Path.Combine(
+                                Directory.GetCurrentDirectory(), "wwwroot",
+                                file.GetFilename());
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            file.CopyToAsync(stream);
+                        }
+                        new_post.PostAtachments.Add(new Attachment(file.GetFilename(),currentStudent,DateTime.Now));
+                    }
+                    //Files upload end
+                    currentLesson.Posts.Add(new_post);
                     db.SaveChanges();
                     return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
                 }

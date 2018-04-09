@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using website.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace website
 {
@@ -24,6 +26,9 @@ namespace website
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<HomeSchoolingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("HomeSchooling")));
+            services.AddSingleton<IFileProvider>(
+                new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
             services.AddMvc();
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
