@@ -16,6 +16,7 @@ namespace website.Controllers
         {
             db = context;
         }
+
         public IActionResult SetTeacher(int id)
         {
             if (HttpContext.Session.GetInt32("role") != null)
@@ -30,6 +31,7 @@ namespace website.Controllers
             }
             return RedirectToRoute(new { controller = "Profile", action = "View", id = id });
         }
+
         public IActionResult DeleteCourse(int id)
         {
             if (HttpContext.Session.GetInt32("role") != null)
