@@ -109,7 +109,7 @@ namespace website.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddLesson(int courseId, string lessonName, string lessonDatetime, string lessonDescription, string homeworkDescription, string isControllWork, List<IFormFile> files1, List<IFormFile> files2)
+        public async Task<IActionResult> AddLesson(int courseId, string lessonName, string lessonStartDatetime, string lessonEndDatetime, string lessonDescription, string homeworkDescription, string homeworkEndDatetime, string isControllWork, List<IFormFile> files1, List<IFormFile> files2)
         {
             if (HttpContext.Session.GetInt32("role") != null)
             {
@@ -119,7 +119,7 @@ namespace website.Controllers
                     int teacherId = int.Parse(HttpContext.Session.GetString("id"));
                     Course currentCourse = db.Courses.Include(c => c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
                     User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
-                    Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonDatetime), Convert.ToBoolean(isControllWork));
+                    Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
                     Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
                     lesson_post.PostAtachments = new List<Attachment>();
                     Post homework_post = new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now);

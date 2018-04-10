@@ -17,7 +17,7 @@
             <b>Урок №@(i + 1):</b> <a asp-controller="Course" asp-action="ViewLesson" asp-route-id="@Model.CourseLessons[i].Id">@Model.CourseLessons[i].Name</a>
             <a asp-controller="Course" asp-action="ViewLesson" asp-route-id="@Model.CourseLessons[i].Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути урок</a>
             <br>
-            <b>Дата:</b> <span class="label label-primary">@Model.CourseLessons[i].Date</span>
+            <b>Дата:</b> <span class="label label-primary">@Model.CourseLessons[i].LessonStartDate - @Model.CourseLessons[i].LessonEndDate</span>
         </div>
     </div>
 }

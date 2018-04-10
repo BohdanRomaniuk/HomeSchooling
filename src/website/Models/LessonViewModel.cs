@@ -12,6 +12,9 @@ namespace website.Models
         public string LessonName { get; set; }
         public Post LessonDescription { get; set; }
         public Post HomeWorkDescription { get; set; }
+        public DateTime LessonStartDate { get; set; }
+        public DateTime LessonEndDate { get; set; }
+        public DateTime HomeWorkEnd { get; set; }
         public List<Post> HomeWorks { get; set; }
         public LessonViewModel(int lessonId, string lessonName, List<Post> allLessonPosts)
         {

@@ -17,6 +17,7 @@
     <div class="panel-body">
         @if (Model.LessonDescription != null)
         {
+            <b>Час проведення:</b> <span class="label label-primary">@Model.LessonStartDate - @Model.LessonEndDate</span>
             @Model.LessonDescription.Text 
             @if (Model.LessonDescription.PostAtachments != null && Model.LessonDescription.PostAtachments.Count != 0)
             {
@@ -53,6 +54,7 @@
     <div class="panel-body">
         @if (Model.HomeWorkDescription != null)
         {
+            <b>Останній термін здачі домашнього:</b> <span class="label label-primary">@Model.HomeWorkEnd</span>
             @Model.HomeWorkDescription.Text
             @if (Model.HomeWorkDescription.PostAtachments != null && Model.HomeWorkDescription.PostAtachments.Count != 0)
             {
