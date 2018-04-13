@@ -5,6 +5,8 @@
 }
 
 <h3>@Model.LessonName</h3>
+@if (!Model.IsControlWork)
+{
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title" style="font-size: 14px;">
@@ -44,12 +46,13 @@
     </div>
 </div>
 <br />
+}
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title" style="font-size: 14px;">
             <ul class="nav nav-pills" role="tablist">
                 <li role="presentation" class="active">
-                    <a href="#" class="alert-link" style="background-color: #f0ad4e;">Домашня робота</a>
+                    <a href="#" class="alert-link" style="background-color: #f0ad4e;">@((Model.IsControlWork) ? "Контрольна" : "Домашня") робота</a>
                 </li>
             </ul>
         </h3>
@@ -57,7 +60,13 @@
     <div class="panel-body">
         @if (Model.HomeWorkDescription != null)
         {
-            <b>Останній термін здачі домашнього:</b> <span class="label label-danger">@Model.HomeWorkEnd</span><br>
+            if (Model.IsControlWork && DateTime.Now <= Model.LessonStartDate)
+            {
+                <div class="alert alert-danger" style="padding: 5px;">Контрольна робота буде доступна @Model.LessonStartDate!</div>
+            }
+            else
+            {
+            <b>Термін здачі @((Model.IsControlWork) ? "контрольної роботи:" : "домашнього завдання:")</b> <span class="label label-danger">@Model.HomeWorkEnd</span><br>
             <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.HomeWorkDescription.PostedBy.Id" class="label label-primary">@Model.HomeWorkDescription.PostedBy.Name</a>
             <span class="label label-default">@Model.HomeWorkDescription.PostedDate</span>
             <br><br>
@@ -80,9 +89,10 @@
                     }
                 </div>
             }
+            }
         }
         <hr />
-        <h3>Виконане домашнє завдання:</h3>
+        <h3>@((Model.IsControlWork)? "Виконана контрольна робота:" : "Виконане домашнє завдання:")</h3>
         @if (Model.HomeWorks != null && Model.HomeWorks.Count!=0)
         {
             @foreach(var homework in Model.HomeWorks)
@@ -115,17 +125,23 @@
         }
         else
         {
-            <div class="alert alert-danger" style="padding: 5px;">Ніхто ще не відправив домашнє завдання на перевірку</div>
+            <div class="alert alert-danger" style="padding: 5px;">Ніхто ще не відправив @((Model.IsControlWork) ? "контрольну роботу" : "домашнє завдання") на перевірку</div>
         }
         <hr />
-        @if(Convert.ToBoolean(ViewData["AllowedToAddHomework"]))
+        @if (Convert.ToBoolean(ViewData["IsCourseListener"]))
         {
-         <h3>Відправити домашнє завдання</h3>
-            @if(DateTime.Now<=Model.HomeWorkEnd)
+            if (Model.IsControlWork && DateTime.Now <= Model.LessonStartDate)
+            {
+            <div class="alert alert-danger" style="padding: 5px;">Надіслати контрольну роботу можна після @Model.LessonStartDate!</div>
+            }
+            else
+            { 
+            <h3>Відправити @((Model.IsControlWork) ? "контрольну роботу:" : "домашнє завдання:")</h3>
+            @if (DateTime.Now <= Model.HomeWorkEnd)
             {
             <form method="post" asp-controller="Course" asp-action="AddHomeWork" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="inputComment">Короткий звіт про виконе домашнє завдання</label>
+                <label for="inputComment">Короткий звіт про виконану роботу</label>
                 <textarea name="homeWorkDescription" class="form-control" id="inputComment" rows="5" required="required"></textarea>
             </div>
             <div class="form-group">
@@ -140,6 +156,7 @@
             else
             {
                 <div class="alert alert-danger" style="padding: 5px;">Час на здачу завершився! Остаточний термін здачі @Model.HomeWorkEnd!</div>
+            }
             }
         }
     </div>

@@ -42,7 +42,7 @@ namespace website.Controllers
 
         public IActionResult ViewLesson(int id)
         {
-            ViewData["AllowedToAddHomework"] = false;
+            ViewData["IsCourseListener"] = false;
             Lesson currentLesson = db.Lessons
                 .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach => attach.UploadedBy)
                 .Include(lesson => lesson.Posts).ThenInclude(post => post.PostedBy).Where(lesson => lesson.Id == id).SingleOrDefault();
@@ -53,7 +53,7 @@ namespace website.Controllers
                 {
                     int studentId = Convert.ToInt32(HttpContext.Session.GetString("id"));
                     int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
-                    ViewData["AllowedToAddHomework"] = db.CoursesListeners.Where(s=>s.Student.Id==studentId && s.Accepted && s.RequestedCourse.Id==currentCourseId).Count()!=0;
+                    ViewData["IsCourseListener"] = db.CoursesListeners.Where(s=>s.Student.Id==studentId && s.Accepted && s.RequestedCourse.Id==currentCourseId).Count()!=0;
                 }
             }
             return View(new LessonViewModel(currentLesson));
