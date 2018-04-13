@@ -42,10 +42,21 @@ namespace website.Controllers
 
         public IActionResult ViewLesson(int id)
         {
+            ViewData["AllowedToAddHomework"] = false;
             Lesson currentLesson = db.Lessons
-                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach=>attach.UploadedBy)
-                .Include(lesson => lesson.Posts).ThenInclude(post=>post.PostedBy).Where(lesson => lesson.Id == id).SingleOrDefault();
-            return View(new LessonViewModel(currentLesson.Id, currentLesson.Name, currentLesson.Posts));
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach => attach.UploadedBy)
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostedBy).Where(lesson => lesson.Id == id).SingleOrDefault();
+            if (HttpContext.Session.GetInt32("role") != null)
+            {
+                string role = HttpContext.Session.GetString("role");
+                if (role == "student")
+                {
+                    int studentId = Convert.ToInt32(HttpContext.Session.GetString("id"));
+                    int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
+                    ViewData["AllowedToAddHomework"] = db.CoursesListeners.Where(s=>s.Student.Id==studentId && s.Accepted && s.RequestedCourse.Id==currentCourseId).Count()!=0;
+                }
+            }
+            return View(new LessonViewModel(currentLesson));
         }
 
         [HttpGet]
@@ -121,41 +132,42 @@ namespace website.Controllers
                     User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
                     Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
                     Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
-                    lesson_post.PostAtachments = new List<Attachment>();
                     Post homework_post = new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now);
-                    homework_post.PostAtachments = new List<Attachment>();
+                   
                     //Files1 upload begin
-                    if (files1 == null || files1.Count == 0)
-                        return Content("Files1 not selected");
-
-                    foreach (var file in files1)
+                    if (files1 != null && files1.Count != 0)
                     {
-                        var path = Path.Combine(
-                                Directory.GetCurrentDirectory(), "wwwroot",
-                                file.GetFilename());
-
-                        using (var stream = new FileStream(path, FileMode.Create))
+                        lesson_post.PostAtachments = new List<Attachment>();
+                        foreach (var file in files1)
                         {
-                            await file.CopyToAsync(stream);
+                            var path = Path.Combine(
+                                    Directory.GetCurrentDirectory(), "wwwroot",
+                                    file.GetFilename());
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            lesson_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
                         }
-                        lesson_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
                     }
                     //Files1 upload end
                     //Files2 upload begin
-                    if (files2 == null || files2.Count == 0)
-                        return Content("Files1 not selected");
-
-                    foreach (var file in files2)
+                    if (files2 != null && files2.Count != 0)
                     {
-                        var path = Path.Combine(
-                                Directory.GetCurrentDirectory(), "wwwroot",
-                                file.GetFilename());
-
-                        using (var stream = new FileStream(path, FileMode.Create))
+                        homework_post.PostAtachments = new List<Attachment>();
+                        foreach (var file in files2)
                         {
-                            await file.CopyToAsync(stream);
+                            var path = Path.Combine(
+                                    Directory.GetCurrentDirectory(), "wwwroot",
+                                    file.GetFilename());
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            homework_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
                         }
-                        homework_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
                     }
                     //Files2 upload end
                     newLesson.Posts.Add(lesson_post);
@@ -181,22 +193,23 @@ namespace website.Controllers
                     User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
                     Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
                     Post new_post = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
-                    new_post.PostAtachments = new List<Attachment>();
+
                     //Files upload begin
-                    if (files == null || files.Count == 0)
-                        return Content("Files not selected");
-
-                    foreach (var file in files)
+                    if (files != null && files.Count != 0)
                     {
-                        var path = Path.Combine(
-                                Directory.GetCurrentDirectory(), "wwwroot",
-                                file.GetFilename());
-
-                        using (var stream = new FileStream(path, FileMode.Create))
+                        new_post.PostAtachments = new List<Attachment>();
+                        foreach (var file in files)
                         {
-                            await file.CopyToAsync(stream);
+                            var path = Path.Combine(
+                                    Directory.GetCurrentDirectory(), "wwwroot",
+                                    file.GetFilename());
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            new_post.PostAtachments.Add(new Attachment(file.GetFilename(), currentStudent, DateTime.Now));
                         }
-                        new_post.PostAtachments.Add(new Attachment(file.GetFilename(),currentStudent,DateTime.Now));
                     }
                     //Files upload end
                     currentLesson.Posts.Add(new_post);
