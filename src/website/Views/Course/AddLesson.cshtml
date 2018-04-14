@@ -9,14 +9,18 @@
 {
     <div class="alert alert-success" role="alert">@Model</div>
 }
-    <form method="post" asp-controller="Course" asp-action="AddLesson">
+    <form method="post" asp-controller="Course" asp-action="AddLesson" enctype="multipart/form-data">
         <div class="form-group">
             <label for="inputLessonName">Назва уроку:</label>
             <input type="text" name="lessonName" class="form-control" id="inputLessonName" placeholder="">
         </div>
         <div class="form-group">
-            <label for="inputDate">Дата проведення:</label>
-            <input type="text" name="lessonDatetime" class="form-control" id="inputDate" placeholder="Наприклад: 07.04.2018 13:00:00">
+            <label for="inputDate">Дата початку уроку(контрольної):</label>
+            <input type="text" name="lessonStartDatetime" class="form-control" id="inputDate" placeholder="Наприклад: 07.04.2018 13:00:00">
+        </div>
+        <div class="form-group">
+            <label for="inputDate1">Дата завершення уроку(контрольної):</label>
+            <input type="text" name="lessonEndDatetime" class="form-control" id="inputDate1" placeholder="Наприклад: 07.04.2018 14:00:00">
         </div>
         <div class="form-group">
             <label for="inputDecription">Опис уроку(план):</label>
@@ -24,7 +28,7 @@
         </div>
         <div class="form-group">
             <label for="inputLessonFiles">Прикріпити файли уроку:</label>
-            <input name="lessonFiles[]" type="file" id="inputLessonFiles" />
+            <input name="files1" type="file" id="inputLessonFiles" multiple />
         </div>
         <div class="form-group">
             <label for="inputHomeworkDecription">Опис домашньої роботи(план):</label>
@@ -32,7 +36,11 @@
         </div>
         <div class="form-group">
             <label for="inputLessonHWFiles">Прикріпити файли домашньої роботи:</label>
-            <input name="lessonHWFiles[]" type="file" id="inputLessonHWFiles" />
+            <input name="files2" type="file" id="inputLessonHWFiles" multiple />
+        </div>
+        <div class="form-group">
+            <label for="inputDate2">Дата остаточної здачі домашнього:</label>
+            <input type="text" name="homeworkEndDatetime" class="form-control" id="inputDate2" placeholder="Наприклад: 07.04.2018 14:00:00">
         </div>
         <div class="form-group">
             <label for="inputIsControllWork">Тип уроку:</label>

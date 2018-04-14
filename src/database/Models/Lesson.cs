@@ -14,7 +14,9 @@ namespace database.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime LessonStartDate { get; set; }
+        public DateTime LessonEndDate { get; set; }
+        public DateTime HomeWorkEnd { get; set; }
         [Required]
         [DefaultValue("false")]
         public bool IsControlWork { get; set; }
@@ -26,12 +28,14 @@ namespace database.Models
             Posts = new List<Post>();
         }
 
-        public Lesson(string _name, DateTime _date, bool _isCOntrolWork=false)
+        public Lesson(string _name, DateTime _lessonStartDate, DateTime _lessonEndDate,DateTime _homeWorkEnd, bool _isControlWork=false)
         {
             Posts = new List<Post>();
             Name = _name;
-            Date = _date;
-            IsControlWork = _isCOntrolWork;
+            LessonStartDate = _lessonStartDate;
+            LessonEndDate = _lessonEndDate;
+            HomeWorkEnd = _homeWorkEnd;
+            IsControlWork = _isControlWork;
         }
     }
 }

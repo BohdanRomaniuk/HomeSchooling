@@ -20,10 +20,17 @@ namespace website.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int page=1)
+        public IActionResult Index(string name = null)
         {
-            IQueryable<Course> allCourses = _context.Courses.Include(o => o.Teacher).Include(o=>o.CourseLessons);
-            return View(allCourses);
+            if (name == null)
+            {
+                IQueryable<Course> allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons);
+                return View(allCourses);
+            }
+            else
+            {
+                return View(_context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name)).ToList());
+            }
         }
 
         public IActionResult About()

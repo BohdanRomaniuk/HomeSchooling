@@ -12,14 +12,24 @@ namespace website.Models
         public string LessonName { get; set; }
         public Post LessonDescription { get; set; }
         public Post HomeWorkDescription { get; set; }
+
+        public DateTime LessonStartDate { get; set; }
+        public DateTime LessonEndDate { get; set; }
+        public DateTime HomeWorkEnd { get; set; }
+
         public List<Post> HomeWorks { get; set; }
-        public LessonViewModel(int lessonId, string lessonName, List<Post> allLessonPosts)
+        public bool IsControlWork { get; set; }
+        public LessonViewModel(Lesson currentLesson)
         {
-            LessonId = lessonId;
-            LessonName = lessonName;
-            LessonDescription = allLessonPosts.Where(s => s.PostType == "lesson-desc").SingleOrDefault();
-            HomeWorkDescription = allLessonPosts.Where(s => s.PostType == "homework-desc").SingleOrDefault();
-            HomeWorks = allLessonPosts.Where(s => s.PostType == "homework").ToList();
+            LessonId = currentLesson.Id;
+            LessonName = currentLesson.Name;
+            LessonStartDate = currentLesson.LessonStartDate;
+            LessonEndDate = currentLesson.LessonEndDate;
+            HomeWorkEnd = currentLesson.HomeWorkEnd;
+            IsControlWork = currentLesson.IsControlWork;
+            LessonDescription = currentLesson.Posts.Where(s => s.PostType == "lesson-desc").SingleOrDefault();
+            HomeWorkDescription = currentLesson.Posts.Where(s => s.PostType == "homework-desc").SingleOrDefault();
+            HomeWorks = currentLesson.Posts.Where(s => s.PostType == "homework").ToList();
         }
     }
 }
