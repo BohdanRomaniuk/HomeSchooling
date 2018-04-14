@@ -28,14 +28,14 @@ namespace database.Models
             Posts = new List<Post>();
         }
 
-        public Lesson(string _name, DateTime _lessonStartDate, DateTime _lessonEndDate,DateTime _homeWorkEnd, bool _isCOntrolWork=false)
+        public Lesson(string _name, DateTime _lessonStartDate, DateTime _lessonEndDate,DateTime _homeWorkEnd, bool _isControlWork=false)
         {
             Posts = new List<Post>();
             Name = _name;
             LessonStartDate = _lessonStartDate;
             LessonEndDate = _lessonEndDate;
             HomeWorkEnd = _homeWorkEnd;
-            IsControlWork = _isCOntrolWork;
+            IsControlWork = _isControlWork;
         }
     }
 }

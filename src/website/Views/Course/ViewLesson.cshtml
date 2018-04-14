@@ -5,159 +5,166 @@
 }
 
 <h3>@Model.LessonName</h3>
-@if (!Model.IsControlWork)
+@if (Convert.ToBoolean(ViewData["IsCourseListener"]))
 {
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title" style="font-size: 14px;">
-            <ul class="nav nav-pills" role="tablist">
-                <li role="presentation" class="active"><a href="#">Інформація про урок</a></li>
-                <!--<li role="presentation"><a href="#">Обговорення <span class="badge">42 нових повідомлення</span></a></li>-->
-            </ul>
-        </h3>
-    </div>
-    <div class="panel-body">
-        @if (Model.LessonDescription != null)
-        {
-            <b>Час проведення:</b> <span class="label label-primary">@Model.LessonStartDate - @Model.LessonEndDate</span><br>
-            <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.LessonDescription.PostedBy.Id" class="label label-primary">@Model.LessonDescription.PostedBy.Name</a>
-            <span class="label label-default">@Model.LessonDescription.PostedDate</span>
-            <br><br>
-            @Model.LessonDescription.Text 
-            @if (Model.LessonDescription.PostAtachments != null && Model.LessonDescription.PostAtachments.Count != 0)
-            {
-                <h5><b>Прикріплені файли (@Model.LessonDescription.PostAtachments.Count):</b></h5>
-                <div class="list-group">
-                    @foreach (var attach in Model.LessonDescription.PostAtachments)
+    @if (!Model.IsControlWork)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="font-size: 14px;">
+                    <ul class="nav nav-pills" role="tablist">
+                        <li role="presentation" class="active"><a href="#">Інформація про урок</a></li>
+                        <!--<li role="presentation"><a href="#">Обговорення <span class="badge">42 нових повідомлення</span></a></li>-->
+                    </ul>
+                </h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.LessonDescription != null)
+                {
+                    <b>Час проведення:</b> <span class="label label-primary">@Model.LessonStartDate - @Model.LessonEndDate</span><br>
+                    <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.LessonDescription.PostedBy.Id" class="label label-primary">@Model.LessonDescription.PostedBy.Name</a>
+                    <span class="label label-default">@Model.LessonDescription.PostedDate</span>
+                    <br><br>
+                    @Model.LessonDescription.Text
+                    @if (Model.LessonDescription.PostAtachments != null && Model.LessonDescription.PostAtachments.Count != 0)
                     {
-                    <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
-                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                        @attach.FileName
-                        <div style="float:right;">
-                            <span style="font-weight:bold;font-size: 13px;">Додано:</span>
-                            <span class="label label-primary">@attach.UploadedBy.Name</span>
-                            <span class="label label-default">@attach.UploadDate</span>
-                        </div>
-                    </a>
-                    }
-                </div>
-            }
-        }
-    </div>
-</div>
-<br />
-}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title" style="font-size: 14px;">
-            <ul class="nav nav-pills" role="tablist">
-                <li role="presentation" class="active">
-                    <a href="#" class="alert-link" style="background-color: #f0ad4e;">@((Model.IsControlWork) ? "Контрольна" : "Домашня") робота</a>
-                </li>
-            </ul>
-        </h3>
-    </div>
-    <div class="panel-body">
-        @if (Model.HomeWorkDescription != null)
-        {
-            if (Model.IsControlWork && DateTime.Now <= Model.LessonStartDate)
-            {
-                <div class="alert alert-danger" style="padding: 5px;">Контрольна робота буде доступна @Model.LessonStartDate!</div>
-            }
-            else
-            {
-            <b>Термін здачі @((Model.IsControlWork) ? "контрольної роботи:" : "домашнього завдання:")</b> <span class="label label-danger">@Model.HomeWorkEnd</span><br>
-            <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.HomeWorkDescription.PostedBy.Id" class="label label-primary">@Model.HomeWorkDescription.PostedBy.Name</a>
-            <span class="label label-default">@Model.HomeWorkDescription.PostedDate</span>
-            <br><br>
-            @Model.HomeWorkDescription.Text
-            @if (Model.HomeWorkDescription.PostAtachments != null && Model.HomeWorkDescription.PostAtachments.Count != 0)
-            {
-                <h5><b>Прикріплені файли (@Model.HomeWorkDescription.PostAtachments.Count):</b></h5>
-                <div class="list-group">
-                    @foreach (var attach in Model.HomeWorkDescription.PostAtachments)
-                    {
-                    <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
-                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                        @attach.FileName
-                        <div style="float:right;">
-                            <span style="font-weight:bold;font-size: 13px;">Додано:</span>
-                            <span class="label label-primary">@attach.UploadedBy.Name</span>
-                            <span class="label label-default">@attach.UploadDate</span>
-                        </div>
-                    </a>
-                    }
-                </div>
-            }
-            }
-        }
-        <hr />
-        <h3>@((Model.IsControlWork)? "Виконана контрольна робота:" : "Виконане домашнє завдання:")</h3>
-        @if (Model.HomeWorks != null && Model.HomeWorks.Count!=0)
-        {
-            @foreach(var homework in Model.HomeWorks)
-            {
-            <div class="panel panel-default">
-                <div style="padding: 10px;">
-                <a asp-controller="Profile" asp-action="View" asp-route-id="@homework.PostedBy.Id" class="label label-primary">@homework.PostedBy.Name</a> <span class="label label-default">@homework.PostedDate</span><br>
-                <div style="padding: 5px 0;">@homework.Text</div>
-                    @if(homework.PostAtachments!=null && homework.PostAtachments.Count!=0)
-                    {
-                        <h5><b>Прикріплені файли (@homework.PostAtachments.Count):</b></h5>
+                        <h5><b>Прикріплені файли (@Model.LessonDescription.PostAtachments.Count):</b></h5>
                         <div class="list-group">
-                        @foreach (var attach in homework.PostAtachments)
-                        {
-                            <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
-                                <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                                @attach.FileName
-                                <div style="float:right;">
-                                    <span style="font-weight:bold;font-size: 13px;">Додано:</span>
-                                    <span class="label label-primary">@attach.UploadedBy.Name</span>
-                                    <span class="label label-default">@attach.UploadDate</span>
-                                </div>
-                            </a>
-                        }
+                            @foreach (var attach in Model.LessonDescription.PostAtachments)
+                            {
+                                <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
+                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                    @attach.FileName
+                                    <div style="float:right;">
+                                        <span style="font-weight:bold;font-size: 13px;">Додано:</span>
+                                        <span class="label label-primary">@attach.UploadedBy.Name</span>
+                                        <span class="label label-default">@attach.UploadDate</span>
+                                    </div>
+                                </a>
+                            }
                         </div>
                     }
-                </div>
+                }
             </div>
-            }
-        }
-        else
-        {
-            <div class="alert alert-danger" style="padding: 5px;">Ніхто ще не відправив @((Model.IsControlWork) ? "контрольну роботу" : "домашнє завдання") на перевірку</div>
-        }
-        <hr />
-        @if (Convert.ToBoolean(ViewData["IsCourseListener"]))
-        {
-            if (Model.IsControlWork && DateTime.Now <= Model.LessonStartDate)
+        </div>
+        <br />
+    }
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="font-size: 14px;">
+                <ul class="nav nav-pills" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#" class="alert-link" style="background-color: #f0ad4e;">@((Model.IsControlWork) ? "Контрольна" : "Домашня") робота</a>
+                    </li>
+                </ul>
+            </h3>
+        </div>
+        <div class="panel-body">
+            @if (Model.HomeWorkDescription != null)
             {
-            <div class="alert alert-danger" style="padding: 5px;">Надіслати контрольну роботу можна після @Model.LessonStartDate!</div>
+                if (Model.IsControlWork && DateTime.Now <= Model.LessonStartDate)
+                {
+                    <div class="alert alert-danger" style="padding: 5px;">Контрольна робота буде доступна @Model.LessonStartDate!</div>
+                }
+                else
+                {
+                    <b>Термін здачі @((Model.IsControlWork) ? "контрольної роботи:" : "домашнього завдання:")</b> <span class="label label-danger">@Model.HomeWorkEnd</span><br>
+                    <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.HomeWorkDescription.PostedBy.Id" class="label label-primary">@Model.HomeWorkDescription.PostedBy.Name</a>
+                    <span class="label label-default">@Model.HomeWorkDescription.PostedDate</span>
+                    <br><br>
+                    @Model.HomeWorkDescription.Text
+                    @if (Model.HomeWorkDescription.PostAtachments != null && Model.HomeWorkDescription.PostAtachments.Count != 0)
+                    {
+                        <h5><b>Прикріплені файли (@Model.HomeWorkDescription.PostAtachments.Count):</b></h5>
+                        <div class="list-group">
+                            @foreach (var attach in Model.HomeWorkDescription.PostAtachments)
+                            {
+                                <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
+                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                    @attach.FileName
+                                    <div style="float:right;">
+                                        <span style="font-weight:bold;font-size: 13px;">Додано:</span>
+                                        <span class="label label-primary">@attach.UploadedBy.Name</span>
+                                        <span class="label label-default">@attach.UploadDate</span>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    }
+                }
+            }
+            <hr />
+            <h3>@((Model.IsControlWork) ? "Виконана контрольна робота:" : "Виконане домашнє завдання:")</h3>
+            @if (Model.HomeWorks != null && Model.HomeWorks.Count != 0)
+            {
+                @foreach (var homework in Model.HomeWorks)
+                {
+                    <div class="panel panel-default">
+                        <div style="padding: 10px;">
+                            <a asp-controller="Profile" asp-action="View" asp-route-id="@homework.PostedBy.Id" class="label label-primary">@homework.PostedBy.Name</a> <span class="label label-default">@homework.PostedDate</span><br>
+                            <div style="padding: 5px 0;">@homework.Text</div>
+                            @if (homework.PostAtachments != null && homework.PostAtachments.Count != 0)
+                            {
+                                <h5><b>Прикріплені файли (@homework.PostAtachments.Count):</b></h5>
+                                <div class="list-group">
+                                    @foreach (var attach in homework.PostAtachments)
+                                    {
+                                        <a asp-controller="Attachment" asp-action="Download" asp-route-id="@attach.Id" class="list-group-item">
+                                            <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                            @attach.FileName
+                                            <div style="float:right;">
+                                                <span style="font-weight:bold;font-size: 13px;">Додано:</span>
+                                                <span class="label label-primary">@attach.UploadedBy.Name</span>
+                                                <span class="label label-default">@attach.UploadDate</span>
+                                            </div>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
             }
             else
-            { 
-            <h3>Відправити @((Model.IsControlWork) ? "контрольну роботу:" : "домашнє завдання:")</h3>
-            @if (DateTime.Now <= Model.HomeWorkEnd)
             {
-            <form method="post" asp-controller="Course" asp-action="AddHomeWork" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="inputComment">Короткий звіт про виконану роботу</label>
-                <textarea name="homeWorkDescription" class="form-control" id="inputComment" rows="5" required="required"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="InputFile">Прикріпити файли</label>
-                <input type="file" name="files" id="InputFile" multiple />
-                <p class="help-block">Тут ви можете прикріпити файли з розширенням *.doc, *.docx, *.txt, *.ppt, *.pptx</p>
-            </div>
-            <input type="hidden" name="lessonId" value="@Model.LessonId"/>
-            <button type="submit" class="btn btn-success">Надіслати на перевірку</button>
-            </form>
+                <div class="alert alert-danger" style="padding: 5px;">Ніхто ще не відправив @((Model.IsControlWork) ? "контрольну роботу" : "домашнє завдання") на перевірку</div>
             }
-            else
+            <hr />
+            @if (Convert.ToBoolean(ViewData["IsCourseListener"]))
             {
-                <div class="alert alert-danger" style="padding: 5px;">Час на здачу завершився! Остаточний термін здачі @Model.HomeWorkEnd!</div>
+                if (Model.IsControlWork && DateTime.Now <= Model.LessonStartDate)
+                {
+                    <div class="alert alert-danger" style="padding: 5px;">Надіслати контрольну роботу можна після @Model.LessonStartDate!</div>
+                }
+                else
+                {
+                    <h3>Відправити @((Model.IsControlWork) ? "контрольну роботу:" : "домашнє завдання:")</h3>
+                    @if (DateTime.Now <= Model.HomeWorkEnd)
+                    {
+                        <form method="post" asp-controller="Course" asp-action="AddHomeWork" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="inputComment">Короткий звіт про виконану роботу</label>
+                                <textarea name="homeWorkDescription" class="form-control" id="inputComment" rows="5" required="required"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="InputFile">Прикріпити файли</label>
+                                <input type="file" name="files" id="InputFile" multiple />
+                                <p class="help-block">Тут ви можете прикріпити файли з розширенням *.doc, *.docx, *.txt, *.ppt, *.pptx</p>
+                            </div>
+                            <input type="hidden" name="lessonId" value="@Model.LessonId" />
+                            <button type="submit" class="btn btn-success">Надіслати на перевірку</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger" style="padding: 5px;">Час на здачу завершився! Остаточний термін здачі @Model.HomeWorkEnd!</div>
+                    }
+                }
             }
-            }
-        }
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="alert alert-warning" style="padding: 5px;">Ви не записані на даний курс і не можете переглядати вміст уроку "@Model.LessonName"!</div>
+}

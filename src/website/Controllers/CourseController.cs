@@ -49,11 +49,15 @@ namespace website.Controllers
             if (HttpContext.Session.GetInt32("role") != null)
             {
                 string role = HttpContext.Session.GetString("role");
+                int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
+                int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
                 if (role == "student")
                 {
-                    int studentId = Convert.ToInt32(HttpContext.Session.GetString("id"));
-                    int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
-                    ViewData["IsCourseListener"] = db.CoursesListeners.Where(s=>s.Student.Id==studentId && s.Accepted && s.RequestedCourse.Id==currentCourseId).Count()!=0;
+                    ViewData["IsCourseListener"] = db.CoursesListeners.Where(s => s.Student.Id == userId && s.Accepted && s.RequestedCourse.Id == currentCourseId).Count() != 0;
+                }
+                else if (role == "teacher")
+                {
+                    ViewData["IsCourseListener"] = db.Courses.Where(c=>c.Teacher.Id==userId).Count() != 0;
                 }
             }
             return View(new LessonViewModel(currentLesson));
