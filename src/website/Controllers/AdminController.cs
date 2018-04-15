@@ -11,10 +11,10 @@ namespace website.Controllers
 {
     public class AdminController : Controller
     {
-        private HomeSchoolingContext db;
-        public AdminController(HomeSchoolingContext context)
+        private IHomeSchoolingRepository db;
+        public AdminController(IHomeSchoolingRepository _db)
         {
-            db = context;
+            db = _db;
         }
 
         public IActionResult SetTeacher(int id)
@@ -24,9 +24,10 @@ namespace website.Controllers
                 string role = HttpContext.Session.GetString("role");
                 if (role == "admin")
                 {
-                    User teacher = db.Users.Where(u => u.Id == id).SingleOrDefault();
-                    teacher.UserRole = "teacher";
-                    db.SaveChanges();
+                    //User teacher = db.Users.Where(u => u.Id == id).SingleOrDefault();
+                    //teacher.UserRole = "teacher";
+                    //db.SaveChanges();
+                    db.SetTeacher(id);
                 }
             }
             return RedirectToRoute(new { controller = "Profile", action = "View", id = id });
@@ -40,22 +41,23 @@ namespace website.Controllers
                 if (role == "admin")
                 {
 
-                    Course course = db.Courses.Include(c => c.CourseLessons).ThenInclude(l => l.Posts).Where(c=>c.Id == id).SingleOrDefault();
-                    var listeners = db.CoursesListeners.Where(c => c.RequestedCourse.Id == id);
-                    foreach (var l in listeners)
-                    {
-                        db.CoursesListeners.Remove(l);
-                    }
-                    foreach (var l in course.CourseLessons)
-                    {
-                        foreach (var p in l.Posts)
-                        {
-                            db.Posts.Remove(p);
-                        }
-                        db.Lessons.Remove(l);
-                    }
-                    db.Remove(course);
-                    db.SaveChanges();
+                    //Course course = db.Courses.Include(c => c.CourseLessons).ThenInclude(l => l.Posts).Where(c=>c.Id == id).SingleOrDefault();
+                    //var listeners = db.CoursesListeners.Where(c => c.RequestedCourse.Id == id);
+                    //foreach (var l in listeners)
+                    //{
+                    //    db.CoursesListeners.Remove(l);
+                    //}
+                    //foreach (var l in course.CourseLessons)
+                    //{
+                    //    foreach (var p in l.Posts)
+                    //    {
+                    //        db.Posts.Remove(p);
+                    //    }
+                    //    db.Lessons.Remove(l);
+                    //}
+                    //db.Remove(course);
+                    //db.SaveChanges();
+                    db.DeleteCourse(id);
                 }
             }
             return RedirectToRoute(new { controller = "Home", action = "Index" });

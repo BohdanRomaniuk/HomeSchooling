@@ -14,10 +14,10 @@ namespace website.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly HomeSchoolingContext db;
+        private readonly IHomeSchoolingRepository db;
         private readonly IFileProvider fileProvider;
 
-        public CourseController(HomeSchoolingContext _db, IFileProvider _fileProvider)
+        public CourseController(IHomeSchoolingRepository _db, IFileProvider _fileProvider)
         {
             db = _db;
             fileProvider = _fileProvider;
@@ -89,8 +89,10 @@ namespace website.Controllers
                 {
                     int teacherId = int.Parse(HttpContext.Session.GetString("id"));
                     User teacher = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
-                    db.Courses.Add(new Course(courseName, courseDescription, teacher));
-                    db.SaveChanges();
+                    //db.Courses.Add(new Course(courseName, courseDescription, teacher));
+                    //db.SaveChanges();
+                    //HomeSchooling context changes
+                    db.AddCourse(new Course(courseName, courseDescription, teacher));
                     return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
                 }
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
@@ -132,7 +134,7 @@ namespace website.Controllers
                 if (role == "teacher")
                 {
                     int teacherId = int.Parse(HttpContext.Session.GetString("id"));
-                    Course currentCourse = db.Courses.Include(c => c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
+                    //Course currentCourse = db.Courses.Include(c => c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
                     User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
                     Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
                     Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
@@ -176,8 +178,9 @@ namespace website.Controllers
                     //Files2 upload end
                     newLesson.Posts.Add(lesson_post);
                     newLesson.Posts.Add(homework_post);
-                    currentCourse.CourseLessons.Add(newLesson);
-                    db.SaveChanges();
+                    //currentCourse.CourseLessons.Add(newLesson);
+                    //db.SaveChanges();
+                    db.AddLesson(courseId, newLesson);
                     return View("AddLesson", String.Format("Урок \"{0}\" успішно додано! <a href=\"Home/Index\">Повернутися до курсу</a>", lessonName));
                 }
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
@@ -195,13 +198,13 @@ namespace website.Controllers
                 {
                     int studentId = int.Parse(HttpContext.Session.GetString("id"));
                     User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
-                    Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
-                    Post new_post = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
+                    //Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
+                    Post newPost = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
 
                     //Files upload begin
                     if (files != null && files.Count != 0)
                     {
-                        new_post.PostAtachments = new List<Attachment>();
+                        newPost.PostAtachments = new List<Attachment>();
                         foreach (var file in files)
                         {
                             var path = Path.Combine(
@@ -212,12 +215,13 @@ namespace website.Controllers
                             {
                                 await file.CopyToAsync(stream);
                             }
-                            new_post.PostAtachments.Add(new Attachment(file.GetFilename(), currentStudent, DateTime.Now));
+                            newPost.PostAtachments.Add(new Attachment(file.GetFilename(), currentStudent, DateTime.Now));
                         }
                     }
                     //Files upload end
-                    currentLesson.Posts.Add(new_post);
-                    db.SaveChanges();
+                    //currentLesson.Posts.Add(new_post);
+                    //db.SaveChanges();
+                    db.AddHomeWork(lessonId, newPost);
                     return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
                 }
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
@@ -227,11 +231,11 @@ namespace website.Controllers
 
         public IActionResult RequestCourse(int id)
         {
-            if(HttpContext.Session.GetInt32("role") !=null)
+            if (HttpContext.Session.GetInt32("role") != null)
             {
                 string role = HttpContext.Session.GetString("role");
                 int studId = int.Parse(HttpContext.Session.GetString("id"));
-                if(role=="student")
+                if (role == "student")
                 {
                     bool? acc;
                     try
@@ -244,17 +248,18 @@ namespace website.Controllers
                     }
                     if (acc == null)
                     {
-                        database.Models.CoursesListener cl = new database.Models.CoursesListener();
+                        CoursesListener cl = new CoursesListener();
                         cl.Accepted = false;
                         cl.RequestedCourse = db.Courses.Where(c => c.Id == id).SingleOrDefault();
                         cl.Student = db.Users.Where(u => u.Id == studId).SingleOrDefault();
-                        db.CoursesListeners.Add(cl);
-                        db.SaveChanges();
+                        //db.CoursesListeners.Add(cl);
+                        //db.SaveChanges();
+                        db.AddCourseListener(cl);
                         return View("RequestCourse", "Ви подали заявку на курс, викладач розгляне її найближчим часом.");
                     }
                     else
                     {
-                        
+
                         if (acc == true)
                         {
                             return RedirectToRoute(new { controller = "Course", action = "ViewCourse", RouteData = id });
@@ -272,6 +277,7 @@ namespace website.Controllers
             }
             return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
+
         public IActionResult ViewRequests()
         {
             if (HttpContext.Session.GetInt32("role") != null)
@@ -302,6 +308,7 @@ namespace website.Controllers
             }
             return RedirectToRoute(new { controller = "Profile", action = "Login" });
         }
+
         public IActionResult AcceptCourse(int student_id, int course_id)
         {
             if (HttpContext.Session.GetInt32("role") != null)
@@ -311,11 +318,12 @@ namespace website.Controllers
                 {
                     try
                     {
-                        database.Models.CoursesListener listener = (from listeners in db.CoursesListeners
-                                        where listeners.Student.Id == student_id && listeners.RequestedCourse.Id == course_id
-                                        select listeners).SingleOrDefault();
-                        listener.Accepted = true;
-                        db.SaveChanges();
+                        //database.Models.CoursesListener listener = (from listeners in db.CoursesListeners
+                        //                                            where listeners.Student.Id == student_id && listeners.RequestedCourse.Id == course_id
+                        //                                            select listeners).SingleOrDefault();
+                        //listener.Accepted = true;
+                        //db.SaveChanges();
+                        db.AcceptCourse(student_id, course_id);
                     }
                     catch (Exception e)
                     {
@@ -324,6 +332,7 @@ namespace website.Controllers
             }
             return RedirectToRoute(new { controller = "Course", action = "ViewRequests" });
         }
+
         public IActionResult RefuseCourse(int student_id, int course_id)
         {
             if (HttpContext.Session.GetInt32("role") != null)
@@ -333,11 +342,12 @@ namespace website.Controllers
                 {
                     try
                     {
-                        database.Models.CoursesListener listener = (from listeners in db.CoursesListeners
-                                                                    where listeners.Student.Id == student_id && listeners.RequestedCourse.Id == course_id
-                                                                    select listeners).SingleOrDefault();
-                        db.CoursesListeners.Remove(listener);
-                        db.SaveChanges();
+                        //database.Models.CoursesListener listener = (from listeners in db.CoursesListeners
+                        //                                            where listeners.Student.Id == student_id && listeners.RequestedCourse.Id == course_id
+                        //                                            select listeners).SingleOrDefault();
+                        //db.CoursesListeners.Remove(listener);
+                        //db.SaveChanges();
+                        db.RefuseCourse(student_id, course_id);
                     }
                     catch (Exception e)
                     {

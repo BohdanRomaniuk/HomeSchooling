@@ -26,6 +26,7 @@ namespace website
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<HomeSchoolingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("HomeSchooling")));
+            services.AddTransient<IHomeSchoolingRepository, HomeSchoolingRepository>();
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));

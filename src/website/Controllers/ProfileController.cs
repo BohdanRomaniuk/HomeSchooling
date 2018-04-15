@@ -13,10 +13,10 @@ namespace website.Controllers
 {
     public class ProfileController : Controller
     {
-        private HomeSchoolingContext db;
-        public ProfileController(HomeSchoolingContext context)
+        private IHomeSchoolingRepository db;
+        public ProfileController(IHomeSchoolingRepository _db)
         {
-            db = context;
+            db = _db;
         }
         [HttpGet]
         public IActionResult Register()
@@ -67,8 +67,9 @@ namespace website.Controllers
                 toAdd.Password = user.Password;
                 toAdd.UserName = user.UserName;
                 toAdd.UserRole = "student";
-                db.Users.Add(toAdd);
-                db.SaveChanges();
+                //db.Users.Add(toAdd);
+                //db.SaveChanges();
+                db.AddUser(toAdd);
                 IQueryable<User> inDb = from u in db.Users
                                         where u.UserName == user.UserName
                                         select u;
