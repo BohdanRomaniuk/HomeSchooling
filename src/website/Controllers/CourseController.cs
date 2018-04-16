@@ -146,10 +146,7 @@ namespace website.Controllers
                         lesson_post.PostAtachments = new List<Attachment>();
                         foreach (var file in files1)
                         {
-                            var path = Path.Combine(
-                                    Directory.GetCurrentDirectory(), "wwwroot",
-                                    file.GetFilename());
-
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",file.GetFilename());
                             using (var stream = new FileStream(path, FileMode.Create))
                             {
                                 await file.CopyToAsync(stream);
@@ -164,10 +161,7 @@ namespace website.Controllers
                         homework_post.PostAtachments = new List<Attachment>();
                         foreach (var file in files2)
                         {
-                            var path = Path.Combine(
-                                    Directory.GetCurrentDirectory(), "wwwroot",
-                                    file.GetFilename());
-
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",file.GetFilename());
                             using (var stream = new FileStream(path, FileMode.Create))
                             {
                                 await file.CopyToAsync(stream);
