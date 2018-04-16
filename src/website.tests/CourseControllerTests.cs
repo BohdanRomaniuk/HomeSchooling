@@ -663,5 +663,39 @@ namespace website.tests
 
             Assert.True(redirect);
         }
+        [Fact]
+        public void AcceptCourseRequestTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+
+            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+            MockHttpSession mockSession = new MockHttpSession();
+            mockSession["role"] = "teacher";
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            int stid = 1;
+            int cid = 1;
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            bool redirect = controller.AcceptCourse(stid, cid) is RedirectToRouteResult;
+        }
+        [Fact]
+        public void RefuseCourseRequestTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+
+            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+            MockHttpSession mockSession = new MockHttpSession();
+            mockSession["role"] = "teacher";
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            int stid = 1;
+            int cid = 1;
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            bool redirect = controller.RefuseCourse(stid, cid) is RedirectToRouteResult;
+        }
     }
 }
