@@ -213,8 +213,13 @@ namespace website.tests
             CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
             controller.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            //Act & Assert
-            Assert.True(controller.AddCourse() is RedirectToRouteResult);
+            //Act
+            var result = controller.AddCourse();
+
+            //Assert
+            Assert.True(result is RedirectToRouteResult);
+            Assert.True((result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home")) == true);
+            Assert.True((result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
         }
 
         [Fact]
@@ -282,8 +287,11 @@ namespace website.tests
             CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
             controller.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            //Act & Assert
-            Assert.True(controller.AddLesson(1) is RedirectToRouteResult);
+            //Act
+            var result = controller.AddLesson(1);
+
+            //Assert
+            Assert.True(result is RedirectToRouteResult);
         }
 
         [Fact]
@@ -305,8 +313,13 @@ namespace website.tests
             CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
             controller.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            //Act & Assert
-            Assert.True(controller.AddLesson(1) is RedirectToRouteResult);
+            //Act
+            var result = controller.AddLesson(1);
+
+            //Assert
+            Assert.True(result is RedirectToRouteResult);
+            Assert.True((result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home")) == true);
+            Assert.True((result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
         }
 
         [Fact]
@@ -360,6 +373,8 @@ namespace website.tests
 
             //Assert
             Assert.True(result.Result  is RedirectToRouteResult);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
         }
 
         [Fact]
