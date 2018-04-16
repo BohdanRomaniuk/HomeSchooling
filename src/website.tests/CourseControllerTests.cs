@@ -334,7 +334,36 @@ namespace website.tests
         }
 
         [Fact]
-        public  void AddLessonPostTeacherOwnerTry()
+        public void AddLessonPOSTStudentTry()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Id = 1, Name = "Музичук А.О.", UserName = "anatoliy.muzychuk", Password = "123456", UserRole = "teacher" };
+            Course pps = new Course("Проектування програмних систем", "Опис курсу", teacher) { Id = 1 };
+            Course[] courses = new Course[] { pps };
+            User[] users = new User[] { teacher };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+
+            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+            MockHttpSession mockSession = new MockHttpSession();
+            mockSession["role"] = "student";
+            mockSession["id"] = "213";
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            string lessonName = "Вступ у мову програмування C#";
+            //Act
+            Task<IActionResult> result = controller.AddLesson(1, lessonName, "19.03.2018 11:50:00", "19.03.2018 11:50:00", "Опис уроку", "Опис домашки", "19.03.2018 11:50:00", "false", null, null);
+
+            //Assert
+            Assert.True(result.Result  is RedirectToRouteResult);
+        }
+
+        [Fact]
+        public  void AddLessonPOSTTeacherOwnerTry()
         {
             //Arrange
             Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
@@ -360,6 +389,67 @@ namespace website.tests
 
             //Assert
             Assert.True((result.Result as ViewResult).Model as string==String.Format("Урок \"{0}\" успішно додано!", lessonName));
+        }
+
+        [Fact]
+        public void AddHomeWorkPOSTTeacherTry()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Id = 1, Name = "Музичук А.О.", UserName = "anatoliy.muzychuk", Password = "123456", UserRole = "teacher" };
+            Lesson pps = new Lesson("Шаблони",DateTime.Now,DateTime.Now,DateTime.Now) { Id = 1 };
+            Lesson[] lessons = new Lesson[] { pps };
+            User[] users = new User[] { teacher };
+            mock.Setup(m => m.Lessons).Returns(lessons.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+
+            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+            MockHttpSession mockSession = new MockHttpSession();
+            mockSession["role"] = "teacher";
+            mockSession["id"] = "1";
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            Task<IActionResult> result = controller.AddHomeWork(1,"Виконав пункт 1",null);
+
+            //Assert
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home"))==true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
+        }
+
+        [Fact]
+        public void AddHomeWorkPOSTStudentTry()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Id = 1, Name = "Музичук А.О.", UserName = "anatoliy.muzychuk", Password = "123456", UserRole = "teacher" };
+            User student = new User { Id = 2, Name = "Романюк Богдан", UserName = "bohdan.romaniuk", Password = "123456", UserRole = "student" };
+
+            Lesson pps = new Lesson("Шаблони", DateTime.Now, DateTime.Now, DateTime.Now) { Id = 1 };
+            Lesson[] lessons = new Lesson[] { pps };
+            User[] users = new User[] { teacher };
+            mock.Setup(m => m.Lessons).Returns(lessons.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+
+            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+            MockHttpSession mockSession = new MockHttpSession();
+            mockSession["role"] = "student";
+            mockSession["id"] = "2";
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            Task<IActionResult> result = controller.AddHomeWork(1, "Виконав пункт 1", null);
+
+            //Assert
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Course")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "ViewLesson")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("id", 1)) == true);
         }
     }
 }
