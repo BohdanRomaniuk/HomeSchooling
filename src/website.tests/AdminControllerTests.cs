@@ -54,6 +54,28 @@ namespace website.tests
 
             Assert.True(isredirect);
         }
-       
+        [Fact]
+        public void SetTeacherTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User[] users = new User[]
+            {
+                new User { Id = 1, Name = "muzychuk", UserName = "anatoliy", Password = "a1", UserRole = "teacher" },
+                new User { Id = 2, Name = "registered", UserName = "reg", Password = "reg", UserRole = "student" }
+            };
+            
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+            MockHttpSession mockSession = new MockHttpSession();
+            mockSession["role"] = "admin";
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+
+            AdminController controller = new AdminController(mock.Object);
+            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            bool isredirect = controller.SetTeacher(2) is RedirectToRouteResult;
+
+            Assert.True(isredirect);
+        }
     }
 }
