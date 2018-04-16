@@ -146,10 +146,7 @@ namespace website.Controllers
                         lesson_post.PostAtachments = new List<Attachment>();
                         foreach (var file in files1)
                         {
-                            var path = Path.Combine(
-                                    Directory.GetCurrentDirectory(), "wwwroot",
-                                    file.GetFilename());
-
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",file.GetFilename());
                             using (var stream = new FileStream(path, FileMode.Create))
                             {
                                 await file.CopyToAsync(stream);
@@ -164,10 +161,7 @@ namespace website.Controllers
                         homework_post.PostAtachments = new List<Attachment>();
                         foreach (var file in files2)
                         {
-                            var path = Path.Combine(
-                                    Directory.GetCurrentDirectory(), "wwwroot",
-                                    file.GetFilename());
-
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",file.GetFilename());
                             using (var stream = new FileStream(path, FileMode.Create))
                             {
                                 await file.CopyToAsync(stream);
@@ -181,7 +175,7 @@ namespace website.Controllers
                     //currentCourse.CourseLessons.Add(newLesson);
                     //db.SaveChanges();
                     db.AddLesson(courseId, newLesson);
-                    return View("AddLesson", String.Format("Урок \"{0}\" успішно додано! <a href=\"Home/Index\">Повернутися до курсу</a>", lessonName));
+                    return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!", lessonName));
                 }
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
             }
