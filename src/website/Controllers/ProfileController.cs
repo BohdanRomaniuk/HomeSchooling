@@ -30,19 +30,19 @@ namespace website.Controllers
             bool wrong = false;
             if (user.UserName == null)
             {
-                ViewBag.IncorrectLogin = true;
+                ViewData["IncorrectLogin"] = true;
                 ViewBag.Info = "Потрібно заповнити поле з іменем користувача \n";
                 wrong = true;
             }
             if (user.Password == null)
             {
-                ViewBag.IncorrectPassword = true;
+                ViewData["IncorrectPassword"] = true;
                 ViewBag.Info1 = "Потрібно заповнити поле з паролем \n";
                 wrong = true;
             }
             if (user.Name == null)
             {
-                ViewBag.IncorrectName = true;
+                ViewData["IncorrectName"] = true;
                 ViewBag.Info2 = "Потрібно заповнити поле з іменем та прізвищем";
                 wrong = true;
             }
@@ -57,7 +57,7 @@ namespace website.Controllers
                 {
                     if (u.UserName == user.UserName)
                     {
-                        ViewBag.IncorrectName = true;
+                        ViewData["IncorrectLogin"] = true;
                         ViewBag.Info = "Користувач з таким логіном уже зареєстрований в системі. Будь ласка, виберіть інший";
                         return View();
                     }
