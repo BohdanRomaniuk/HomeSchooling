@@ -9,9 +9,6 @@ using website.Controllers;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace website.tests
 {
@@ -216,8 +213,6 @@ namespace website.tests
         public void ViewProfileTeacherTest()
         {
             Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-            User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-            User u2 = new User { Id = 2, Name = "registered", UserName = "reg", Password = "reg", UserRole = "student" };
             User[] users = new User[]
             {
                 new User { Id = 1, Name = "muzychuk", UserName = "anatoliy", Password = "a1", UserRole = "teacher" },
