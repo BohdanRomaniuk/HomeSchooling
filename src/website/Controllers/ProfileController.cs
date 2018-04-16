@@ -92,13 +92,13 @@ namespace website.Controllers
         {
             if (user.UserName == null)
             {
-                ViewBag.IncorrectLogin = true;
+                ViewData["IncorrectLogin"] = true;
                 ViewBag.Info = "Потрібно заповнити поле з іменем користувача";
                 return View();
             }
             else if (user.Password == null)
             {
-                ViewBag.IncorrectPassword = true;
+                ViewData["IncorrectPassword"] = true;
                 ViewBag.Info = "Потрібно заповнити поле з паролем";
                 return View();
             }
@@ -126,12 +126,13 @@ namespace website.Controllers
             }
             if (!exists)
             {
+                ViewData["IncorrectLogin"] = true;
                 ViewBag.Info = "Користувача з таким іменем нема в системі. Можливо, ви ще не зареєстровані";
                 return View();
             }
             else if (!correctpassword)
             {
-                ViewBag.IncorrectPassword = true;
+                ViewData["IncorrectPassword"] = true;
                 ViewBag.Info = "Ви ввели неправильний пароль";
                 return View();
             }
