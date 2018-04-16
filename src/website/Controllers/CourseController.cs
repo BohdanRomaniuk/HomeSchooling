@@ -181,7 +181,7 @@ namespace website.Controllers
                     //currentCourse.CourseLessons.Add(newLesson);
                     //db.SaveChanges();
                     db.AddLesson(courseId, newLesson);
-                    return View("AddLesson", String.Format("Урок \"{0}\" успішно додано! <a href=\"Home/Index\">Повернутися до курсу</a>", lessonName));
+                    return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!", lessonName));
                 }
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
             }
