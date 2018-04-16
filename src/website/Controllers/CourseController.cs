@@ -33,7 +33,7 @@ namespace website.Controllers
                 if (role == "teacher")
                 {
                     int teacherId = int.Parse(HttpContext.Session.GetString("id"));
-                    isCourseOwner = (currentCourse.Teacher.Id==teacherId) ? true : false;
+                    isCourseOwner = (currentCourse.Teacher.Id == teacherId) ? true : false;
                 }
             }
             ViewData["IsCourseOwner"] = isCourseOwner;
