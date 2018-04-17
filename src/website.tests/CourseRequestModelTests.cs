@@ -11,7 +11,7 @@ namespace website.tests
         [Fact]
         public void CourseRequestModelTest()
         {
-            //Arrange
+            //ArrangeModest
             int field1 = 1;
             int field2 = 2;
             string field_3 = "text1";
