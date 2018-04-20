@@ -10,18 +10,16 @@ namespace website.Controllers
 {
     public class AttachmentController : Controller
     {
-        private readonly HomeSchoolingContext db;
-        public AttachmentController(HomeSchoolingContext _db)
+        private readonly IHomeSchoolingRepository db;
+        public AttachmentController(IHomeSchoolingRepository _db)
         {
             db = _db;
         }
 
         public async Task<IActionResult> Download(int id)
         {
-            string filename = db.Attachments.Where(f => f.Id == id).SingleOrDefault().FileName;
-            var path = Path.Combine(
-                           Directory.GetCurrentDirectory(),
-                           "wwwroot", filename);
+            string filename = db.Attachments.Where(f => f.Id == id).FirstOrDefault().FileName;
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", filename);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))

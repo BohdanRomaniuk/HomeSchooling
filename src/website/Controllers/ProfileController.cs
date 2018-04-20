@@ -13,10 +13,10 @@ namespace website.Controllers
 {
     public class ProfileController : Controller
     {
-        private HomeSchoolingContext db;
-        public ProfileController(HomeSchoolingContext context)
+        private IHomeSchoolingRepository db;
+        public ProfileController(IHomeSchoolingRepository _db)
         {
-            db = context;
+            db = _db;
         }
         [HttpGet]
         public IActionResult Register()
@@ -30,19 +30,19 @@ namespace website.Controllers
             bool wrong = false;
             if (user.UserName == null)
             {
-                ViewBag.IncorrectLogin = true;
+                ViewData["IncorrectLogin"] = true;
                 ViewBag.Info = "Потрібно заповнити поле з іменем користувача \n";
                 wrong = true;
             }
             if (user.Password == null)
             {
-                ViewBag.IncorrectPassword = true;
+                ViewData["IncorrectPassword"] = true;
                 ViewBag.Info1 = "Потрібно заповнити поле з паролем \n";
                 wrong = true;
             }
             if (user.Name == null)
             {
-                ViewBag.IncorrectName = true;
+                ViewData["IncorrectName"] = true;
                 ViewBag.Info2 = "Потрібно заповнити поле з іменем та прізвищем";
                 wrong = true;
             }
@@ -57,7 +57,7 @@ namespace website.Controllers
                 {
                     if (u.UserName == user.UserName)
                     {
-                        ViewBag.IncorrectName = true;
+                        ViewData["IncorrectLogin"] = true;
                         ViewBag.Info = "Користувач з таким логіном уже зареєстрований в системі. Будь ласка, виберіть інший";
                         return View();
                     }
@@ -67,8 +67,9 @@ namespace website.Controllers
                 toAdd.Password = user.Password;
                 toAdd.UserName = user.UserName;
                 toAdd.UserRole = "student";
-                db.Users.Add(toAdd);
-                db.SaveChanges();
+                //db.Users.Add(toAdd);
+                //db.SaveChanges();
+                db.AddUser(toAdd);
                 IQueryable<User> inDb = from u in db.Users
                                         where u.UserName == user.UserName
                                         select u;
@@ -91,13 +92,13 @@ namespace website.Controllers
         {
             if (user.UserName == null)
             {
-                ViewBag.IncorrectLogin = true;
+                ViewData["IncorrectLogin"] = true;
                 ViewBag.Info = "Потрібно заповнити поле з іменем користувача";
                 return View();
             }
             else if (user.Password == null)
             {
-                ViewBag.IncorrectPassword = true;
+                ViewData["IncorrectPassword"] = true;
                 ViewBag.Info = "Потрібно заповнити поле з паролем";
                 return View();
             }
@@ -125,12 +126,13 @@ namespace website.Controllers
             }
             if (!exists)
             {
+                ViewData["IncorrectLogin"] = true;
                 ViewBag.Info = "Користувача з таким іменем нема в системі. Можливо, ви ще не зареєстровані";
                 return View();
             }
             else if (!correctpassword)
             {
-                ViewBag.IncorrectPassword = true;
+                ViewData["IncorrectPassword"] = true;
                 ViewBag.Info = "Ви ввели неправильний пароль";
                 return View();
             }

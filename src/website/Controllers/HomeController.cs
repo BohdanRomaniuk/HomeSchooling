@@ -13,9 +13,9 @@ namespace website.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HomeSchoolingContext _context;
+        private readonly IHomeSchoolingRepository _context;
 
-        public HomeController(HomeSchoolingContext context)
+        public HomeController(IHomeSchoolingRepository context)
         {
             _context = context;
         }
@@ -29,7 +29,7 @@ namespace website.Controllers
             }
             else
             {
-                return View(_context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name)).ToList());
+                return View(_context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name)));
             }
         }
 
