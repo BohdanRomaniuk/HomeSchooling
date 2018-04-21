@@ -28,16 +28,16 @@ namespace website.Controllers
 
         public async Task<IActionResult> Index(string name = null)
         {
-            //IdentityResult addUser = await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Email = "bohdan2307@gmail.com" }, "123456");
-            //IdentityResult result1 = await roleManager.CreateAsync(new IdentityRole("Admin"));
-            //IdentityResult result2 = await roleManager.CreateAsync(new IdentityRole("Teacher"));
-            //IdentityResult result3 = await roleManager.CreateAsync(new IdentityRole("Student"));
+            IdentityResult addUser = await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Email = "bohdan2307@gmail.com" }, "123456");
+            IdentityResult result1 = await roleManager.CreateAsync(new IdentityRole("Admin"));
+            IdentityResult result2 = await roleManager.CreateAsync(new IdentityRole("Teacher"));
+            IdentityResult result3 = await roleManager.CreateAsync(new IdentityRole("Student"));
 
-            //User user = await userManager.FindByIdAsync("b93abd87-23ea-49ca-b23e-232ef44ea03b");
-            //if (user != null)
-            //{
-            //    IdentityResult result = await userManager.AddToRoleAsync(user, "Student");
-            //}
+            User user = await userManager.FindByIdAsync("b93abd87-23ea-49ca-b23e-232ef44ea03b");
+            if (user != null)
+            {
+                IdentityResult result = await userManager.AddToRoleAsync(user, "Student");
+            }
 
             if (name == null)
             {

@@ -110,7 +110,7 @@ namespace website.Controllers
                         return Redirect(returnUrl ?? "/");
                     }
                 }
-                ModelState.AddModelError(nameof(LoginModel.UserName), "Неправильне імя користувача чи пароль!");
+                ModelState.AddModelError(nameof(LoginModel.UserName), "Неправильне і'мя користувача чи пароль!");
             }
             return View(details);
         }
