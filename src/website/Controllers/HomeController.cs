@@ -28,17 +28,6 @@ namespace website.Controllers
 
         public async Task<IActionResult> Index(string name = null)
         {
-            //IdentityResult addUser = await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Email = "bohdan2307@gmail.com" }, "123456");
-            //IdentityResult result1 = await roleManager.CreateAsync(new IdentityRole("Admin"));
-            //IdentityResult result2 = await roleManager.CreateAsync(new IdentityRole("Teacher"));
-            //IdentityResult result3 = await roleManager.CreateAsync(new IdentityRole("Student"));
-
-            //User user = await userManager.FindByIdAsync("b93abd87-23ea-49ca-b23e-232ef44ea03b");
-            //if (user != null)
-            //{
-            //    IdentityResult result = await userManager.AddToRoleAsync(user, "Student");
-            //}
-
             if (name == null)
             {
                 IQueryable<Course> allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons);
@@ -66,6 +55,42 @@ namespace website.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public async Task<IActionResult> CreateDB()
+        {
+            //Roles
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+            await roleManager.CreateAsync(new IdentityRole("Teacher"));
+            await roleManager.CreateAsync(new IdentityRole("Student"));
+
+            //Users
+            await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Name="Романюк Богдан", Email = "bohdan2307@gmail.com" }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "roman.parobiy", Name="Паробій Роман", Email = "roman.parobiy@gmail.com" }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "modest.radomskyy", Name="Модест Радомський", Email = "modest.radomskyy@gmail.com" }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "anatoliy.muzychuk", Name="Музичук А.О.", Email = "anatoliy.muzychuk@gmail.com" }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "sviatoslav.tarasyuk", Name = "Тарасюк С.І.", Email = "sviatoslav.tarasyuk@gmail.com" }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "svyatoslav.litynskyy", Name = "Літинський С.В.", Email = "svyatoslav.litynskyy@gmail.com" }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "admin", Name = "Адміністратор", Email = "admin@admin.com" }, "123456");
+
+            User bohdan = await userManager.FindByNameAsync("bohdan.romaniuk");
+            User roman = await userManager.FindByNameAsync("bohdan.romaniuk");
+            User modest = await userManager.FindByNameAsync("bohdan.romaniuk");
+            User muzychuk = await userManager.FindByNameAsync("bohdan.romaniuk");
+            User tarasyuk = await userManager.FindByNameAsync("bohdan.romaniuk");
+            User litynskyy = await userManager.FindByNameAsync("bohdan.romaniuk");
+            User admin = await userManager.FindByNameAsync("admin");
+
+            await userManager.AddToRoleAsync(bohdan, "Student");
+            await userManager.AddToRoleAsync(roman, "Student");
+            await userManager.AddToRoleAsync(modest, "Student");
+            await userManager.AddToRoleAsync(muzychuk, "Teacher");
+            await userManager.AddToRoleAsync(tarasyuk, "Teacher");
+            await userManager.AddToRoleAsync(litynskyy, "Teacher");
+            await userManager.AddToRoleAsync(admin, "Admin");
+
+            database.Database.Main(new string[] { "Start" });
+            return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
     }
 }

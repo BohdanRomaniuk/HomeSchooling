@@ -40,7 +40,9 @@ namespace website
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
-            }).AddEntityFrameworkStores<HomeSchoolingContext>().AddDefaultTokenProviders();            services.ConfigureApplicationCookie(opts => opts.LoginPath = "/Profile/Login");            //Identity BOHDAN
+            }).AddEntityFrameworkStores<HomeSchoolingContext>().AddDefaultTokenProviders();
+            services.ConfigureApplicationCookie(opts => opts.LoginPath = "/Profile/Login");
+            //Identity BOHDAN
 
             services.AddSession(options =>
             {

@@ -96,7 +96,7 @@ namespace website.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel details,string returnUrl)
+        public async Task<IActionResult> Login(LoginModel details, string returnUrl)
         {
             if (ModelState.IsValid)
             {

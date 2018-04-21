@@ -9,9 +9,8 @@ namespace database.Models
         //[Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         //public int Id { get; set; }
-        //[Required]
-        //public string Name { get; set; }
-        //[Required]
+        [Required]
+        public string Name { get; set; }
         //public string UserName { get; set; }
         //[Required]
         //public string Password { get; set; }
