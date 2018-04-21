@@ -4,7 +4,7 @@
 }
 
 <h3>
-    Профіль @if (ViewData["role"].ToString() == "teacher")
+    Профіль @if (ViewData["role"].ToString() == "Teacher")
     {<span>вчителя</span> }
     else
     { <span>учня</span>} 
@@ -13,17 +13,14 @@
 <h4>Нікнейм: @ViewData["username"]</h4>
 <br />
 @{ bool attends = false;
-    byte[] roleB = new byte[40];
-    string role = "";
-    if (Context.Session.TryGetValue("role", out roleB))
-    {
-        role = System.Text.Encoding.Default.GetString(roleB);
+}
+@if (User?.Identity?.IsAuthenticated ?? false) {
+    @if (User.IsInRole("Admin") && ViewData["role"].ToString() == "Student") {
+        <a asp-controller="Admin" asp-action="SetTeacher" asp-route-name="@ViewData["username"]" class="btn btn-warning" style="float:left;margin-right:10px;">Призначити вчителем</a> <br />
     }
 }
-@if (role == "admin" && ViewData["role"].ToString() == "student") {<a asp-controller="Admin" asp-action="SetTeacher" asp-route-id="@ViewData["id"]" class="btn btn-warning" style="float:left;margin-right:10px;">Призначити вчителем</a> <br />}
-
 <h2>
-    Курси, які @if (ViewData["role"].ToString() == "teacher")
+    Курси, які @if (ViewData["role"].ToString() == "Teacher")
     {<span>читає </span>}
     else
     { <span>відвідує </span>} користувач:
@@ -38,11 +35,16 @@
         <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id">@elem.Name</a></div>
         <div class="panel-body">
             @elem.Description
-            @if (role == "student")
-            {<a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>}
-            <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
-            <br>
-            <b>Викладач:</b> <a asp-controller="Profile" asp-action="View" asp-route-id="@elem.Teacher.Id"><span class="label label-primary">@elem.Teacher.Name</span></a>
+            @if (User?.Identity?.IsAuthenticated ?? false)
+            {
+                @if (User.IsInRole("Student"))
+                {
+                    <a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>
+                }
+            }
+        <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
+        <br>
+        <b>Викладач:</b> <a asp-controller="Profile" asp-action="View" asp-route-id="@elem.Teacher.Id"><span class="label label-primary">@elem.Teacher.Name</span></a>
         </div>
     </div>
 }
@@ -50,7 +52,7 @@
 {
     <div class="alert-info">
         <p>
-            Користувач ще не @if (ViewData["role"].ToString() == "teacher")
+            Користувач ще не @if (ViewData["role"].ToString() == "Teacher")
             {<span>читає </span>}
             else
             { <span>відвідує </span>} жодного курсу.

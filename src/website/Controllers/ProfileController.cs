@@ -17,10 +17,12 @@ namespace website.Controllers
     {
         private UserManager<User> userManager;
         private SignInManager<User> signInManager;
-        public ProfileController(UserManager<User> _userManager, SignInManager<User> _signInManager)
+        private IHomeSchoolingRepository db;
+        public ProfileController(IHomeSchoolingRepository _context, UserManager<User> _userManager, SignInManager<User> _signInManager)
         {
             userManager = _userManager;
             signInManager = _signInManager;
+            db = _context;
         }
 
         [HttpGet]
@@ -86,61 +88,6 @@ namespace website.Controllers
             return View(details);
         }
 
-        //[HttpPost]
-        //public IActionResult Login(User user)
-        //{
-        //    if (user.UserName == null)
-        //    {
-        //        ViewData["IncorrectLogin"] = true;
-        //        ViewBag.Info = "Потрібно заповнити поле з іменем користувача";
-        //        return View();
-        //    }
-        //    else if (user.Password == null)
-        //    {
-        //        ViewData["IncorrectPassword"] = true;
-        //        ViewBag.Info = "Потрібно заповнити поле з паролем";
-        //        return View();
-        //    }
-
-        //    IQueryable<User> users = db.Users;
-        //    bool exists = false;
-        //    bool correctpassword = false;
-
-        //    foreach (User u in users)
-        //    {
-        //        if (u.UserName == user.UserName)
-        //        {
-        //            exists = true;
-        //            if (u.Password == user.Password)
-        //            {
-        //                correctpassword = true;
-        //                // add session
-        //                HttpContext.Session.SetString("username", u.UserName);
-        //                HttpContext.Session.SetString("role", u.UserRole);
-        //                HttpContext.Session.SetString("name", u.Name);
-        //                HttpContext.Session.SetString("id", u.Id.ToString());
-        //            }
-        //            break;
-        //        }
-        //    }
-        //    if (!exists)
-        //    {
-        //        ViewData["IncorrectLogin"] = true;
-        //        ViewBag.Info = "Користувача з таким іменем нема в системі. Можливо, ви ще не зареєстровані";
-        //        return View();
-        //    }
-        //    else if (!correctpassword)
-        //    {
-        //        ViewData["IncorrectPassword"] = true;
-        //        ViewBag.Info = "Ви ввели неправильний пароль";
-        //        return View();
-        //    }
-        //    else
-        //    {
-        //        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //    }
-        //}
-
         [Authorize]
         public async Task<IActionResult> Logout()
         {
@@ -148,34 +95,26 @@ namespace website.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
-        //public IActionResult View(int id)
-        //{
-        //    try
-        //    {
-        //        ViewData["name"] = db.Users.Where(u => u.Id == id).SingleOrDefault().Name;
-        //        ViewData["username"] = db.Users.Where(u => u.Id == id).SingleOrDefault().UserName;
-        //        ViewData["id"] = id;
-        //        string role = db.Users.Where(u => u.Id == id).SingleOrDefault().UserRole;
-        //        ViewData["role"] = role;
-        //        if (role == "teacher")
-        //        {
-        //            return View(db.Courses.Include(o => o.Teacher).Where(c => c.Teacher.Id == id));
-        //        }
-        //        else
-        //        {
-        //            var courses = from course in db.Courses.Include(c => c.Teacher)
-        //                          join listener in db.CoursesListeners on course.Id equals listener.RequestedCourse.Id
-        //                          where listener.Student.Id == id
-        //                          where listener.Accepted == true
-        //                          select course;
-        //            return View(courses);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //    }
-        //}
+        public async Task<IActionResult> View(string name)
+        {
+            User user = db.Users.Where(u => u.UserName == name).First();
+            ViewData["name"] = "Mісько";//user.Name;
+            ViewData["username"] = user.UserName;
+            string role = (await userManager.GetRolesAsync(user)).First();
+            ViewData["role"] = role;
+            if (role == "teacher")
+            {
+                return View(db.Courses.Include(o => o.Teacher).Where(c => c.Teacher.Id == name));
+            }
+            else
+            {
+                var courses = from course in db.Courses.Include(c => c.Teacher)
+                                join listener in db.CoursesListeners on course.Id equals listener.RequestedCourse.Id
+                                where listener.Student.Id == name
+                                where listener.Accepted == true
+                                select course;
+                return View(courses);
+            }            
+        }
     }
 }
