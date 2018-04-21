@@ -28,7 +28,7 @@ namespace website.Controllers
 
         public async Task<IActionResult> Index(string name = null)
         {
-            IdentityResult addUser = await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Email = "bohdan2307@gmail.com" }, "123456");
+            /*IdentityResult addUser = await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Email = "bohdan2307@gmail.com" }, "123456");
             IdentityResult result1 = await roleManager.CreateAsync(new IdentityRole("Admin"));
             IdentityResult result2 = await roleManager.CreateAsync(new IdentityRole("Teacher"));
             IdentityResult result3 = await roleManager.CreateAsync(new IdentityRole("Student"));
@@ -37,7 +37,7 @@ namespace website.Controllers
             if (user != null)
             {
                 IdentityResult result = await userManager.AddToRoleAsync(user, "Student");
-            }
+            }*/
 
             if (name == null)
             {

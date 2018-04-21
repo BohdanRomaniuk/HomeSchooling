@@ -39,7 +39,9 @@
                     </form>
                     @if (User?.Identity?.IsAuthenticated ?? false) {
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="Logout" style="float:right;">Вихід</a></li>
-                        <li style="float:right;"><a asp-area="" asp-controller="Course" asp-action="ViewRequests" style="float:right;">Заявки</a></li>
+                        if (User.IsInRole("Teacher")) {
+                            <li style="float:right;"><a asp-area="" asp-controller="Course" asp-action="ViewRequests" style="float:right;">Заявки</a></li>
+                        }
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="View" asp-route-name="@User?.Identity?.Name" style="float:right; font-weight:bold">@User?.Identity?.Name</a></li>
                     }
                     else

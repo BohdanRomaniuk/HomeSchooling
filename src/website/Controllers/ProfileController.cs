@@ -23,69 +23,40 @@ namespace website.Controllers
             signInManager = _signInManager;
         }
 
-        //[HttpGet]
-        //public IActionResult Register()
-        //{
-        //    ViewBag.Info = "Введіть необхідні дані для реєстрації";
-        //    return View();
-        //}
-        //[HttpPost]
-        //public IActionResult Register(User user)
-        //{
-        //    bool wrong = false;
-        //    if (user.UserName == null)
-        //    {
-        //        ViewData["IncorrectLogin"] = true;
-        //        ViewBag.Info = "Потрібно заповнити поле з іменем користувача \n";
-        //        wrong = true;
-        //    }
-        //    if (user.Password == null)
-        //    {
-        //        ViewData["IncorrectPassword"] = true;
-        //        ViewBag.Info1 = "Потрібно заповнити поле з паролем \n";
-        //        wrong = true;
-        //    }
-        //    if (user.Name == null)
-        //    {
-        //        ViewData["IncorrectName"] = true;
-        //        ViewBag.Info2 = "Потрібно заповнити поле з іменем та прізвищем";
-        //        wrong = true;
-        //    }
-        //    if (wrong)
-        //    {
-        //        return View();
-        //    }
-        //    else
-        //    {
-        //        IQueryable<User> users = db.Users;
-        //        foreach (User u in users)
-        //        {
-        //            if (u.UserName == user.UserName)
-        //            {
-        //                ViewData["IncorrectLogin"] = true;
-        //                ViewBag.Info = "Користувач з таким логіном уже зареєстрований в системі. Будь ласка, виберіть інший";
-        //                return View();
-        //            }
-        //        }
-        //        User toAdd = new User();
-        //        toAdd.Name = user.Name;
-        //        toAdd.Password = user.Password;
-        //        toAdd.UserName = user.UserName;
-        //        toAdd.UserRole = "student";
-        //        //db.Users.Add(toAdd);
-        //        //db.SaveChanges();
-        //        db.AddUser(toAdd);
-        //        IQueryable<User> inDb = from u in db.Users
-        //                                where u.UserName == user.UserName
-        //                                select u;
-        //        HttpContext.Session.SetString("username", toAdd.UserName);
-        //        HttpContext.Session.SetString("role", toAdd.UserRole);
-        //        HttpContext.Session.SetString("name", toAdd.Name);
-        //        HttpContext.Session.SetString("id", inDb.Last().Id.ToString());
-        //        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //    }
-        //}
+        [HttpGet]
+        public IActionResult Register()
+        {
+            ViewBag.Info = "Введіть необхідні дані для реєстрації";
+            return View();
+        }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterModel details, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = new User {
+                    UserName = details.UserName,
+                    Email = details.Email
+        //          Name = details.Name
+                };
+                IdentityResult result = await userManager.CreateAsync(user, details.Password);
+                IdentityResult result2 = await userManager.AddToRoleAsync(user, "Student");
+                Microsoft.AspNetCore.Identity.SignInResult result1 = await signInManager.PasswordSignInAsync(user, details.Password, false, false);
+                if (result.Succeeded && result1.Succeeded && result2.Succeeded)
+                {
+                    return Redirect(returnUrl ?? "/");
+                }
+                foreach (IdentityError error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View(details);
+        }
+       
         [HttpGet]
         public IActionResult Login()
         {
