@@ -41,8 +41,8 @@ namespace website.Controllers
             {
                 User user = new User {
                     UserName = details.UserName,
-                    Email = details.Email
-        //          Name = details.Name
+                    Email = details.Email,
+                    Name = details.Name
                 };
                 IdentityResult result = await userManager.CreateAsync(user, details.Password);
                 IdentityResult result2 = await userManager.AddToRoleAsync(user, "Student");
@@ -98,7 +98,7 @@ namespace website.Controllers
         public async Task<IActionResult> View(string name)
         {
             User user = db.Users.Where(u => u.UserName == name).First();
-            ViewData["name"] = "Mісько";//user.Name;
+            ViewData["name"] = user.Name;
             ViewData["username"] = user.UserName;
             string role = (await userManager.GetRolesAsync(user)).First();
             ViewData["role"] = role;
