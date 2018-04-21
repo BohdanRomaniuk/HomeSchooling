@@ -70,7 +70,7 @@ namespace website.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddCourse(string courseName, string courseDescription)
         {
-            User teacher = await userManager.FindByNameAsync(User.Identity.Name);
+            User teacher = await userManager.GetUserAsync(User);
             db.AddCourse(new Course(courseName, courseDescription, teacher));
             return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
         }
@@ -79,7 +79,7 @@ namespace website.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddLesson(int id)
         {
-            string teacherId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
+            string teacherId = (await userManager.GetUserAsync(User)).Id;
             Course currentCourse = db.Courses.Include(c => c.Teacher).Where(c => c.Id == id).SingleOrDefault();
             if (teacherId == currentCourse.Teacher.Id)
             {
@@ -96,7 +96,7 @@ namespace website.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddLesson(int courseId, string lessonName, string lessonStartDatetime, string lessonEndDatetime, string lessonDescription, string homeworkDescription, string homeworkEndDatetime, string isControllWork, List<IFormFile> files1, List<IFormFile> files2)
         {
-            string teacherId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
+            string teacherId = (await userManager.GetUserAsync(User)).Id;
             User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
             Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
             Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
