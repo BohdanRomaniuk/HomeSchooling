@@ -10,6 +10,7 @@ using database.Models;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace website.Controllers
 {
@@ -17,221 +18,156 @@ namespace website.Controllers
     {
         private readonly IHomeSchoolingRepository db;
         private readonly IFileProvider fileProvider;
+        private UserManager<User> userManager;
 
-        public CourseController(IHomeSchoolingRepository _db, IFileProvider _fileProvider)
+        public CourseController(IHomeSchoolingRepository _db, IFileProvider _fileProvider, UserManager<User> _userManager)
         {
             db = _db;
             fileProvider = _fileProvider;
+            userManager = _userManager;
         }
         
-        /*
+        
         public IActionResult ViewCourse(int id)
         {
             Course currentCourse = db.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(o => o.Id == id).SingleOrDefault();
-            bool isCourseOwner = false;
-            if (HttpContext.Session.GetInt32("role") != null)
+            ViewData["IsCourseOwner"] = currentCourse.Teacher.UserName == HttpContext?.User?.Identity?.Name;
+            return View(currentCourse);
+        }
+
+        [Authorize]
+        public IActionResult ViewLesson(int id)
+        {
+            ViewData["IsCourseListener"] = false;
+            Lesson currentLesson = db.Lessons
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach => attach.UploadedBy)
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostedBy).Where(lesson => lesson.Id == id).SingleOrDefault();
+            string userName = User.Identity.Name;
+            int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
+            if (HttpContext.User.IsInRole("Teacher"))
             {
-                string role = HttpContext.Session.GetString("role");
-                if (role == "teacher")
+                ViewData["IsCourseListener"] = db.Courses.Include(c => c.Teacher).Where(c => c.Id == currentCourseId).FirstOrDefault().Teacher.UserName == userName;
+            }
+            else if(HttpContext.User.IsInRole("Student"))
+            {
+                ViewData["IsCourseListener"] = db.CoursesListeners.Where(s => s.Student.UserName == userName && s.Accepted && s.RequestedCourse.Id == currentCourseId).Count() != 0;
+            }
+            else if(HttpContext.User.IsInRole("Admin"))
+            {
+                ViewData["IsCourseListener"] = true;
+            }
+            return View(new LessonViewModel(currentLesson));
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        public IActionResult AddCourse()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> AddCourse(string courseName, string courseDescription)
+        {
+            User teacher = await userManager.FindByNameAsync(User.Identity.Name);
+            db.AddCourse(new Course(courseName, courseDescription, teacher));
+            return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> AddLesson(int id)
+        {
+            string teacherId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
+            Course currentCourse = db.Courses.Include(c => c.Teacher).Where(c => c.Id == id).SingleOrDefault();
+            if (teacherId == currentCourse.Teacher.Id)
+            {
+                ViewData["CourseId"] = id;
+                return View("AddLesson");
+            }
+            else
+            {
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> AddLesson(int courseId, string lessonName, string lessonStartDatetime, string lessonEndDatetime, string lessonDescription, string homeworkDescription, string homeworkEndDatetime, string isControllWork, List<IFormFile> files1, List<IFormFile> files2)
+        {
+            string teacherId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
+            User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
+            Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
+            Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
+            Post homework_post = new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now);
+
+            //Files1 upload begin
+            if (files1 != null && files1.Count != 0)
+            {
+                lesson_post.PostAtachments = new List<Attachment>();
+                foreach (var file in files1)
                 {
-                    int teacherId = int.Parse(HttpContext.Session.GetString("id"));
-                    isCourseOwner = (currentCourse.Teacher.Id == teacherId) ? true : false;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", file.GetFilename());
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    lesson_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
                 }
             }
-            ViewData["IsCourseOwner"] = isCourseOwner;
-            return View(currentCourse);
+            //Files1 upload end
+            //Files2 upload begin
+            if (files2 != null && files2.Count != 0)
+            {
+                homework_post.PostAtachments = new List<Attachment>();
+                foreach (var file in files2)
+                {
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", file.GetFilename());
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    homework_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
+                }
+            }
+            //Files2 upload end
+            newLesson.Posts.Add(lesson_post);
+            newLesson.Posts.Add(homework_post);
+
+            db.AddLesson(courseId, newLesson);
+            return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!", lessonName));
         }
-        */
-        [Authorize]
-        public IActionResult ViewCourse(int id)
+
+        [HttpPost]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddHomeWork(int lessonId, string homeWorkDescription, List<IFormFile> files)
         {
-            Course currentCourse = db.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(o => o.Id == id).SingleOrDefault();
-            ViewData["IsCourseOwner"] = currentCourse.Teacher.UserName == HttpContext.User.Identity.Name;
-            return View(currentCourse);
+            string studentId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
+            User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
+            Post newPost = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
+            //Files upload begin
+            if (files != null && files.Count != 0)
+            {
+                newPost.PostAtachments = new List<Attachment>();
+                foreach (var file in files)
+                {
+                    var path = Path.Combine(
+                            Directory.GetCurrentDirectory(), "wwwroot",
+                            file.GetFilename());
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    newPost.PostAtachments.Add(new Attachment(file.GetFilename(), currentStudent, DateTime.Now));
+                }
+            }
+            //Files upload end
+
+            db.AddHomeWork(lessonId, newPost);
+            return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
         }
-
-        //public IActionResult ViewLesson(int id)
-        //{
-        //    ViewData["IsCourseListener"] = false;
-        //    Lesson currentLesson = db.Lessons
-        //        .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach => attach.UploadedBy)
-        //        .Include(lesson => lesson.Posts).ThenInclude(post => post.PostedBy).Where(lesson => lesson.Id == id).SingleOrDefault();
-        //    if (HttpContext.Session.GetInt32("role") != null)
-        //    {
-        //        string role = HttpContext.Session.GetString("role");
-        //        int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
-        //        int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
-        //        if (role == "student")
-        //        {
-        //            ViewData["IsCourseListener"] = db.CoursesListeners.Where(s => s.Student.Id == userId && s.Accepted && s.RequestedCourse.Id == currentCourseId).Count() != 0;
-        //        }
-        //        else if (role == "teacher")
-        //        {
-        //            ViewData["IsCourseListener"] = db.Courses.Where(c=>c.Teacher.Id==userId).Count() != 0;
-        //        }
-        //    }
-        //    return View(new LessonViewModel(currentLesson));
-        //}
-
-        //[HttpGet]
-        //public IActionResult AddCourse()
-        //{
-        //    if (HttpContext.Session.GetInt32("role") != null)
-        //    {
-        //        string role = HttpContext.Session.GetString("role");
-        //        if (role == "teacher")
-        //        {
-        //            return View("AddCourse");
-        //        }
-        //        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //    }
-        //    return RedirectToRoute(new { controller = "Profile", action = "Login" });
-            
-        //}
-
-        //[HttpPost]
-        //public IActionResult AddCourse(string courseName, string courseDescription)
-        //{
-        //    if (HttpContext.Session.GetInt32("role") != null)
-        //    {
-        //        string role = HttpContext.Session.GetString("role");
-        //        if(role=="teacher")
-        //        {
-        //            int teacherId = int.Parse(HttpContext.Session.GetString("id"));
-        //            User teacher = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
-        //            //db.Courses.Add(new Course(courseName, courseDescription, teacher));
-        //            //db.SaveChanges();
-        //            //HomeSchooling context changes
-        //            db.AddCourse(new Course(courseName, courseDescription, teacher));
-        //            return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
-        //        }
-        //        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //    }
-        //    return RedirectToRoute(new { controller = "Profile", action = "Login" });
-        //}
-
-        //[HttpGet]
-        //public IActionResult AddLesson(int id)
-        //{
-        //    if (HttpContext.Session.GetInt32("role") != null)
-        //    {
-        //        string role = HttpContext.Session.GetString("role");
-        //        if (role == "teacher")
-        //        {
-        //            int teacherId = int.Parse(HttpContext.Session.GetString("id"));
-        //            Course currentCourse = db.Courses.Include(c => c.Teacher).Where(c => c.Id == id).SingleOrDefault();
-        //            if(teacherId==currentCourse.Teacher.Id)
-        //            {
-        //                ViewData["CourseId"] = id;
-        //                return View("AddLesson");
-        //            }
-        //            else
-        //            {
-        //                return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //            }
-        //        }
-        //        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //    }
-        //    return RedirectToRoute(new { controller = "Profile", action = "Login" });
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddLesson(int courseId, string lessonName, string lessonStartDatetime, string lessonEndDatetime, string lessonDescription, string homeworkDescription, string homeworkEndDatetime, string isControllWork, List<IFormFile> files1, List<IFormFile> files2)
-        //{
-        //    if (HttpContext.Session.GetInt32("role") != null)
-        //    {
-        //        string role = HttpContext.Session.GetString("role");
-        //        if (role == "teacher")
-        //        {
-        //            int teacherId = int.Parse(HttpContext.Session.GetString("id"));
-        //            //Course currentCourse = db.Courses.Include(c => c.CourseLessons).Where(c => c.Id == courseId).SingleOrDefault();
-        //            User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
-        //            Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
-        //            Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
-        //            Post homework_post = new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now);
-                   
-        //            //Files1 upload begin
-        //            if (files1 != null && files1.Count != 0)
-        //            {
-        //                lesson_post.PostAtachments = new List<Attachment>();
-        //                foreach (var file in files1)
-        //                {
-        //                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",file.GetFilename());
-        //                    using (var stream = new FileStream(path, FileMode.Create))
-        //                    {
-        //                        await file.CopyToAsync(stream);
-        //                    }
-        //                    lesson_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
-        //                }
-        //            }
-        //            //Files1 upload end
-        //            //Files2 upload begin
-        //            if (files2 != null && files2.Count != 0)
-        //            {
-        //                homework_post.PostAtachments = new List<Attachment>();
-        //                foreach (var file in files2)
-        //                {
-        //                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",file.GetFilename());
-        //                    using (var stream = new FileStream(path, FileMode.Create))
-        //                    {
-        //                        await file.CopyToAsync(stream);
-        //                    }
-        //                    homework_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
-        //                }
-        //            }
-        //            //Files2 upload end
-        //            newLesson.Posts.Add(lesson_post);
-        //            newLesson.Posts.Add(homework_post);
-        //            //currentCourse.CourseLessons.Add(newLesson);
-        //            //db.SaveChanges();
-        //            db.AddLesson(courseId, newLesson);
-        //            return View("AddLesson", String.Format("Урок \"{0}\" успішно додано!", lessonName));
-        //        }
-        //        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //    }
-        //    return RedirectToRoute(new { controller = "Profile", action = "Login" });
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddHomeWork(int lessonId, string homeWorkDescription, List<IFormFile> files)
-        //{
-        //    if (HttpContext.Session.GetInt32("role") != null)
-        //    {
-        //        string role = HttpContext.Session.GetString("role");
-        //        if (role == "student")
-        //        {
-        //            int studentId = int.Parse(HttpContext.Session.GetString("id"));
-        //            User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
-        //            //Lesson currentLesson = db.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
-        //            Post newPost = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
-
-        //            //Files upload begin
-        //            if (files != null && files.Count != 0)
-        //            {
-        //                newPost.PostAtachments = new List<Attachment>();
-        //                foreach (var file in files)
-        //                {
-        //                    var path = Path.Combine(
-        //                            Directory.GetCurrentDirectory(), "wwwroot",
-        //                            file.GetFilename());
-
-        //                    using (var stream = new FileStream(path, FileMode.Create))
-        //                    {
-        //                        await file.CopyToAsync(stream);
-        //                    }
-        //                    newPost.PostAtachments.Add(new Attachment(file.GetFilename(), currentStudent, DateTime.Now));
-        //                }
-        //            }
-        //            //Files upload end
-        //            //currentLesson.Posts.Add(new_post);
-        //            //db.SaveChanges();
-        //            db.AddHomeWork(lessonId, newPost);
-        //            return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
-        //        }
-        //        return RedirectToRoute(new { controller = "Home", action = "Index" });
-        //    }
-        //    return RedirectToRoute(new { controller = "Profile", action = "Login" });
-        //}
 
         //public IActionResult RequestCourse(int id)
         //{

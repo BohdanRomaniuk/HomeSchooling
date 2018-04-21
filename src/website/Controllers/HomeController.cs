@@ -74,11 +74,11 @@ namespace website.Controllers
             await userManager.CreateAsync(new User() { UserName = "admin", Name = "Адміністратор", Email = "admin@admin.com" }, "123456");
 
             User bohdan = await userManager.FindByNameAsync("bohdan.romaniuk");
-            User roman = await userManager.FindByNameAsync("bohdan.romaniuk");
-            User modest = await userManager.FindByNameAsync("bohdan.romaniuk");
-            User muzychuk = await userManager.FindByNameAsync("bohdan.romaniuk");
-            User tarasyuk = await userManager.FindByNameAsync("bohdan.romaniuk");
-            User litynskyy = await userManager.FindByNameAsync("bohdan.romaniuk");
+            User roman = await userManager.FindByNameAsync("roman.parobiy");
+            User modest = await userManager.FindByNameAsync("modest.radomskyy");
+            User muzychuk = await userManager.FindByNameAsync("anatoliy.muzychuk");
+            User tarasyuk = await userManager.FindByNameAsync("sviatoslav.tarasyuk");
+            User litynskyy = await userManager.FindByNameAsync("svyatoslav.litynskyy");
             User admin = await userManager.FindByNameAsync("admin");
 
             await userManager.AddToRoleAsync(bohdan, "Student");
