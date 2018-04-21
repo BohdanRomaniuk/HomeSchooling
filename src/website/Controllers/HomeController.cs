@@ -26,7 +26,7 @@ namespace website.Controllers
             roleManager = _roleManager;
         }
 
-        public async Task<IActionResult> Index(string name = null)
+        public IActionResult Index(string name = null)
         {
             if (name == null)
             {
@@ -39,7 +39,6 @@ namespace website.Controllers
             }
         }
 
-        [Authorize(Roles = "Student")]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
