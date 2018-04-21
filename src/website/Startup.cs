@@ -10,6 +10,8 @@ using website.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using database.Models;
 
 namespace website
 {
@@ -30,14 +32,25 @@ namespace website
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
-            services.AddMvc();
-            services.AddDistributedMemoryCache();
+            //Identity BOHDAN
+            services.AddIdentity<User, IdentityRole>(opts => {
+                opts.Password.RequiredLength = 6;
+                opts.User.RequireUniqueEmail = true;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireDigit = false;
+            }).AddEntityFrameworkStores<HomeSchoolingContext>().AddDefaultTokenProviders();            services.ConfigureApplicationCookie(opts => opts.LoginPath = "/Profile/Login");            //Identity BOHDAN
+
             services.AddSession(options =>
             {
                 //тимчасово для тестування
                 //options.IdleTimeout = TimeSpan.FromSeconds(10);
                 options.Cookie.HttpOnly = true;
             });
+
+            services.AddMvc();
+            services.AddDistributedMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,9 +65,13 @@ namespace website
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            //Identity BOHDAN
+            app.UseAuthentication();
+            //Identity BOHDAN
             app.UseSession();
             app.UseStaticFiles();
-
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

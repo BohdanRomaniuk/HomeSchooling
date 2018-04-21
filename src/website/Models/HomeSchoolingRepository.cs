@@ -50,20 +50,20 @@ namespace website.Models
 
         public void AcceptCourse(int studentId, int courseId)
         {
-            CoursesListener listener = (from listeners in context.CoursesListeners
-                                        where listeners.Student.Id == studentId && listeners.RequestedCourse.Id == courseId
-                                        select listeners).SingleOrDefault();
-            listener.Accepted = true;
-            context.SaveChanges();
+            //CoursesListener listener = (from listeners in context.CoursesListeners
+            //                            where listeners.Student.Id == studentId && listeners.RequestedCourse.Id == courseId
+            //                            select listeners).SingleOrDefault();
+            //listener.Accepted = true;
+            //context.SaveChanges();
         }
 
         public void RefuseCourse(int studentId, int courseId)
         {
-            CoursesListener listener = (from listeners in context.CoursesListeners
-                                        where listeners.Student.Id == studentId && listeners.RequestedCourse.Id == courseId
-                                        select listeners).SingleOrDefault();
-            context.CoursesListeners.Remove(listener);
-            context.SaveChanges();
+            //CoursesListener listener = (from listeners in context.CoursesListeners
+            //                            where listeners.Student.Id == studentId && listeners.RequestedCourse.Id == courseId
+            //                            select listeners).SingleOrDefault();
+            //context.CoursesListeners.Remove(listener);
+            //context.SaveChanges();
         }
 
         public void AddUser(User toAdd)
@@ -74,9 +74,9 @@ namespace website.Models
 
         public void SetTeacher(int userId)
         {
-            User teacher = context.Users.Where(u => u.Id == userId).SingleOrDefault();
-            teacher.UserRole = "teacher";
-            context.SaveChanges();
+            //User teacher = context.Users.Where(u => u.Id == userId).SingleOrDefault();
+            //teacher.UserRole = "teacher";
+            //context.SaveChanges();
         }
 
         public void DeleteCourse(int courseId)
