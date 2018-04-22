@@ -11,43 +11,40 @@
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
 </head>
 <body>
-    <div class="panel panel-success">
-        <div class="panel-heading text-center"><h4>Реєстрація</h4></div>
-        <div class="panel-body">
-            <form class="form-horizontal" asp-action="Register" method="post">
+    <h3>Реєстрація</h3>
+    <hr />
+    <form class="form-horizontal" asp-action="Register" method="post">
 
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" asp-for="UserName">Ваш логін:</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" asp-for="UserName" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" asp-for="Password">Ваш пароль:</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="password" asp-for="Password" />
-                    </div>
-                </div>
-                <div  class="form-group">
-                    <label class="col-sm-2 control-label" asp-for="Name">Ваше ім'я та прізвище:</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" asp-for="Name" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" asp-for="Email">Ваш e-mail:</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" asp-for="Email" />
-                    </div>
-                </div>
-
-                <div style="text-align:center">
-                    <button class="btn btn-success" type="submit">Зареєструватись</button>
-                </div>
-            </form>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" asp-for="UserName">Ваш логін:</label>
+            <div class="col-sm-10">
+                <input class="form-control" asp-for="UserName" />
+            </div>
         </div>
-    </div>
-<div asp-validation-summary=" All" class="text-danger"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" asp-for="Password">Ваш пароль:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="password" asp-for="Password" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" asp-for="Name">Ваше ім'я та прізвище:</label>
+            <div class="col-sm-10">
+                <input class="form-control" asp-for="Name" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" asp-for="Email">Ваш e-mail:</label>
+            <div class="col-sm-10">
+                <input class="form-control" asp-for="Email" />
+            </div>
+        </div>
+
+        <div style="text-align:center">
+            <button class="btn btn-success" type="submit">Зареєструватись</button>
+        </div>
+    </form>
+    <br />
+    <div asp-validation-summary=" All" class="text-danger"></div>
 </body>
 </html>
-

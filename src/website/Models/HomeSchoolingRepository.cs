@@ -21,6 +21,7 @@ namespace website.Models
         public IQueryable<CoursesListener> CoursesListeners => context.CoursesListeners;
         public IQueryable<Post> Posts => context.Posts;
         public IQueryable<Attachment> Attachments => context.Attachments;
+        public IQueryable<Mark> Marks => context.Marks;
 
         public void AddCourse(Course newCourse)
         {
@@ -39,6 +40,23 @@ namespace website.Models
         {
             Lesson currentLesson = context.Lessons.Where(l => l.Id == lessonId).SingleOrDefault();
             currentLesson.Posts.Add(newPost);
+            context.SaveChanges();
+        }
+
+        public void AddMark(int postId, int lessonId, int markValue, User teacher)
+        {
+            Post currentPost = context.Posts.Include(p=>p.PostedBy).Include(p=>p.PostMark).Where(p => p.Id == postId).FirstOrDefault();
+            Lesson currentLesson = context.Lessons.Where(l => l.Id == lessonId).FirstOrDefault();
+            if(currentPost.PostMark==null)
+            {
+                currentPost.PostMark = new Mark(currentPost.PostedBy, teacher, markValue, DateTime.Now, currentLesson);
+            }
+            else
+            {
+                currentPost.PostMark.MarkValue = markValue;
+                currentPost.PostMark.Teacher = teacher;
+                currentPost.PostMark.MarkDate = DateTime.Now;
+            }
             context.SaveChanges();
         }
 

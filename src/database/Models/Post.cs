@@ -20,6 +20,7 @@ namespace database.Models
         [Required]
         public DateTime PostedDate { get; set; }
 
+        public Mark PostMark { get; set; }
         public List<Attachment> PostAtachments { get; set; }
 
         public Post()

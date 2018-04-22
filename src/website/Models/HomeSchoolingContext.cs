@@ -16,6 +16,7 @@ namespace website.Models
         public DbSet<CoursesListener> CoursesListeners { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
+        public DbSet<Mark> Marks { get; set; }
 
         public HomeSchoolingContext(DbContextOptions<HomeSchoolingContext> options):
             base(options)

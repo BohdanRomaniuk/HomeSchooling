@@ -41,7 +41,9 @@ namespace website.Controllers
             ViewData["IsCourseListener"] = false;
             Lesson currentLesson = db.Lessons
                 .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach => attach.UploadedBy)
-                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostedBy).Where(lesson => lesson.Id == id).SingleOrDefault();
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostedBy)
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostMark).ThenInclude(mark => mark.Teacher)
+                .Where(lesson => lesson.Id == id).SingleOrDefault();
             string userName = User.Identity.Name;
             int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
             if (HttpContext.User.IsInRole("Teacher"))
@@ -168,6 +170,15 @@ namespace website.Controllers
 
             db.AddHomeWork(lessonId, newPost);
             return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Teacher")]
+        public async Task<IActionResult> AddMark(string MarkValue, string PostId, string LessonId)
+        {
+            User teacher = await userManager.GetUserAsync(User);
+            db.AddMark(Convert.ToInt32(PostId), Convert.ToInt32(LessonId), Convert.ToInt32(MarkValue), teacher);
+            return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = Convert.ToInt32(LessonId) });
         }
 
         [Authorize(Roles = "Student")]

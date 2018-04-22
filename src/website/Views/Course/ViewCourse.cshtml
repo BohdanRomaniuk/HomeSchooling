@@ -1,11 +1,12 @@
-﻿
+﻿@using database.Models
+@model Course
 @{
     ViewData["Title"] = "Перегляду курсу - " + Model.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h3>
-    @Model.Name <span style="float:right;">Викладач: <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.Teacher.Id">@Model.Teacher.Name</a></span>
+    @Model.Name <span style="float:right;">Викладач: <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.Teacher.UserName">@Model.Teacher.Name</a></span>
 </h3>
 <hr />
 <h4>Всього уроків @Model.CourseLessons.Count  @if(Convert.ToBoolean(ViewData["IsCourseOwner"])){<a asp-controller="Course" asp-action="AddLesson" asp-route-id="@Model.Id" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий урок</a>}</h4>

@@ -1,4 +1,4 @@
-﻿
+﻿@model LessonViewModel;
 @{
     ViewData["Title"] = "Перегляд уроку - " + Model.LessonName;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -22,7 +22,7 @@
                 @if (Model.LessonDescription != null)
                 {
                     <b>Час проведення:</b> <span class="label label-primary">@Model.LessonStartDate - @Model.LessonEndDate</span><br>
-                    <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.LessonDescription.PostedBy.Id" class="label label-primary">@Model.LessonDescription.PostedBy.Name</a>
+                    <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.LessonDescription.PostedBy.UserName" class="label label-primary">@Model.LessonDescription.PostedBy.Name</a>
                     <span class="label label-default">@Model.LessonDescription.PostedDate</span>
                     <br><br>
                     @Model.LessonDescription.Text
@@ -69,7 +69,7 @@
                 else
                 {
                     <b>Термін здачі @((Model.IsControlWork) ? "контрольної роботи:" : "домашнього завдання:")</b> <span class="label label-danger">@Model.HomeWorkEnd</span><br>
-                    <a asp-controller="Profile" asp-action="View" asp-route-id="@Model.HomeWorkDescription.PostedBy.Id" class="label label-primary">@Model.HomeWorkDescription.PostedBy.Name</a>
+                    <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.HomeWorkDescription.PostedBy.UserName" class="label label-primary">@Model.HomeWorkDescription.PostedBy.Name</a>
                     <span class="label label-default">@Model.HomeWorkDescription.PostedDate</span>
                     <br><br>
                     @Model.HomeWorkDescription.Text
@@ -99,9 +99,29 @@
             {
                 @foreach (var homework in Model.HomeWorks)
                 {
+                    <a name="@homework.Id"></a>
                     <div class="panel panel-default">
                         <div style="padding: 10px;">
-                            <a asp-controller="Profile" asp-action="View" asp-route-id="@homework.PostedBy.Id" class="label label-primary">@homework.PostedBy.Name</a> <span class="label label-default">@homework.PostedDate</span><br>
+                            <a asp-controller="Profile" asp-action="View" asp-route-name="@homework.PostedBy.UserName" class="label label-primary">@homework.PostedBy.Name</a> <span class="label label-default">@homework.PostedDate</span>
+                            <span class="panel panel-default" style="padding: 1px 1px 4px;float: right;position: relative;margin-bottom: 0;">
+                            <span style="margin-right: 10px;"><b style="color: red;">Оцінка:</b> @((homework.PostMark!=null)? homework.PostMark.MarkValue.ToString() :"Не оцінено")</span> 
+                            @if (homework.PostMark != null)
+                            {
+                                <a class="label label-primary" asp-controller="Profile" asp-action="View" asp-route-name="@homework.PostMark.Teacher.UserName">@homework.PostMark.Teacher.Name</a>
+                                <span class="label label-default">@homework.PostMark.MarkDate</span> 
+                            }
+                            @if (User?.IsInRole("Teacher") ?? true) {
+                            <form asp-action="AddMark" method="post" style="margin-top: 5px;">
+                                <div class="" style="float: right;">
+                                   <label style="margin-right: 10px;margin-bottom: 0;">Оцінка:</label>
+                                   <input type="text" name="MarkValue" class="form-control" required="required" style="height: 21px;width: 30px;padding: 2px 4px;display: unset;">
+                                   <input type="hidden" name="PostId" value="@homework.Id"/>
+                                   <input type="hidden" name="LessonId" value="@Model.LessonId"/>
+                                   <button type="submit" class="btn btn-xs btn-success">Оцінити</button></div>
+                            </form>
+                            }
+                            </span>
+                            <br>
                             <div style="padding: 5px 0;">@homework.Text</div>
                             @if (homework.PostAtachments != null && homework.PostAtachments.Count != 0)
                             {

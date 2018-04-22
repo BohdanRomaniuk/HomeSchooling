@@ -19,6 +19,7 @@ namespace database
         public DbSet<CoursesListener> CoursesListeners { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
+        public DbSet<Mark> Marks { get; set; }
 
         public Repository()
         {
@@ -38,6 +39,7 @@ namespace database
             modelBuilder.Entity<CoursesListener>().ToTable("CoursesListeners");
             modelBuilder.Entity<Post>().ToTable("Posts");
             modelBuilder.Entity<Attachment>().ToTable("Attachments");
+            modelBuilder.Entity<Mark>().ToTable("Marks");
         }
 
         public static async Task CreateAccount(IServiceProvider serviceProvider, string username, string password, string email, string role)
