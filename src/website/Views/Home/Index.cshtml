@@ -9,12 +9,17 @@
     <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id">@elem.Name</a></div>
     <div class="panel-body">
         @elem.Description
-        @if (User?.IsInRole("Student") ?? true){<a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>}
-        @if (User?.IsInRole("Admin") ?? true){<a asp-controller="Admin" asp-action="DeleteCourse" asp-route-id="@elem.Id" class="btn btn-warning" style="float:right;">Видалити курс</a>}
+        @if ((User?.IsInRole("Student") ?? true) && elem.StartDate > DateTime.Now)
+    {<a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>}
+        @if (User?.IsInRole("Admin") ?? true)
+    {<a asp-controller="Admin" asp-action="DeleteCourse" asp-route-id="@elem.Id" class="btn btn-warning" style="float:right;">Видалити курс</a>}
         <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
         <br>
         <b>Викладач:</b> <a asp-controller="Profile" asp-action="View" asp-route-name="@elem.Teacher.UserName"><span class="label label-primary">@elem.Teacher.Name</span></a>
         <b style="margin-left:20px;">Всього уроків на курсі:</b> <span class="label label-success">@elem.CourseLessons.Count</span>
+        <br />
+        <b>Час проведення:</b> <span class="label label-success">@elem.StartDate</span>
+        <b> - </b> <span class="label label-success">@elem.EndDate</span>
     </div>
 </div>
 }

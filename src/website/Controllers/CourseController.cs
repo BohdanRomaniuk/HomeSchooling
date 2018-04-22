@@ -187,12 +187,19 @@ namespace website.Controllers
             var acc = db.CoursesListeners.Where(c => c.Student.UserName == HttpContext.User.Identity.Name).Where(c => c.RequestedCourse.Id == id);
             if (acc.Count() == 0)
             {
-                CoursesListener cl = new CoursesListener();
-                cl.Accepted = false;
-                cl.RequestedCourse = db.Courses.Where(c => c.Id == id).SingleOrDefault();
-                cl.Student = db.Users.Where(u => u.UserName == HttpContext.User.Identity.Name).SingleOrDefault();
-                db.AddCourseListener(cl);
-                return View("RequestCourse", "Ви подали заявку на курс, викладач розгляне її найближчим часом.");
+                if (db.Courses.Where(c => c.Id == id).SingleOrDefault().StartDate < DateTime.Now)
+                {
+                    return View("RequestCourse", "Курс вже почався, ви не можете подавати на нього заявку");
+                }
+                else
+                {
+                    CoursesListener cl = new CoursesListener();
+                    cl.Accepted = false;
+                    cl.RequestedCourse = db.Courses.Where(c => c.Id == id).SingleOrDefault();
+                    cl.Student = db.Users.Where(u => u.UserName == HttpContext.User.Identity.Name).SingleOrDefault();
+                    db.AddCourseListener(cl);
+                    return View("RequestCourse", "Ви подали заявку на курс, викладач розгляне її найближчим часом.");
+                }
             }
             else if (acc.SingleOrDefault().Accepted == true)
             {
