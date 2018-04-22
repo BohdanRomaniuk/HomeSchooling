@@ -71,7 +71,8 @@ namespace website.Controllers
         public async Task<IActionResult> AddCourse(string courseName, string courseDescription)
         {
             User teacher = await userManager.GetUserAsync(User);
-            db.AddCourse(new Course(courseName, courseDescription, teacher));
+            //Course restictions!!!!
+            //db.AddCourse(new Course(courseName, courseDescription, teacher));
             return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
         }
 

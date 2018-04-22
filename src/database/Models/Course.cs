@@ -17,6 +17,9 @@ namespace database.Models
         public string Description { get; set; }
         [Required]
         public User Teacher { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         
         public List<Lesson> CourseLessons { get; set; }
 
@@ -24,11 +27,13 @@ namespace database.Models
         {
         }
 
-        public Course(string _name, string _description, User _teacher)
+        public Course(string _name, string _description, User _teacher, DateTime _startDate, DateTime _endDate)
         {
             Name = _name;
             Description = _description;
             Teacher = _teacher;
+            StartDate = _startDate;
+            EndDate = _endDate;
         }
     }
 }
