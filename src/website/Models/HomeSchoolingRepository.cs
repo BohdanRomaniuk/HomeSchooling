@@ -48,19 +48,19 @@ namespace website.Models
             context.SaveChanges();
         }
 
-        public void AcceptCourse(int studentId, int courseId)
+        public void AcceptCourse(string studentName, int courseId)
         {
             CoursesListener listener = (from listeners in context.CoursesListeners
-                                        where listeners.Student.Id == studentId && listeners.RequestedCourse.Id == courseId
+                                        where listeners.Student.UserName == studentName && listeners.RequestedCourse.Id == courseId
                                         select listeners).SingleOrDefault();
             listener.Accepted = true;
             context.SaveChanges();
         }
 
-        public void RefuseCourse(int studentId, int courseId)
+        public void RefuseCourse(string studentName, int courseId)
         {
             CoursesListener listener = (from listeners in context.CoursesListeners
-                                        where listeners.Student.Id == studentId && listeners.RequestedCourse.Id == courseId
+                                        where listeners.Student.UserName == studentName && listeners.RequestedCourse.Id == courseId
                                         select listeners).SingleOrDefault();
             context.CoursesListeners.Remove(listener);
             context.SaveChanges();
@@ -72,11 +72,12 @@ namespace website.Models
             context.SaveChanges();
         }
 
-        public void SetTeacher(int userId)
+        public void SetTeacher(string name)
         {
-            User teacher = context.Users.Where(u => u.Id == userId).SingleOrDefault();
-            teacher.UserRole = "teacher";
-            context.SaveChanges();
+            //User teacher = context.Users.Where(u => u.UserName == name).SingleOrDefault();
+            
+            //teacher.UserRole = "teacher";
+            //context.SaveChanges();
         }
 
         public void DeleteCourse(int courseId)

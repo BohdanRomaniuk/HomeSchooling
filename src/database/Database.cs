@@ -3,14 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using database.Models;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace HomeSchooling
+namespace database
 {
-    public class Repository : DbContext
+    public class Repository : IdentityDbContext<User>
     {
         public DbSet<Course> Courses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<CoursesListener> CoursesListeners { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
@@ -29,30 +34,63 @@ namespace HomeSchooling
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Course>().ToTable("Courses");
             modelBuilder.Entity<Lesson>().ToTable("Lessons");
-            modelBuilder.Entity<User>().ToTable("Users");
+            //modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<CoursesListener>().ToTable("CoursesListeners");
             modelBuilder.Entity<Post>().ToTable("Posts");
             modelBuilder.Entity<Attachment>().ToTable("Attachments");
         }
+
+        public static async Task CreateAccount(IServiceProvider serviceProvider, string username, string password, string email, string role)
+        {
+            UserManager<User> userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            RoleManager<IdentityRole> roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            if (await userManager.FindByNameAsync(username) == null)
+            {
+                if (await roleManager.FindByNameAsync(role) == null)
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+                User user = new User
+                {
+                    UserName = username,
+                    Email = email
+                };
+                IdentityResult result = await userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, role);
+                }
+            }
+        }
     }
 
-    class Database
+    public class Database
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             using (Repository db = new Repository())
             {
-                /////////////////////////////
-                //Users
-                /////////////////////////////
-                db.Users.Add(new User() { UserName = "admin", Password = "admin", Name = "Адміністратор", UserRole = "admin" });
-                db.Users.Add(new User() { UserName = "bohdan.romaniuk", Password = "123456", Name = "Романюк Богдан", UserRole = "student" });
-                db.Users.Add(new User() { UserName = "roman.parobiy", Password = "123456", Name = "Паробій Роман", UserRole = "student" });
-                db.Users.Add(new User() { UserName = "modest.radomskyy", Password = "123456", Name = "Радомський Модест", UserRole = "student" });
-                db.Users.Add(new User() { UserName = "anatoliy.muzychuk", Password = "123456", Name = "Музичук А.О.", UserRole = "teacher" });
-                db.Users.Add(new User() { UserName = "sviatoslav.tarasyuk", Password = "123456", Name = "Тарасюк С.І.", UserRole = "teacher" });
-                db.Users.Add(new User() { UserName = "svyatoslav.litynskyy", Password = "123456", Name = "Літинський С.В.", UserRole = "teacher" });
-                db.SaveChanges();
+                ///////////////////////////////
+                ////Roles
+                ///////////////////////////////
+                //db.Roles.Add(new IdentityRole { Name = "Student", NormalizedName="STUDENT" });
+                //db.Roles.Add(new IdentityRole { Name = "Teacher", NormalizedName="TEACHER" });
+                //db.Roles.Add(new IdentityRole { Name = "Admin", NormalizedName="ADMIN" });
+
+
+                ///////////////////////////////
+                ////Users
+                ///////////////////////////////
+
+                //db.Users.Add(new User() { UserName = "admin1", PasswordHash = "AQAAAAEAACcQAAAAEB15hWqeKHUsyO2PxFozVKnfYCZQ76V7HErYUV2LGJ2Sh9zJ3rnZyQpz64AClaB4Ug==", Email= "admin1@gmail.com", NormalizedUserName="ADMIN1", NormalizedEmail="ADMIN1@GMAIL.COM", LockoutEnabled=True });
+                //db.Users.Add(new User() { UserName = "roman.parobiy", PasswordHash = "AQAAAAEAACcQAAAAEB15hWqeKHUsyO2PxFozVKnfYCZQ76V7HErYUV2LGJ2Sh9zJ3rnZyQpz64AClaB4Ug==", Email= "roman.parobiy@gmail.com", NormalizedUserName= "ROMAN.PAROBIY", NormalizedEmail= "ROMAN.PAROBIY@GMAIL.COM" });
+                //db.Users.Add(new User() { UserName = "bohdan.romaniuk", Password = "123456", Name = "Романюк Богдан", UserRole = "student" });
+                //db.Users.Add(new User() { UserName = "roman.parobiy", Password = "123456", Name = "Паробій Роман", UserRole = "student" });
+                //db.Users.Add(new User() { UserName = "modest.radomskyy", Password = "123456", Name = "Радомський Модест", UserRole = "student" });
+                //db.Users.Add(new User() { UserName = "anatoliy.muzychuk", Password = "123456", Name = "Музичук А.О.", UserRole = "teacher" });
+                //db.Users.Add(new User() { UserName = "sviatoslav.tarasyuk", Password = "123456", Name = "Тарасюк С.І.", UserRole = "teacher" });
+                //db.Users.Add(new User() { UserName = "svyatoslav.litynskyy", Password = "123456", Name = "Літинський С.В.", UserRole = "teacher" });
+                //db.SaveChanges();
 
                 User muzychuk = db.Users.Where(u => u.UserName == "anatoliy.muzychuk").SingleOrDefault();
                 User tarasyuk = db.Users.Where(u => u.UserName == "sviatoslav.tarasyuk").SingleOrDefault();
@@ -121,7 +159,7 @@ namespace HomeSchooling
                 db.SaveChanges();
             }
             Console.WriteLine("Database synhronized!");
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }

@@ -19,10 +19,10 @@ namespace website.Models
         void AddLesson(int courseId, Lesson newLesson);
         void AddHomeWork(int lessonId, Post newPost);
         void AddCourseListener(CoursesListener newListener);
-        void AcceptCourse(int studentId, int courseId);
-        void RefuseCourse(int studentId, int courseId);
+        void AcceptCourse(string studentName, int courseId);
+        void RefuseCourse(string studentName, int courseId);
         void AddUser(User toAdd);
-        void SetTeacher(int userId);
+        void SetTeacher(string name);
         void DeleteCourse(int courseId);
     }
 }

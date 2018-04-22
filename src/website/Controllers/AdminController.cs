@@ -7,59 +7,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using website.Models;
 using database.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+
+
 namespace website.Controllers
 {
     public class AdminController : Controller
     {
         private IHomeSchoolingRepository db;
-        public AdminController(IHomeSchoolingRepository _db)
+        private UserManager<User> userManager;
+        public AdminController(IHomeSchoolingRepository _db, UserManager<User> _userManager)
         {
+            userManager = _userManager;
             db = _db;
         }
 
-        public IActionResult SetTeacher(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> SetTeacher(string name)
         {
-            if (HttpContext.Session.GetInt32("role") != null)
-            {
-                string role = HttpContext.Session.GetString("role");
-                if (role == "admin")
-                {
-                    //User teacher = db.Users.Where(u => u.Id == id).SingleOrDefault();
-                    //teacher.UserRole = "teacher";
-                    //db.SaveChanges();
-                    db.SetTeacher(id);
-                }
-            }
-            return RedirectToRoute(new { controller = "Profile", action = "View", id = id });
+            //db.SetTeacher(name);
+            User teacher = db.Users.Where(u => u.UserName == name).SingleOrDefault();
+            await userManager.RemoveFromRoleAsync(teacher, "Student");
+            await userManager.AddToRoleAsync(teacher, "Teacher");
+            return RedirectToRoute(new { controller = "Profile", action = "View", name = name });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteCourse(int id)
         {
-            if (HttpContext.Session.GetInt32("role") != null)
-            {
-                string role = HttpContext.Session.GetString("role");
-                if (role == "admin")
-                {
-
-                    //Course course = db.Courses.Include(c => c.CourseLessons).ThenInclude(l => l.Posts).Where(c=>c.Id == id).SingleOrDefault();
-                    //var listeners = db.CoursesListeners.Where(c => c.RequestedCourse.Id == id);
-                    //foreach (var l in listeners)
-                    //{
-                    //    db.CoursesListeners.Remove(l);
-                    //}
-                    //foreach (var l in course.CourseLessons)
-                    //{
-                    //    foreach (var p in l.Posts)
-                    //    {
-                    //        db.Posts.Remove(p);
-                    //    }
-                    //    db.Lessons.Remove(l);
-                    //}
-                    //db.Remove(course);
-                    //db.SaveChanges();
-                    db.DeleteCourse(id);
-                }
-            }
+            db.DeleteCourse(id);
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
     }
