@@ -37,7 +37,7 @@
             @elem.Description
             @if (User?.Identity?.IsAuthenticated ?? false)
             {
-                @if (User.IsInRole("Student"))
+                @if (User.IsInRole("Student") && elem.StartDate > DateTime.Now)
                 {
                     <a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>
                 }
