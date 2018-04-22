@@ -102,15 +102,15 @@ namespace website.Controllers
             ViewData["username"] = user.UserName;
             string role = (await userManager.GetRolesAsync(user)).First();
             ViewData["role"] = role;
-            if (role == "teacher")
+            if (role == "Teacher")
             {
-                return View(db.Courses.Include(o => o.Teacher).Where(c => c.Teacher.Id == name));
+                return View(db.Courses.Include(o => o.Teacher).Where(c => c.Teacher.UserName == name));
             }
             else
             {
                 var courses = from course in db.Courses.Include(c => c.Teacher)
                                 join listener in db.CoursesListeners on course.Id equals listener.RequestedCourse.Id
-                                where listener.Student.Id == name
+                                where listener.Student.UserName == name
                                 where listener.Accepted == true
                                 select course;
                 return View(courses);

@@ -22,7 +22,7 @@ namespace website.Models
         void AcceptCourse(int studentId, int courseId);
         void RefuseCourse(int studentId, int courseId);
         void AddUser(User toAdd);
-        void SetTeacher(int userId);
+        void SetTeacher(string name);
         void DeleteCourse(int courseId);
     }
 }

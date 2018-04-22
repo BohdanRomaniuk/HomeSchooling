@@ -72,9 +72,10 @@ namespace website.Models
             context.SaveChanges();
         }
 
-        public void SetTeacher(int userId)
+        public void SetTeacher(string name)
         {
-            //User teacher = context.Users.Where(u => u.Id == userId).SingleOrDefault();
+            //User teacher = context.Users.Where(u => u.UserName == name).SingleOrDefault();
+            
             //teacher.UserRole = "teacher";
             //context.SaveChanges();
         }
