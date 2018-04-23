@@ -17,9 +17,10 @@ namespace website.Models
         public DateTime LessonEndDate { get; set; }
         public DateTime HomeWorkEnd { get; set; }
 
+        public List<Mark> Marks { get; set; }
         public List<Post> HomeWorks { get; set; }
         public bool IsControlWork { get; set; }
-        public LessonViewModel(Lesson currentLesson)
+        public LessonViewModel(Lesson currentLesson, List<Mark> marks)
         {
             LessonId = currentLesson.Id;
             LessonName = currentLesson.Name;
@@ -28,6 +29,7 @@ namespace website.Models
             HomeWorkEnd = currentLesson.HomeWorkEnd;
             IsControlWork = currentLesson.IsControlWork;
             LessonDescription = currentLesson.Posts.Where(s => s.PostType == "lesson-desc").SingleOrDefault();
+            Marks = marks;
             HomeWorkDescription = currentLesson.Posts.Where(s => s.PostType == "homework-desc").SingleOrDefault();
             HomeWorks = currentLesson.Posts.Where(s => s.PostType == "homework").ToList();
         }
