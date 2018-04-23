@@ -70,11 +70,10 @@ namespace website.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> AddCourse(string courseName, string courseDescription)
+        public async Task<IActionResult> AddCourse(string courseName, string courseDescription, DateTime courseStartDatetime, DateTime courseEndDatetime)
         {
             User teacher = await userManager.GetUserAsync(User);
-            //Course restictions!!!!
-            //db.AddCourse(new Course(courseName, courseDescription, teacher));
+            db.AddCourse(new Course(courseName, courseDescription, teacher, courseStartDatetime, courseEndDatetime));
             return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
         }
 
