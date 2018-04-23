@@ -68,7 +68,7 @@ namespace website.Controllers
             //            from elem in nn.DefaultIfEmpty()
             //            select new { Student = elem.PostMark.Student.Name, MarkValue = elem.PostMark.MarkValue };
 
-            return View(new LessonViewModel(currentLesson, null));
+            return View(new LessonViewModel(currentLesson, marks.ToList()));
         }
 
         [HttpGet]
