@@ -1,4 +1,5 @@
-﻿@model LessonViewModel;
+﻿@using database.Models
+@model LessonViewModel;
 @{
     ViewData["Title"] = "Перегляд уроку - " + Model.LessonName;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,12 +14,12 @@
             <div class="panel-heading">
                 <h3 class="panel-title" style="font-size: 14px;">
                     <ul class="nav nav-pills" role="tablist">
-                        <li role="presentation" class="active"><a href="#">Інформація про урок</a></li>
-                        <!--<li role="presentation"><a href="#">Обговорення <span class="badge">42 нових повідомлення</span></a></li>-->
+                        <li role="presentation" id="info-button" class="active" onclick="showInfo(this)"><a href="#info">Інформація про урок</a></li>
+                        <li role="presentation" id="mark-button" onclick="showMarks(this)"><a href="#marks">Оцінки</a></li>
                     </ul>
                 </h3>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" id="info-panel">
                 @if (Model.LessonDescription != null)
                 {
                     <b>Час проведення:</b> <span class="label label-primary">@Model.LessonStartDate - @Model.LessonEndDate</span><br>
@@ -45,6 +46,29 @@
                         </div>
                     }
                 }
+            </div>
+            <div class="panel-body" id="mark-panel" style="display:none;">
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Учень</th>
+                        <th>Оцінка</th>
+                        <th>Вчитель</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Mark mark in Model.Marks)
+                    {
+                    <tr>
+                        <td>@mark.Student.Name</td>
+                        <td>@mark.MarkValue</td>
+                        <td>@mark.Teacher.Name</td>
+                        <td>@mark.MarkDate</td>
+                    </tr>
+                    }
+                </tbody>
+                </table>
             </div>
         </div>
         <br />
@@ -188,3 +212,22 @@ else
 {
     <div class="alert alert-warning" style="padding: 5px;">Ви не записані на даний курс і не можете переглядати вміст уроку "@Model.LessonName"!</div>
 }
+<script type="text/javascript">
+	function showMarks(markBlock)
+	{
+		markBlock.classList.add("active");
+		var infobutton = document.getElementById("info-button");
+		infobutton.classList.remove("active");
+		document.getElementById("info-panel").style.display = "none";
+		document.getElementById("mark-panel").style.display = "block";
+	}
+	
+	function showInfo(infoBlock)
+	{
+		infoBlock.classList.add("active");
+		var markbutton = document.getElementById("mark-button");
+		markbutton.classList.remove("active");
+		document.getElementById("mark-panel").style.display = "none";
+		document.getElementById("info-panel").style.display = "block";
+    }
+</script>

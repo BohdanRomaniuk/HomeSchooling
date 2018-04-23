@@ -43,6 +43,7 @@ namespace website.Controllers
                 .Include(lesson => lesson.Posts).ThenInclude(post => post.PostAtachments).ThenInclude(attach => attach.UploadedBy)
                 .Include(lesson => lesson.Posts).ThenInclude(post => post.PostedBy)
                 .Include(lesson => lesson.Posts).ThenInclude(post => post.PostMark).ThenInclude(mark => mark.Teacher)
+                .Include(lesson => lesson.Posts).ThenInclude(post => post.PostMark).ThenInclude(mark => mark.Student)
                 .Where(lesson => lesson.Id == id).SingleOrDefault();
             string userName = User.Identity.Name;
             int currentCourseId = db.Courses.Where(c => c.CourseLessons.Where(l => l.Id == id).Count() != 0).SingleOrDefault().Id;
@@ -58,7 +59,16 @@ namespace website.Controllers
             {
                 ViewData["IsCourseListener"] = true;
             }
-            return View(new LessonViewModel(currentLesson));
+            var marks = from mark in currentLesson.Posts
+                        where mark.PostMark != null
+                        select mark.PostMark;
+            //var marks = from listener in db.CoursesListeners.Include(s => s.Student).Include(s => s.RequestedCourse)
+            //            where listener.RequestedCourse.Id == currentCourseId
+            //            join mark in currentLesson.Posts on listener.Student.Id equals mark.PostMark.Student.Id into nn
+            //            from elem in nn.DefaultIfEmpty()
+            //            select new { Student = elem.PostMark.Student.Name, MarkValue = elem.PostMark.MarkValue };
+
+            return View(new LessonViewModel(currentLesson, marks.ToList()));
         }
 
         [HttpGet]
