@@ -260,6 +260,24 @@ namespace website.Controllers
                 return View("RequestCourse", "Ви вже подали заявку на курс, але викладач ще її не розглянув");
             }
         }
+        [Authorize(Roles = "Student")]
+        public IActionResult DeleteFromCourse(int id)
+        {
+            var acc = db.CoursesListeners.Where(c => c.Student.UserName == HttpContext.User.Identity.Name).Where(c => c.RequestedCourse.Id == id);
+            if (acc.Count() == 0)
+            {
+                return View("RequestCourse", "Ви не відвідуєте даний курс");
+            }
+            else if (acc.SingleOrDefault().Accepted == true)
+            {
+                db.RefuseCourse(HttpContext.User.Identity.Name, id);
+                return RedirectToRoute(new { controller = "Home", action = "Index"});
+            }
+            else
+            {
+                return View("RequestCourse", "Ви ще не відвідуєте даний курс");
+            }
+        }
 
         [Authorize(Roles = "Teacher")]
         public IActionResult ViewRequests()
