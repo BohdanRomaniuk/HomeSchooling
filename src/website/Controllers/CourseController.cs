@@ -103,7 +103,6 @@ namespace website.Controllers
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
             }
         }
-
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddLesson(int courseId, string lessonName, string lessonStartDatetime, string lessonEndDatetime, string lessonDescription, string homeworkDescription, string homeworkEndDatetime, string isControllWork, List<IFormFile> files1, List<IFormFile> files2)
@@ -113,8 +112,13 @@ namespace website.Controllers
             Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
             Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
             Post homework_post = new Post(homeworkDescription, "homework-desc", postedBy, DateTime.Now);
-
+            bool flag = false;
+            int fileLenght = 1000000;
+            int filesQuantity = 20;
             //Files1 upload begin
+            if (files1.Count > filesQuantity || files2.Count > filesQuantity)
+                return View("AddLesson", String.Format("Урок \"{0}\" не додано ,кількість файлів перевищено!", lessonName));
+
             if (files1 != null && files1.Count != 0)
             {
                 lesson_post.PostAtachments = new List<Attachment>();
@@ -123,25 +127,47 @@ namespace website.Controllers
                     var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", file.GetFilename());
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
-                        await file.CopyToAsync(stream);
+                        if (file.Length < fileLenght)
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        else
+                        {
+                            flag = true;
+                        }
                     }
                     lesson_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
                 }
             }
+
             //Files1 upload end
             //Files2 upload begin
             if (files2 != null && files2.Count != 0)
             {
+
                 homework_post.PostAtachments = new List<Attachment>();
                 foreach (var file in files2)
                 {
                     var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", file.GetFilename());
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
-                        await file.CopyToAsync(stream);
+                        if (file.Length < fileLenght)
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        else
+                        {
+                            flag = true;
+                        }
                     }
+
                     homework_post.PostAtachments.Add(new Attachment(file.GetFilename(), postedBy, DateTime.Now));
                 }
+
+            }
+            if (flag == true)
+            {
+                return View("AddLesson", String.Format("Урок \"{0}\" не додано ,розмір перевищено!", lessonName));
             }
             //Files2 upload end
             newLesson.Posts.Add(lesson_post);
@@ -155,10 +181,15 @@ namespace website.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddHomeWork(int lessonId, string homeWorkDescription, List<IFormFile> files)
         {
+            bool flag = false;
+            int fileLenght = 1000000;
+            int filesQuantity = 20;
             string studentId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
             User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
             Post newPost = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
             //Files upload begin
+            if (files.Count > filesQuantity)
+                return Content("Забагато файлів");
             if (files != null && files.Count != 0)
             {
                 newPost.PostAtachments = new List<Attachment>();
@@ -170,8 +201,17 @@ namespace website.Controllers
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
-                        await file.CopyToAsync(stream);
+                        if (file.Length < fileLenght)
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        else
+                        {
+                            flag = true;
+                        }
                     }
+                    if (flag)
+                        return Content("Розмір перевищено.");
                     newPost.PostAtachments.Add(new Attachment(file.GetFilename(), currentStudent, DateTime.Now));
                 }
             }
@@ -180,6 +220,7 @@ namespace website.Controllers
             db.AddHomeWork(lessonId, newPost);
             return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
         }
+
 
         [HttpPost]
         [Authorize(Roles ="Teacher")]
@@ -217,6 +258,24 @@ namespace website.Controllers
             else
             {
                 return View("RequestCourse", "Ви вже подали заявку на курс, але викладач ще її не розглянув");
+            }
+        }
+        [Authorize(Roles = "Student")]
+        public IActionResult DeleteFromCourse(int id)
+        {
+            var acc = db.CoursesListeners.Where(c => c.Student.UserName == HttpContext.User.Identity.Name).Where(c => c.RequestedCourse.Id == id);
+            if (acc.Count() == 0)
+            {
+                return View("RequestCourse", "Ви не відвідуєте даний курс");
+            }
+            else if (acc.SingleOrDefault().Accepted == true)
+            {
+                db.RefuseCourse(HttpContext.User.Identity.Name, id);
+                return RedirectToRoute(new { controller = "Home", action = "Index"});
+            }
+            else
+            {
+                return View("RequestCourse", "Ви ще не відвідуєте даний курс");
             }
         }
 

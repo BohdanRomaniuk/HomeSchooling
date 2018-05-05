@@ -46,10 +46,13 @@ namespace website.Controllers
                 };
                 IdentityResult result = await userManager.CreateAsync(user, details.Password);
                 IdentityResult result2 = await userManager.AddToRoleAsync(user, "Student");
-                Microsoft.AspNetCore.Identity.SignInResult result1 = await signInManager.PasswordSignInAsync(user, details.Password, false, false);
-                if (result.Succeeded && result1.Succeeded && result2.Succeeded)
+                if (result.Succeeded && result2.Succeeded)
                 {
-                    return Redirect(returnUrl ?? "/");
+                    Microsoft.AspNetCore.Identity.SignInResult result1 = await signInManager.PasswordSignInAsync(user, details.Password, false, false);
+                    if ( result1.Succeeded)
+                    {
+                        return Redirect(returnUrl ?? "/");
+                    }
                 }
                 foreach (IdentityError error in result.Errors)
                 {

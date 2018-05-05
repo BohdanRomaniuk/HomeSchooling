@@ -28,15 +28,56 @@ namespace website.Controllers
 
         public IActionResult Index(string name = null)
         {
+            IQueryable<Course> allCourses;
             if (name == null)
             {
-                IQueryable<Course> allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons);
-                return View(allCourses);
+                allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons);
             }
             else
             {
-                return View(_context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name)));
+                allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name));
             }
+            List<HomeViewModel> vm = new List<HomeViewModel>();
+            foreach (var course in allCourses)
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    if (HttpContext.User.IsInRole("Student"))
+                    {
+                        bool? show;
+                        var acc = _context.CoursesListeners.Where(c => c.Student.UserName == HttpContext.User.Identity.Name).Where(c => c.RequestedCourse.Id == course.Id);
+                        if (acc.Count() == 0)
+                        {
+                            if (_context.Courses.Where(c => c.Id == course.Id).SingleOrDefault().StartDate < DateTime.Now)
+                            {
+                                show = null;
+                            }
+                            else
+                            {
+                                show = true;
+                            }
+                        }
+                        else if (acc.SingleOrDefault().Accepted == true)
+                        {
+                            show = false;
+                        }
+                        else
+                        {
+                            show = null;
+                        }
+                        vm.Add(new HomeViewModel(course, show));
+                    }
+                    else
+                    {
+                        vm.Add(new HomeViewModel(course, null));
+                    }
+                }
+                else
+                {
+                    vm.Add(new HomeViewModel(course, null));
+                }
+            }
+            return View(vm);
         }
 
         public IActionResult About()
