@@ -1,27 +1,35 @@
 ﻿@using database.Models
-@model IEnumerable<Course>
+@model IEnumerable<HomeViewModel>
 @{
     ViewData["Title"] = "Головна сторінка";
 }
 <h3>Усі курси @if (User?.IsInRole("Teacher") ?? true) {<a asp-controller="Course" asp-action="AddCourse" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий курс</a>}</h3>
 <hr />
-@foreach(Course elem in Model)
+@foreach(var elem in Model)
 {
 <div class="panel panel-default">
-    <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id">@elem.Name</a></div>
+    <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.CurrentCourse.Id">@elem.CurrentCourse.Name</a></div>
     <div class="panel-body">
-        @elem.Description
-        @if ((User?.IsInRole("Student") ?? true) && elem.StartDate > DateTime.Now)
-    {<a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>}
+        @elem.CurrentCourse.Description
+        @if (elem.ShowRequestCourse == true)
+        {
+            <a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>
+        }
+        @if (elem.ShowRequestCourse == false)
+        { 
+            <a asp-controller="Course" asp-action="DeleteFromCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-warning" style="float:right;">Видалитись з курсу</a>
+        }
         @if (User?.IsInRole("Admin") ?? true)
-    {<a asp-controller="Admin" asp-action="DeleteCourse" asp-route-id="@elem.Id" class="btn btn-warning" style="float:right;">Видалити курс</a>}
-        <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
+        {
+            <a asp-controller="Admin" asp-action="DeleteCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-warning" style="float:right;">Видалити курс</a>
+        }
+        <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
         <br>
-        <b>Викладач:</b> <a asp-controller="Profile" asp-action="View" asp-route-name="@elem.Teacher.UserName"><span class="label label-primary">@elem.Teacher.Name</span></a>
-        <b style="margin-left:20px;">Всього уроків на курсі:</b> <span class="label label-success">@elem.CourseLessons.Count</span>
+        <b>Викладач:</b> <a asp-controller="Profile" asp-action="View" asp-route-name="@elem.CurrentCourse.Teacher.UserName"><span class="label label-primary">@elem.CurrentCourse.Teacher.Name</span></a>
+        <b style="margin-left:20px;">Всього уроків на курсі:</b> <span class="label label-success">@elem.CurrentCourse.CourseLessons.Count</span>
         <br />
-        <b>Час проведення:</b> <span class="label label-primary">@elem.StartDate</span>
-        <b> - </b> <span class="label label-warning">@elem.EndDate</span>
+        <b>Час проведення:</b> <span class="label label-primary">@elem.CurrentCourse.StartDate</span>
+        <b> - </b> <span class="label label-warning">@elem.CurrentCourse.EndDate</span>
     </div>
 </div>
 }
