@@ -42,32 +42,35 @@ namespace website.Controllers
             {
                 if (HttpContext.User.Identity.IsAuthenticated)
                 {
-                    bool? show;
-                    var acc = _context.CoursesListeners.Where(c => c.Student.UserName == HttpContext.User.Identity.Name).Where(c => c.RequestedCourse.Id == course.Id);
-                    if (acc.Count() == 0)
+                    if (HttpContext.User.IsInRole("Student"))
                     {
-                        if (_context.Courses.Where(c => c.Id == course.Id).SingleOrDefault().StartDate < DateTime.Now)
+                        bool? show;
+                        var acc = _context.CoursesListeners.Where(c => c.Student.UserName == HttpContext.User.Identity.Name).Where(c => c.RequestedCourse.Id == course.Id);
+                        if (acc.Count() == 0)
                         {
-                            //show nothing
-                            show = null;
+                            if (_context.Courses.Where(c => c.Id == course.Id).SingleOrDefault().StartDate < DateTime.Now)
+                            {
+                                show = null;
+                            }
+                            else
+                            {
+                                show = true;
+                            }
+                        }
+                        else if (acc.SingleOrDefault().Accepted == true)
+                        {
+                            show = false;
                         }
                         else
                         {
-                            //show request
-                            show = true;
+                            show = null;
                         }
-                    }
-                    else if (acc.SingleOrDefault().Accepted == true)
-                    {
-                        //show delete
-                        show = false;
+                        vm.Add(new HomeViewModel(course, show));
                     }
                     else
                     {
-                        //show nothing
-                        show = null;
+                        vm.Add(new HomeViewModel(course, null));
                     }
-                    vm.Add(new HomeViewModel(course, show));
                 }
                 else
                 {
