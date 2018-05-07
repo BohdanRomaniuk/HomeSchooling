@@ -11,35 +11,35 @@
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
 </head>
 <body>
-    <h3 style="margin-left:200px;">Реєстрація</h3>
+    <h3>Реєстрація</h3>
     <hr />
     <form class="form-horizontal" asp-action="Register" method="post">
-            <div class="form-group">
-                <label class="col-sm-2 control-label" asp-for="UserName">Ваш логін:</label>
-                <div class="col-sm-10" style="width:300px;">
+            <div class="form-group" align="center">
+                <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+                    <label class="col-sm-2 control-label" asp-for="UserName" style="text-align: right;width: 300px;float:unset;">Ваш логін:</label>
                     <input class="form-control" asp-for="UserName" />
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label" asp-for="Password">Ваш пароль:</label>
-                <div class="col-sm-10" style="width:300px;">
+            <div class="form-group" align="center">
+                <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+                    <label class="col-sm-2 control-label" asp-for="Password" style="text-align: right;width: 300px;float:unset;">Ваш пароль:</label>
                     <input class="form-control" type="password" asp-for="Password" />
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label" asp-for="Name">Ваше ім'я та прізвище:</label>
-                <div class="col-sm-10" style="width:300px;">
+            <div class="form-group" align="center">
+                <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;"">
+                    <label class="col-sm-2 control-label" asp-for="Name" style="text-align: right;width: 300px;float:unset;">Ваше ім'я та прізвище:</label>
                     <input class="form-control" asp-for="Name" />
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label" asp-for="Email">Ваш e-mail:</label>
-                <div class="col-sm-10" style="width:300px;">
+            <div class="form-group" align="center">
+                <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;"">
+                    <label class="col-sm-2 control-label" asp-for="Email" style="text-align: right;width: 300px;float:unset;">Ваш e-mail:</label>
                     <input class="form-control" asp-for="Email" />
                 </div>
             </div>
 
-            <div style="text-align:left; margin-left:200px;">
+            <div align="center">
                 <button class="btn btn-success" type="submit">Зареєструватись</button>
             </div>
     </form>
