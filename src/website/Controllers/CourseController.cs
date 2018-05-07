@@ -91,7 +91,7 @@ namespace website.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddLesson(int id)
         {
-            string teacherId = (await userManager.GetUserAsync(User)).Id;
+            string teacherId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
             Course currentCourse = db.Courses.Include(c => c.Teacher).Where(c => c.Id == id).SingleOrDefault();
             if (teacherId == currentCourse.Teacher.Id)
             {
@@ -107,7 +107,7 @@ namespace website.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddLesson(int courseId, string lessonName, string lessonStartDatetime, string lessonEndDatetime, string lessonDescription, string homeworkDescription, string homeworkEndDatetime, string isControllWork, List<IFormFile> files1, List<IFormFile> files2)
         {
-            string teacherId = (await userManager.GetUserAsync(User)).Id;
+            string teacherId = (await userManager.FindByNameAsync(User.Identity.Name)).Id;
             User postedBy = db.Users.Where(u => u.Id == teacherId).SingleOrDefault();
             Lesson newLesson = new Lesson(lessonName, Convert.ToDateTime(lessonStartDatetime), Convert.ToDateTime(lessonEndDatetime), Convert.ToDateTime(homeworkEndDatetime), Convert.ToBoolean(isControllWork));
             Post lesson_post = new Post(lessonDescription, "lesson-desc", postedBy, DateTime.Now);
@@ -116,7 +116,7 @@ namespace website.Controllers
             int fileLenght = 1000000;
             int filesQuantity = 20;
             //Files1 upload begin
-            if (files1.Count > filesQuantity || files2.Count > filesQuantity)
+            if ((files1!=null && files1.Count > filesQuantity) || (files2!=null && files2.Count > filesQuantity))
                 return View("AddLesson", String.Format("Урок \"{0}\" не додано ,кількість файлів перевищено!", lessonName));
 
             if (files1 != null && files1.Count != 0)
@@ -188,7 +188,7 @@ namespace website.Controllers
             User currentStudent = db.Users.Where(u => u.Id == studentId).SingleOrDefault();
             Post newPost = new Post(homeWorkDescription, "homework", currentStudent, DateTime.Now);
             //Files upload begin
-            if (files.Count > filesQuantity)
+            if (files!=null && files.Count > filesQuantity)
                 return Content("Забагато файлів");
             if (files != null && files.Count != 0)
             {
