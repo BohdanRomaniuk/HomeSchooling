@@ -1,81 +1,82 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using Xunit;
-//using Moq;
-//using website.Models;
-//using database.Models;
-//using website.Controllers;
-//using System.Linq;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Xunit;
+using Moq;
+using website.Models;
+using database.Models;
+using website.Controllers;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-//namespace website.tests
-//{
-//    public class AdminControllerTests
-//    {
-//        [Fact]
-//        public void CourseDeletionTest()
-//        {
-//            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-//            User[] users = new User[]
-//            {
-//                new User { Id = 1, Name = "muzychuk", UserName = "anatoliy", Password = "a1", UserRole = "teacher" },
-//                new User { Id = 2, Name = "registered", UserName = "reg", Password = "reg", UserRole = "student" }
-//            };
-//            Post[] posts = new Post[]
-//            {
-//                new Post{ Id = 1, PostedBy = users[0], PostType = "a", Text = "aaaa"}
-//            };
-//            Lesson[] lessons = new Lesson[]
-//            {
-//                new Lesson { Id = 1, IsControlWork = false, Name = "les1", Posts = posts.ToList()}
-//            };
-//            Course[] courses = new Course[]
-//            {
-//                new Course{ Name = "Проектування програмних систем", Description = "Опис курсу", Teacher = users[0], Id = 1, CourseLessons = lessons.ToList() }
-//            };
-//            CoursesListener[] listeners = new CoursesListener[]
-//            {
-//                new CoursesListener { Id = 2, Accepted = true, RequestedCourse = courses[0], Student = users[1] }
-//            };
-//            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
-//            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
-//            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-//            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-//            MockHttpSession mockSession = new MockHttpSession();
-//            mockSession["role"] = "admin";
-//            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
 
-//            AdminController controller = new AdminController(mock.Object);
-//            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+namespace website.tests
+{
+    public class AdminControllerTests
+    {
+        [Fact]
+        public void CourseDeletionTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk", PasswordHash = "123456" };
+            Course pps = new Course("Проектування програмних систем", "Опис курсу", teacher, Convert.ToDateTime("12.12.2018 19:00"), Convert.ToDateTime("12.05.2019 18:00")) { Id = 1 };
+            Course ppc = new Course("Програмування мовою с++", "Опис курсу", teacher, Convert.ToDateTime("12.12.2018 19:00"), Convert.ToDateTime("12.05.2019 18:00")) { Id = 2 };
+            pps.CourseLessons = new List<Lesson>();
+            ppc.CourseLessons = new List<Lesson>();
+            pps.CourseLessons.Add(new Lesson("Вступ у ASP .NET Core MVC", Convert.ToDateTime("05.03.2018 11:50"), Convert.ToDateTime("05.03.2018 13:10"), Convert.ToDateTime("12.03.2018 13:10")));
+            pps.CourseLessons.Add(new Lesson("Use Case and Domain models", Convert.ToDateTime("12.03.2018 11:50"), Convert.ToDateTime("12.03.2018 13:10"), Convert.ToDateTime("19.03.2018 13:10")));
+            pps.CourseLessons.Add(new Lesson("Побудова підсистем", Convert.ToDateTime("19.03.2018 11:50"), Convert.ToDateTime("19.03.2018 13:10"), Convert.ToDateTime("27.03.2018 13:10")));
+            ppc.CourseLessons.Add(new Lesson("Вступ у мову програмування C++", Convert.ToDateTime("01.09.2017 08:30"), Convert.ToDateTime("01.09.2017 09:50"), Convert.ToDateTime("08.09.2017 09:50")));
+            ppc.CourseLessons.Add(new Lesson("Типи змінних, синтаксис", Convert.ToDateTime("08.09.2017 08:30"), Convert.ToDateTime("08.09.2017 09:50"), Convert.ToDateTime("15.09.2017 09:50")));
+            Course[] courses = new Course[] { pps, ppc };
 
-//            bool isredirect = controller.DeleteCourse(1) is RedirectToRouteResult;
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
 
-//            Assert.True(isredirect);
-//        }
-//        [Fact]
-//        public void SetTeacherTest()
-//        {
-//            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-//            User[] users = new User[]
-//            {
-//                new User { Id = 1, Name = "muzychuk", UserName = "anatoliy", Password = "a1", UserRole = "teacher" },
-//                new User { Id = 2, Name = "registered", UserName = "reg", Password = "reg", UserRole = "student" }
-//            };
-            
-//            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-//            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-//            MockHttpSession mockSession = new MockHttpSession();
-//            mockSession["role"] = "admin";
-//            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            AdminController controller = new AdminController(mock.Object, null);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "admin"),
+                        new Claim(ClaimTypes.Role, "Admin")
+                    }, "Authentication"))
+                }
+            };
 
-//            AdminController controller = new AdminController(mock.Object);
-//            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+            bool isredirect = controller.DeleteCourse(1) is RedirectToRouteResult;
 
-//            bool isredirect = controller.SetTeacher(2) is RedirectToRouteResult;
+            Assert.True(isredirect);
+        }
+        /*[Fact]
+        public void SetTeacherTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            List<User> users = new List<User>();
+            User student = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk", PasswordHash = "123456"};
+            users.Add(student);
 
-//            Assert.True(isredirect);
-//        }
-//    }
-//}
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+
+            AdminController controller = new AdminController(mock.Object, null);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "admin"),
+                        new Claim(ClaimTypes.Role, "Admin")
+                    }, "Authentication"))
+                }
+            };
+
+            bool result = controller.SetTeacher("anatoliy.muzychuk").Result is RedirectToRouteResult;
+
+            Assert.True(result);
+        }*/
+    }
+}
