@@ -11,23 +11,23 @@
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
 </head>
 <body>
-    <h3>Вхід</h3>
+    <h3 style="margin-left:200px;">Вхід</h3>
     <hr />
     <form class="form-horizontal" asp-action="Login" method="post">
 
         <div class="form-group">
             <label class="col-sm-2 control-label" asp-for="UserName">Ваш логін:</label>
             <div class="col-sm-10">
-                <input class="form-control" asp-for="UserName" />
+                <input class="form-control" asp-for="UserName" style="width:300px;"/>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label" asp-for="Password">Ваш пароль:</label>
             <div class="col-sm-10">
-                <input class="form-control" type="password" asp-for="Password" />
+                <input class="form-control" type="password" asp-for="Password" style="width:300px;"/>
             </div>
         </div>
-        <div style="text-align:center">
+        <div style="text-align:left; margin-left:200px;">
             <button class="btn btn-success" type="submit">Увійти</button>
         </div>
     </form>
