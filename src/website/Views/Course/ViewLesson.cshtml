@@ -22,9 +22,9 @@
             <div class="panel-body" id="info-panel">
                 @if (Model.LessonDescription != null)
                 {
-                    <b>Час проведення:</b> <span class="label label-primary">@Model.LessonStartDate - @Model.LessonEndDate</span><br>
-                    <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.LessonDescription.PostedBy.UserName" class="label label-primary">@Model.LessonDescription.PostedBy.Name</a>
-                    <span class="label label-default">@Model.LessonDescription.PostedDate</span>
+                    <b>Час проведення:</b> <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@Model.LessonStartDate - @Model.LessonEndDate</span><br>
+                    <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.LessonDescription.PostedBy.UserName" class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@Model.LessonDescription.PostedBy.Name</a>
+                    <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@Model.LessonDescription.PostedDate</span>
                     <br><br>
                     @Model.LessonDescription.Text
                     @if (Model.LessonDescription.PostAtachments != null && Model.LessonDescription.PostAtachments.Count != 0)
@@ -38,8 +38,8 @@
                                     @attach.FileName
                                     <div style="float:right;">
                                         <span style="font-weight:bold;font-size: 13px;">Додано:</span>
-                                        <span class="label label-primary">@attach.UploadedBy.Name</span>
-                                        <span class="label label-default">@attach.UploadDate</span>
+                                        <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@attach.UploadedBy.Name</span>
+                                        <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@attach.UploadDate</span>
                                     </div>
                                 </a>
                             }
@@ -92,9 +92,9 @@
                 }
                 else
                 {
-                    <b>Термін здачі @((Model.IsControlWork) ? "контрольної роботи:" : "домашнього завдання:")</b> <span class="label label-danger">@Model.HomeWorkEnd</span><br>
-                    <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.HomeWorkDescription.PostedBy.UserName" class="label label-primary">@Model.HomeWorkDescription.PostedBy.Name</a>
-                    <span class="label label-default">@Model.HomeWorkDescription.PostedDate</span>
+                    <b>Термін здачі @((Model.IsControlWork) ? "контрольної роботи:" : "домашнього завдання:")</b> <span class="label label-danger" style="font-size: 12px;color: black; background-color: rgba(217, 83, 79, 0.3);">@Model.HomeWorkEnd</span><br>
+                    <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.HomeWorkDescription.PostedBy.UserName" class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@Model.HomeWorkDescription.PostedBy.Name</a>
+                    <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@Model.HomeWorkDescription.PostedDate</span>
                     <br><br>
                     @Model.HomeWorkDescription.Text
                     @if (Model.HomeWorkDescription.PostAtachments != null && Model.HomeWorkDescription.PostAtachments.Count != 0)
@@ -108,8 +108,8 @@
                                     @attach.FileName
                                     <div style="float:right;">
                                         <span style="font-weight:bold;font-size: 13px;">Додано:</span>
-                                        <span class="label label-primary">@attach.UploadedBy.Name</span>
-                                        <span class="label label-default">@attach.UploadDate</span>
+                                        <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@attach.UploadedBy.Name</span>
+                                        <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@attach.UploadDate</span>
                                     </div>
                                 </a>
                             }
@@ -126,13 +126,14 @@
                     <a name="@homework.Id"></a>
                     <div class="panel panel-default">
                         <div style="padding: 10px;">
-                            <a asp-controller="Profile" asp-action="View" asp-route-name="@homework.PostedBy.UserName" class="label label-primary">@homework.PostedBy.Name</a> <span class="label label-default">@homework.PostedDate</span>
+                            <a asp-controller="Profile" asp-action="View" asp-route-name="@homework.PostedBy.UserName" class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@homework.PostedBy.Name</a> 
+                            <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@homework.PostedDate</span>
                             <span class="panel panel-default" style="padding: 1px 1px 4px;float: right;position: relative;margin-bottom: 0;">
                             <span style="margin-right: 10px;"><b style="color: red;">Оцінка:</b> @((homework.PostMark!=null)? homework.PostMark.MarkValue.ToString() :"Не оцінено")</span> 
                             @if (homework.PostMark != null)
                             {
-                                <a class="label label-primary" asp-controller="Profile" asp-action="View" asp-route-name="@homework.PostMark.Teacher.UserName">@homework.PostMark.Teacher.Name</a>
-                                <span class="label label-default">@homework.PostMark.MarkDate</span> 
+                                <a class="label label-primary" asp-controller="Profile" asp-action="View" asp-route-name="@homework.PostMark.Teacher.UserName" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@homework.PostMark.Teacher.Name</a>
+                                <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@homework.PostMark.MarkDate</span> 
                             }
                             @if (User?.IsInRole("Teacher") ?? true) {
                             <form asp-action="AddMark" method="post" style="margin-top: 5px;">
@@ -158,8 +159,8 @@
                                             @attach.FileName
                                             <div style="float:right;">
                                                 <span style="font-weight:bold;font-size: 13px;">Додано:</span>
-                                                <span class="label label-primary">@attach.UploadedBy.Name</span>
-                                                <span class="label label-default">@attach.UploadDate</span>
+                                                <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@attach.UploadedBy.Name</span>
+                                                <span class="label label-default" style="font-size: 12px;color: black;background-color: rgba(255, 177, 0, 0.27);">@attach.UploadDate</span>
                                             </div>
                                         </a>
                                     }
