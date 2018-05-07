@@ -25,7 +25,7 @@ namespace website.tests
             testcurrentlesson.Posts.Add(new Post("Homework", "homework-desc", testuser, DateTime.Now));
 
             //Act
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             //Assert
             Assert.Equal(testcurrentlesson.Id, testobj1.LessonId);
             Assert.Equal(testcurrentlesson.Name, testobj1.LessonName);
@@ -39,7 +39,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             int testId = 1;
 
             //Act
@@ -54,7 +54,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             string testName = "test";
 
             //Act
@@ -68,7 +68,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             User testuser = new User();
             Post testpost = new Post("text1", "text2", testuser, DateTime.Today);
             //Act
@@ -83,7 +83,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             User testuser = new User();
             Post testpost = new Post("text1", "text2", testuser, DateTime.Today);
             //Act
@@ -97,7 +97,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             DateTime testDate = new DateTime(2018, 12, 4, 13, 30, 50);
             //Act
             testobj1.LessonStartDate = testDate;
@@ -110,7 +110,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             DateTime testDate = new DateTime(2018, 12, 4, 13, 30, 50);
             //Act
             testobj1.LessonEndDate = testDate;
@@ -124,7 +124,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             DateTime testDate = new DateTime(2018, 12, 4, 13, 30, 50);
             //Act
             testobj1.HomeWorkEnd = testDate;
@@ -137,7 +137,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             List<Post> testlist = new List<Post>();
             for (int i = 0; i < 20; ++i)
             {
@@ -157,7 +157,7 @@ namespace website.tests
         {
             //Arrange
             Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
-            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
             bool testbool = true;
             //Act
             testobj1.IsControlWork = testbool;

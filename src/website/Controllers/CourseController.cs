@@ -82,7 +82,7 @@ namespace website.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddCourse(string courseName, string courseDescription, DateTime courseStartDatetime, DateTime courseEndDatetime)
         {
-            User teacher = await userManager.GetUserAsync(User);
+            User teacher = await userManager.FindByNameAsync(User.Identity.Name);
             db.AddCourse(new Course(courseName, courseDescription, teacher, courseStartDatetime, courseEndDatetime));
             return View("AddCourse", String.Format("Курс \"{0}\" успішно створено!", courseName));
         }
