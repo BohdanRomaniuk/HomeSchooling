@@ -11,6 +11,7 @@
 <hr />
 <p style="font-size:130%">Час проведення: <span class="label label-info" style="color: black; background-color: rgba(222, 170, 91, 0.27);">@Model.StartDate</span>
 <span > – </span> <span class="label label-info" style="color: black; background-color: rgba(222, 170, 91, 0.27);">@Model.EndDate</span>
+    <a class="btn btn-primary" style="float:right;margin-right:10px;" asp-controller="Course" asp-action="ViewStudents" asp-route-id="@Model.Id">Список учнів</a></p>
 <h4>
     Всього уроків: @Model.CourseLessons.Count  @if (Convert.ToBoolean(ViewData["IsCourseOwner"]))
     {<a asp-controller="Course" asp-action="AddLesson" asp-route-id="@Model.Id" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий урок</a>}

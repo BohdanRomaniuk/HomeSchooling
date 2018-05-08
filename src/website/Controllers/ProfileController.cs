@@ -42,7 +42,8 @@ namespace website.Controllers
                 User user = new User {
                     UserName = details.UserName,
                     Email = details.Email,
-                    Name = details.Name
+                    Name = details.Name,
+                    Location = details.Location
                 };
                 IdentityResult result = await userManager.CreateAsync(user, details.Password);
                 IdentityResult result2 = await userManager.AddToRoleAsync(user, "Student");

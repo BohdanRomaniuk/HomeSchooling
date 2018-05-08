@@ -221,6 +221,16 @@ namespace website.Controllers
             return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = lessonId });
         }
 
+        [HttpGet]
+        [Authorize(Roles ="Student, Teacher, Admin")]
+        public async Task<IActionResult> ViewStudents(int id)
+        {
+            var students =  from listener in db.CoursesListeners.Include(c => c.RequestedCourse).Include(c => c.Student)
+                            where listener.Accepted==true
+                            select listener.Student;
+
+            return View(students);
+        }
 
         [HttpPost]
         [Authorize(Roles ="Teacher")]

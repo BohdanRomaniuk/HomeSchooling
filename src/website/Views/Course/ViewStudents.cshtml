@@ -1,0 +1,27 @@
+﻿@using database.Models;
+@model IQueryable<User>
+@{
+    ViewData["Title"] = "Список учнів";
+}
+<h2>Список учнів на курсі</h2>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Ім'я і прізвище</th>
+            <th>Логін</th>
+            <th>Email</th>
+            <th>Місце проживання</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (User student in Model)
+        {
+            <tr>
+                <td>@student.Name</td>
+                <td>@student.UserName</td>
+                <td>@student.Email</td>
+                <td>@student.Location</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -17,7 +17,7 @@ namespace database.Models
         public string Description { get; set; }
         [Required]
         public User Teacher { get; set; }
-
+        public string Category { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         
