@@ -19,4 +19,8 @@
     <ProjectReference Include="..\database\database.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Course\NewFolder\" />
+  </ItemGroup>
+
 </Project>

@@ -2,27 +2,23 @@
 @using database.Models;
 @model CourseStudentsModel
 @{
-    ViewData["Title"] = "Список учнів";
+    ViewData["Title"] = "Місця проживання";
 }
+
 <h2>Місця проживання учнів на курсі "@Model.CourseName"</h2>
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Ім'я і прізвище</th>
-            <th>Логін</th>
-            <th>Email</th>
             <th>Місце проживання</th>
         </tr>
     </thead>
     <tbody>
         @foreach (User student in Model.Students)
         {
-        <tr>
-            <td>@student.Name</td>
-            <td>@student.UserName</td>
-            <td>@student.Email</td>
-            <td>@student.Location</td>
-        </tr>
+            <tr>
+                <td>@student.Location</td>
+            </tr>
         }
     </tbody>
 </table>
+

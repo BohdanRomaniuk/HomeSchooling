@@ -222,14 +222,41 @@ namespace website.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles ="Student, Teacher, Admin")]
+        [Authorize(Roles ="Teacher")]
         public async Task<IActionResult> ViewStudents(int id)
         {
-            var students =  from listener in db.CoursesListeners.Include(c => c.RequestedCourse).Include(c => c.Student)
-                            where listener.Accepted==true
-                            select listener.Student;
+            Course currentCourse = db.Courses.Include(c=>c.Teacher).Where(c => c.Id == id).FirstOrDefault();
+            User teacher = await userManager.FindByNameAsync(User.Identity.Name);
+            if(teacher.Id==currentCourse.Teacher.Id)
+            {
+                IQueryable<User> students = from listener in db.CoursesListeners.Include(c => c.RequestedCourse).Include(c => c.Student)
+                                            where listener.Accepted == true && listener.RequestedCourse.Id == id
+                                            select listener.Student;
+                return View(new CourseStudentsModel(students, currentCourse.Name));
+            }
+            else
+            {
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+        }
 
-            return View(students);
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> ViewLocations(int id)
+        {
+            Course currentCourse = db.Courses.Include(c => c.Teacher).Where(c => c.Id == id).FirstOrDefault();
+            User teacher = await userManager.FindByNameAsync(User.Identity.Name);
+            if (teacher.Id == currentCourse.Teacher.Id)
+            {
+                IQueryable<User> students = from listener in db.CoursesListeners.Include(c => c.RequestedCourse).Include(c => c.Student)
+                                            where listener.Accepted == true && listener.RequestedCourse.Id == id
+                                            select listener.Student;
+                return View(new CourseStudentsModel(students.GroupBy(g => g.Location).Select(x => x.FirstOrDefault()), currentCourse.Name));
+            }
+            else
+            {
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
         }
 
         [HttpPost]
