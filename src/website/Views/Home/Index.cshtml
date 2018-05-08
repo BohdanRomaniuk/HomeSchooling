@@ -1,35 +1,58 @@
 ﻿@using database.Models
-@model IEnumerable<HomeViewModel>
+@model HomeCoursesViewModel
 @{
     ViewData["Title"] = "Головна сторінка";
 }
-<h3>Усі курси @if (User?.IsInRole("Teacher") ?? true) {<a asp-controller="Course" asp-action="AddCourse" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий курс</a>}</h3>
+<h3>
+    Усі курси @if (User?.IsInRole("Teacher") ?? true)
+    {<a asp-controller="Course" asp-action="AddCourse" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий курс</a>}
+</h3>
 <hr />
-@foreach(var elem in Model)
+@if (User?.IsInRole("Admin") ?? true)
 {
-<div class="panel panel-default">
-    <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.CurrentCourse.Id">@elem.CurrentCourse.Name</a></div>
-    <div class="panel-body">
-        @elem.CurrentCourse.Description
-        @if (elem.ShowRequestCourse == true)
-        {
-            <a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>
-        }
-        @if (elem.ShowRequestCourse == false)
-        { 
-            <a asp-controller="Course" asp-action="DeleteFromCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-warning" style="float:right;">Видалитись з курсу</a>
-        }
-        @if (User?.IsInRole("Admin") ?? true)
-        {
-            <a asp-controller="Admin" asp-action="DeleteCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-warning" style="float:right;">Видалити курс</a>
-        }
-        <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
-        <br>
-        <b>Викладач:</b> <a asp-controller="Profile" asp-action="View" asp-route-name="@elem.CurrentCourse.Teacher.UserName"><span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(87, 217, 79, 0.23137254901960785);">@elem.CurrentCourse.Teacher.Name</span></a>
-        <b style="margin-left:5%;">Всього уроків на курсі:</b> <span class="label label-success" style="font-size: 12px;color: black;background-color: rgba(87, 217, 79, 0.23137254901960785);">@elem.CurrentCourse.CourseLessons.Count</span>
-        <br />
-        <b>Час проведення:</b> <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@elem.CurrentCourse.StartDate</span>
-        <b> - </b> <span class="label label-warning" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@elem.CurrentCourse.EndDate</span>
+    
+    <form method="get" asp-controller="Home" asp-action="Index" class="navbar-form navbar-right">
+            <select name="category" asp-for="Category">
+                <option name="0">Всі курси</option>
+                <option name="1">Комп'ютерні науки</option>
+                <option name="2">Математичні науки</option>
+                <option name="3">Гуманітарні науки</option>
+            </select>
+            
+
+        <button type="submit" class="btn btn-default btn-sm">Фільтрувати</button>
+    </form>
+}
+@foreach (var elem in Model.Courses)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.CurrentCourse.Id">@elem.CurrentCourse.Name</a></div>
+        <div class="panel-body">
+            @elem.CurrentCourse.Description
+            @if (elem.ShowRequestCourse == true)
+            {
+                <a asp-controller="Course" asp-action="RequestCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-success" style="float:right;">Подати заявку на курс</a>
+            }
+            @if (elem.ShowRequestCourse == false)
+            {
+                <a asp-controller="Course" asp-action="DeleteFromCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-warning" style="float:right;">Видалитись з курсу</a>
+            }
+            @if (User?.IsInRole("Admin") ?? true)
+            {
+                <a asp-controller="Admin" asp-action="DeleteCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-warning" style="float:right;">Видалити курс</a>
+            }
+
+            <a asp-controller="Course" asp-action="ViewCourse" asp-route-id="@elem.CurrentCourse.Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути курс</a>
+            <br>
+            <b>Викладач:</b> <a asp-controller="Profile" asp-action="View" asp-route-name="@elem.CurrentCourse.Teacher.UserName"><span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(87, 217, 79, 0.23137254901960785);">@elem.CurrentCourse.Teacher.Name</span></a>
+            <b style="margin-left:5%;">Всього уроків на курсі:</b> <span class="label label-success" style="font-size: 12px;color: black;background-color: rgba(87, 217, 79, 0.23137254901960785);">@elem.CurrentCourse.CourseLessons.Count</span>
+            <br />
+            <b>Час проведення:</b> <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@elem.CurrentCourse.StartDate</span>
+            <b> - </b> <span class="label label-warning" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@elem.CurrentCourse.EndDate</span>
+            @if (User?.IsInRole("Admin") ?? true)
+            {
+                <b>Категорія:</b><span class="label label-success" style="font-size: 12px;color: black;background-color: rgba(87, 217, 79, 0.23137254901960785);">@elem.CurrentCourse.Category</span>
+            }
+        </div>
     </div>
-</div>
 }
