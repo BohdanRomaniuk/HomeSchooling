@@ -9,21 +9,27 @@
     @Model.Name <span style="float:right;">Викладач: <a asp-controller="Profile" asp-action="View" asp-route-name="@Model.Teacher.UserName">@Model.Teacher.Name</a></span>
 </h3>
 <hr />
-<p style="font-size:130%">Час проведення: <span class="label label-info" style="color: black; background-color: rgba(222, 170, 91, 0.27);">@Model.StartDate</span>
-<span > – </span> <span class="label label-info" style="color: black; background-color: rgba(222, 170, 91, 0.27);">@Model.EndDate</span>
-<h4>
-    Всього уроків: @Model.CourseLessons.Count  @if (Convert.ToBoolean(ViewData["IsCourseOwner"]))
-    {<a asp-controller="Course" asp-action="AddLesson" asp-route-id="@Model.Id" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий урок</a>}
-</h4>
-<hr />
-@for (int i = 0; i < Model.CourseLessons.Count; ++i)
-{
-    <div class="panel panel-default">
-        <div class="panel-body" style="@((Model.CourseLessons[i].IsControlWork)?"background-color: #ffedf0;":"")">
-            <b>Урок №@(i + 1):</b> <a asp-controller="Course" asp-action="ViewLesson" asp-route-id="@Model.CourseLessons[i].Id" >@Model.CourseLessons[i].Name</a>
-            <a asp-controller="Course" asp-action="ViewLesson" asp-route-id="@Model.CourseLessons[i].Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути урок</a>
-            <br>
-            <b>Дата:</b> <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@Model.CourseLessons[i].LessonStartDate - @Model.CourseLessons[i].LessonEndDate</span>
+<p style="font-size:130%">
+    Час проведення: <span class="label label-info" style="color: black; background-color: rgba(222, 170, 91, 0.27);">@Model.StartDate</span>
+    <span> – </span> <span class="label label-info" style="color: black; background-color: rgba(222, 170, 91, 0.27);">@Model.EndDate</span>
+    <h4>
+        Всього уроків: @Model.CourseLessons.Count  @if (Convert.ToBoolean(ViewData["IsCourseOwner"]))
+        {<a asp-controller="Course" asp-action="AddLesson" asp-route-id="@Model.Id" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий урок</a>}
+    </h4>
+    @if (Convert.ToBoolean(ViewData["IsCourseOwner"]) && ViewData["MinYear"] != null)
+    {
+        <a asp-controller="Course" asp-action="ViewListeners" asp-route-id="@Model.Id" class="btn btn-success" style="margin-right:10px;">Переглянути список слухачів</a>
+       
+    }
+    <hr />
+    @for (int i = 0; i < Model.CourseLessons.Count; ++i)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body" style="@((Model.CourseLessons[i].IsControlWork)?"background-color: #ffedf0;":"")">
+                <b>Урок №@(i + 1):</b> <a asp-controller="Course" asp-action="ViewLesson" asp-route-id="@Model.CourseLessons[i].Id">@Model.CourseLessons[i].Name</a>
+                <a asp-controller="Course" asp-action="ViewLesson" asp-route-id="@Model.CourseLessons[i].Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути урок</a>
+                <br>
+                <b>Дата:</b> <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@Model.CourseLessons[i].LessonStartDate - @Model.CourseLessons[i].LessonEndDate</span>
+            </div>
         </div>
-    </div>
-}
+    }

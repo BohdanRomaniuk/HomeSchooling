@@ -8,5 +8,6 @@ namespace database.Models
     {
         [Required]
         public string Name { get; set; }
+        public int BirthYear { get; set; }
     }
 }

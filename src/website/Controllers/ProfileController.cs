@@ -42,21 +42,33 @@ namespace website.Controllers
                 User user = new User {
                     UserName = details.UserName,
                     Email = details.Email,
-                    Name = details.Name
+                    Name = details.Name,
+                    BirthYear = details.BirthYear
                 };
-                IdentityResult result = await userManager.CreateAsync(user, details.Password);
-                IdentityResult result2 = await userManager.AddToRoleAsync(user, "Student");
-                if (result.Succeeded && result2.Succeeded)
+                bool correctYear = true;
+                if (details.BirthYear > 2015 || details.BirthYear < 1899)
                 {
-                    Microsoft.AspNetCore.Identity.SignInResult result1 = await signInManager.PasswordSignInAsync(user, details.Password, false, false);
-                    if ( result1.Succeeded)
-                    {
-                        return Redirect(returnUrl ?? "/");
-                    }
+                    correctYear = false;
+                    ModelState.AddModelError("", "Please enter your real birthyear");
                 }
-                foreach (IdentityError error in result.Errors)
+                if (correctYear)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    IdentityResult result = await userManager.CreateAsync(user, details.Password);
+                    IdentityResult result2 = await userManager.AddToRoleAsync(user, "Student");
+
+                    if (result.Succeeded && result2.Succeeded)
+                    {
+                        Microsoft.AspNetCore.Identity.SignInResult result1 = await signInManager.PasswordSignInAsync(user, details.Password, false, false);
+                        if (result1.Succeeded)
+                        {
+                            return Redirect(returnUrl ?? "/");
+                        }
+                    }
+
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
                 }
             }
             return View(details);

@@ -26,12 +26,79 @@ namespace website.Controllers
             fileProvider = _fileProvider;
             userManager = _userManager;
         }
-        
+        [Authorize(Roles = "Teacher")]
+        public IActionResult ViewListeners(int id)
+        {
+            Course currentCourse = db.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(o => o.Id == id).SingleOrDefault();
+            ViewData["IsCourseOwner"] = currentCourse.Teacher.UserName == HttpContext?.User?.Identity?.Name;
+            var studs = from courselisteners in db.CoursesListeners
+                        where courselisteners.RequestedCourse.Id == id
+                        where courselisteners.Accepted == true
+                        select courselisteners.Student;
+            if (studs.Count() != 0)
+            {
+                int minYear = studs.First().BirthYear;
+                int maxYear = studs.First().BirthYear;
+                string minname = studs.First().Name;
+                string maxname = studs.First().Name;
+                foreach (User i in studs)
+                {
+                    if (i.BirthYear < minYear)
+                    {
+                        minYear = i.BirthYear;
+                        minname = i.Name;
+                    }
+                    if (i.BirthYear > maxYear)
+                    {
+                        maxYear = i.BirthYear;
+                        maxname = i.Name;
+                    }
+                }
+                ViewData["MinYear"] = minYear;
+                ViewData["Youngest"] = minname;
+                ViewData["MaxYear"] = maxYear;
+                ViewData["Oldest"] = maxname;
+            }
+            var listeners = from courselisteners in db.CoursesListeners
+                            where courselisteners.RequestedCourse.Id == id
+                            where courselisteners.Accepted == true
+                            select courselisteners.Student;
+            return View("Listeners",listeners.ToList());
+        }
         
         public IActionResult ViewCourse(int id)
         {
             Course currentCourse = db.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(o => o.Id == id).SingleOrDefault();
             ViewData["IsCourseOwner"] = currentCourse.Teacher.UserName == HttpContext?.User?.Identity?.Name;
+            var studs = from courselisteners in db.CoursesListeners
+                        where courselisteners.RequestedCourse.Id == id
+                        where courselisteners.Accepted == true
+                        select courselisteners.Student;
+            if (studs.Count() != 0)
+            {
+                int minYear = studs.First().BirthYear;
+                int maxYear = studs.First().BirthYear;
+                string minname = studs.First().Name;
+                string maxname = studs.First().Name;
+                foreach (User i in studs)
+                {
+                    if (i.BirthYear < minYear)
+                    {
+                        minYear = i.BirthYear;
+                        minname = i.Name;
+                    }
+                    if (i.BirthYear > maxYear)
+                    {
+                        maxYear = i.BirthYear;
+                        maxname = i.Name;
+                    }
+                }
+                ViewData["MinYear"] = minYear;
+                ViewData["Youngest"] = minname;
+                ViewData["MaxYear"] = maxYear;
+                ViewData["Oldest"] = maxname;
+            }
+
             return View(currentCourse);
         }
 
