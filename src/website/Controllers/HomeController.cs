@@ -26,16 +26,30 @@ namespace website.Controllers
             roleManager = _roleManager;
         }
 
-        public IActionResult Index(string name = null)
+        public IActionResult Index(string name = null, string category=null)
         {
             IQueryable<Course> allCourses;
             if (name == null)
             {
-                allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons);
+                if (category != null && category != "Всі курси")
+                {
+                    allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(c=>c.Category==category);
+                }
+                else
+                {
+                    allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons);
+                }
             }
             else
             {
-                allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name));
+                if (category != null && category != "Всі курси")
+                {
+                    allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name)).Where(c => c.Category == category);
+                }
+                else
+                {
+                    allCourses = _context.Courses.Include(c => c.Teacher).Include(c => c.CourseLessons).Where(s => s.Name.Contains(name));
+                }
             }
             List<HomeViewModel> vm = new List<HomeViewModel>();
             foreach (var course in allCourses)
@@ -77,7 +91,7 @@ namespace website.Controllers
                     vm.Add(new HomeViewModel(course, null));
                 }
             }
-            return View(vm);
+            return View(new HomeCoursesViewModel(vm,category));
         }
 
         public IActionResult About()
