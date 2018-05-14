@@ -1,20 +1,21 @@
-﻿
-@model IEnumerable<database.Models.User>
-@if (Convert.ToBoolean(ViewData["IsCourseOwner"]) && ViewData["MinYear"] != null)
+﻿@if (ViewData["MinYear"] != null)
 {
 
     int dif = Convert.ToInt32(ViewData["MaxYear"]) - Convert.ToInt32(ViewData["MinYear"]);
-    <h4>
-        Найстарший на курсі: @ViewData["Youngest"] (@ViewData["MinYear"])
-        <br />
-        Наймолодший на курсі:  @ViewData["Oldest"] (@ViewData["MaxYear"])
-        <br />
-        Віковий діапазон слухачів: @dif;
-    </h4>
-}
-@foreach(var lis in Model)
-{
-    <div class="panel panel-default">
-        <a asp-controller="Profile" asp-action="View" asp-route-name="@lis.UserName" class="btn btn-info">@lis.Name</a>
-    </div>
+    <br />
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <td>Найстарший на курсі:</td>
+                <td>@ViewData["Youngest"]</td>
+                <td>Рік народженя: @ViewData["MinYear"]</td>
+            </tr>
+            <tr>
+                <td>Наймолодший на курсі:</td>
+                <td>@ViewData["Oldest"]</td>
+                <td>Рік народження: @ViewData["MaxYear"]</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Віковий діапазон слухачів: @dif років.</p>
 }
