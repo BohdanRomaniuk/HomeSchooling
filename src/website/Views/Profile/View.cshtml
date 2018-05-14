@@ -3,6 +3,8 @@
     ViewData["Title"] = "View";
 }
 
+@model IEnumerable<database.Models.Course>
+
 <h3>
     Профіль @if (ViewData["role"].ToString() == "Teacher")
     {<span>вчителя</span> }

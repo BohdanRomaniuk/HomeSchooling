@@ -2,42 +2,48 @@
     ViewData["Title"] = "Register";
 }
 @model website.Models.RegisterModel
-    <h3>Реєстрація</h3>
-    <hr />
-    <form class="form-horizontal" asp-controller="Profile" asp-action="Register" method="post">
-        <div class="form-group" align="center">
-            <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
-                <label class="col-sm-2 control-label" asp-for="UserName" style="text-align: right;width: 300px;float:unset;">Ваш логін:</label>
-                <input class="form-control" asp-for="UserName" />
-            </div>
+<h3>Реєстрація</h3>
+<hr />
+<form class="form-horizontal" asp-controller="Profile" asp-action="Register" method="post">
+    <div class="form-group" align="center">
+        <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+            <label class="col-sm-2 control-label" asp-for="UserName" style="text-align: right;width: 300px;float:unset;">Ваш логін:</label>
+            <input class="form-control" asp-for="UserName" />
         </div>
-        <div class="form-group" align="center">
-            <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
-                <label class="col-sm-2 control-label" asp-for="Password" style="text-align: right;width: 300px;float:unset;">Ваш пароль:</label>
-                <input class="form-control" type="password" asp-for="Password" />
-            </div>
+    </div>
+    <div class="form-group" align="center">
+        <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+            <label class="col-sm-2 control-label" asp-for="Password" style="text-align: right;width: 300px;float:unset;">Ваш пароль:</label>
+            <input class="form-control" type="password" asp-for="Password" />
         </div>
-        <div class="form-group" align="center">
-            <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
-                <label class="col-sm-2 control-label" asp-for="Name" style="text-align: right;width: 300px;float:unset;">Ваше ім'я та прізвище:</label>
-                <input class="form-control" asp-for="Name" />
-            </div>
+    </div>
+    <div class="form-group" align="center">
+        <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+            <label class="col-sm-2 control-label" asp-for="Name" style="text-align: right;width: 300px;float:unset;">Ваше ім'я та прізвище:</label>
+            <input class="form-control" asp-for="Name" />
         </div>
-        <div class="form-group" align="center">
-            <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
-                <label class="col-sm-2 control-label" asp-for="Email" style="text-align: right;width: 300px;float:unset;">Ваш e-mail:</label>
-                <input class="form-control" asp-for="Email" />
-            </div>
+    </div>
+    <div class="form-group" align="center">
+        <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+            <label class="col-sm-2 control-label" asp-for="Email" style="text-align: right;width: 300px;float:unset;">Ваш e-mail:</label>
+            <input class="form-control" asp-for="Email" />
         </div>
-        <div class="form-group" align="center">
-            <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
-                <label class="col-sm-2 control-label" asp-for="Location" style="text-align: right;width: 300px;float:unset;">Місце проживання:</label>
-                <input class="form-control" asp-for="Location" />
-            </div>
+    </div>
+    <div class="form-group" align="center">
+        <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+            <label class="col-sm-2 control-label" asp-for="Location" style="text-align: right;width: 300px;float:unset;">Місце проживання:</label>
+            <input class="form-control" asp-for="Location" />
         </div>
-        <div align="center">
-            <button class="btn btn-success" type="submit">Зареєструватись</button>
+    </div>
+    <div class="form-group" align="center">
+        <div class="col-sm-10" style="width:48%;float:unset;display: inline-flex;">
+            <label class="col-sm-2 control-label" asp-for="BirthYear" style="text-align: right;width: 300px;float:unset;">Ваш рік народження:</label>
+            <input class="form-control" asp-for="BirthYear" />
         </div>
-    </form>
-    <br />
-    <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+    <div align="center">
+        <button class="btn btn-success" type="submit">Зареєструватись</button>
+    </div>
+</form>
+<br />
+<div asp-validation-summary=" All" class="text-danger"></div>

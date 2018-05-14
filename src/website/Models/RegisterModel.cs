@@ -15,5 +15,6 @@ namespace website.Models
         public string Email { get; set; }
         [Required]
         public string Location { get; set; }
+        public int BirthYear { get; set; }
     }
 }

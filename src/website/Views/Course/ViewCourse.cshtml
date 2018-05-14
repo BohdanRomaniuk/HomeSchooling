@@ -1,5 +1,6 @@
 ﻿@using database.Models
 @model Course
+
 @{
     ViewData["Title"] = "Перегляду курсу - " + Model.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -16,6 +17,11 @@
     Всього уроків: @Model.CourseLessons.Count  @if (Convert.ToBoolean(ViewData["IsCourseOwner"]))
     {<a asp-controller="Course" asp-action="AddLesson" asp-route-id="@Model.Id" class="btn btn-success" style="float:right;margin-right:10px;">Додати новий урок</a>}
 </h4>
+@if (Convert.ToBoolean(ViewData["IsCourseOwner"]) && ViewData["MinYear"] != null)
+    {
+        <a asp-controller="Course" asp-action="ViewListeners" asp-route-id="@Model.Id" class="btn btn-success" style="margin-right:10px;">Переглянути список слухачів</a>
+       
+    }
 <hr />
 @for (int i = 0; i < Model.CourseLessons.Count; ++i)
 {
@@ -25,6 +31,7 @@
             <a asp-controller="Course" asp-action="ViewLesson" asp-route-id="@Model.CourseLessons[i].Id" class="btn btn-primary" style="float:right;margin-right:10px;">Переглянути урок</a>
             <br>
             <b>Дата:</b> <span class="label label-primary" style="font-size: 12px;color: black;background-color: rgba(51, 122, 183, 0.23137254901960785);">@Model.CourseLessons[i].LessonStartDate - @Model.CourseLessons[i].LessonEndDate</span>
+
         </div>
     </div>
 }
