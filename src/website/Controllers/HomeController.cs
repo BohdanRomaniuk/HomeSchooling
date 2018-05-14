@@ -119,13 +119,13 @@ namespace website.Controllers
             await roleManager.CreateAsync(new IdentityRole("Student"));
 
             //Users
-            await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Name="Романюк Богдан", Email = "bohdan2307@gmail.com" }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "roman.parobiy", Name="Паробій Роман", Email = "roman.parobiy@gmail.com" }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "modest.radomskyy", Name="Модест Радомський", Email = "modest.radomskyy@gmail.com" }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "anatoliy.muzychuk", Name="Музичук А.О.", Email = "anatoliy.muzychuk@gmail.com" }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "sviatoslav.tarasyuk", Name = "Тарасюк С.І.", Email = "sviatoslav.tarasyuk@gmail.com" }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "svyatoslav.litynskyy", Name = "Літинський С.В.", Email = "svyatoslav.litynskyy@gmail.com" }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "admin", Name = "Адміністратор", Email = "admin@admin.com" }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Name="Романюк Богдан", Email = "bohdan2307@gmail.com", Location="Скнилів", BirthYear=1997 }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "roman.parobiy", Name="Паробій Роман", Email = "roman.parobiy@gmail.com", Location="Львів", BirthYear=1998 }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "modest.radomskyy", Name="Модест Радомський", Email = "modest.radomskyy@gmail.com", Location = "Львів", BirthYear = 1997 }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "anatoliy.muzychuk", Name="Музичук А.О.", Email = "anatoliy.muzychuk@gmail.com", Location = "Львів", BirthYear = 1970 }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "sviatoslav.tarasyuk", Name = "Тарасюк С.І.", Email = "sviatoslav.tarasyuk@gmail.com", Location = "Львів", BirthYear = 1972 }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "svyatoslav.litynskyy", Name = "Літинський С.В.", Email = "svyatoslav.litynskyy@gmail.com", Location = "Львів", BirthYear = 1988 }, "123456");
+            await userManager.CreateAsync(new User() { UserName = "admin", Name = "Адміністратор", Email = "admin@admin.com", Location = "Засекречено", BirthYear = 1970 }, "123456");
 
             User bohdan = await userManager.FindByNameAsync("bohdan.romaniuk");
             User roman = await userManager.FindByNameAsync("roman.parobiy");
