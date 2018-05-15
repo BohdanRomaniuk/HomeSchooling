@@ -217,9 +217,12 @@ namespace website.tests
             ppc.CourseLessons.Add(new Lesson("Вступ у мову програмування C++", Convert.ToDateTime("01.09.2017 08:30"), Convert.ToDateTime("01.09.2017 09:50"), Convert.ToDateTime("08.09.2017 09:50")));
             ppc.CourseLessons.Add(new Lesson("Типи змінних, синтаксис", Convert.ToDateTime("08.09.2017 08:30"), Convert.ToDateTime("08.09.2017 09:50"), Convert.ToDateTime("15.09.2017 09:50")));
             Course[] courses = new Course[] { pps, ppc };
+            List<User> users = new List<User>();
+            users.Add(teacher);
             List<string> roles = new List<string>();
             roles.Add("Teacher");
             mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
             userManager.Setup(x => x.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
 
             ProfileController controller = new ProfileController(mock.Object, userManager.Object, null);
