@@ -57,7 +57,7 @@ namespace website.Controllers
                     IdentityResult result = await userManager.CreateAsync(user, details.Password);
                     IdentityResult result2 = await userManager.AddToRoleAsync(user, "Student");
 
-                    if (result.Succeeded && result2.Succeeded)
+                    if (result?.Succeeded == true && result2?.Succeeded == true)
                     {
                         Microsoft.AspNetCore.Identity.SignInResult result1 = await signInManager.PasswordSignInAsync(user, details.Password, false, false);
                         if (result1.Succeeded)

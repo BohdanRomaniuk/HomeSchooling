@@ -26,66 +26,54 @@ namespace website.tests
                 .AsQueryable();
             Fake.FakeIdentitySetuper.Setup(out userManager, out signInManager, users);
         }
-        /* [Fact]
-         public void LoginWrongPasswordTest()
-         {
-             Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-             User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-             User u2 = new User { Id = 2, Name = "a1", UserName = "a1", Password = "raz", UserRole = "student" };
-             User u3 = new User { Id = 3, Name = "a3", UserName = "a3", Password = "a3", UserRole = "student" };
-             User[] users = new User[] { u1, u3 };
-             mock.Setup(m => m.Users).Returns(users.AsQueryable());
-             Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-             MockHttpSession mockSession = new MockHttpSession();
-             mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+        [Fact]
+        public void LoginWrongPasswordTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User {Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-             ProfileController controller = new ProfileController(mock.Object);
-             controller.ControllerContext.HttpContext = mockHttpContext.Object;
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            LoginModel lm = new LoginModel();
+            lm.UserName = "new user";
+            lm.Password = "123456";
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Login(lm, "a").Result is RedirectResult);
 
-             bool actual = (bool)(controller.Login(u2) as ViewResult).ViewData["IncorrectPassword"];
+            Assert.True(actual);
+        }
+        [Fact]
+        public void LoginWrongUsernameTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User { Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-             Assert.True(actual);
-         }*/
-        //        [Fact]
-        //        public void LoginWrongUsernameTest()
-        //        {
-        //            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-        //            User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-        //            User u2 = new User { Id = 2, Name = "a2", UserName = "a2", Password = "a2", UserRole = "student" };
-        //            User u3 = new User { Id = 3, Name = "a3", UserName = "a3", Password = "a3", UserRole = "student" };
-        //            User[] users = new User[] { u1, u3 };
-        //            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-        //            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-        //            MockHttpSession mockSession = new MockHttpSession();
-        //            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            LoginModel lm = new LoginModel();
+            lm.UserName = "a1";
+            lm.Password = "12345";
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Login(lm, "a").Result is RedirectResult);
 
-        //            ProfileController controller = new ProfileController(mock.Object);
-        //            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+            Assert.True(actual);
+        }
+        [Fact]
+        public void LogingUserTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User { Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-        //            bool actual = (bool)(controller.Login(u2) as ViewResult).ViewData["IncorrectLogin"];
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            LoginModel lm = new LoginModel();
+            lm.UserName = "a1";
+            lm.Password = "123456";
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Login(lm, "a").Result is RedirectResult);
 
-        //            Assert.True(actual);
-        //        }
-        //        [Fact]
-        //        public void LogingUserTest()
-        //        {
-        //            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-        //            User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-        //            User u2 = new User { Id = 2, Name = "a2", UserName = "a2", Password = "a2", UserRole = "student" };
-        //            User u3 = new User { Id = 3, Name = "a3", UserName = "a3", Password = "a3", UserRole = "student" };
-        //            User[] users = new User[] { u1, u2, u3 };
-        //            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-        //            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-        //            MockHttpSession mockSession = new MockHttpSession();
-        //            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
-
-        //            ProfileController controller = new ProfileController(mock.Object);
-        //            controller.ControllerContext.HttpContext = mockHttpContext.Object;
-
-        //            bool redirected = (controller.Login(u2) is RedirectToRouteResult);
-
-        //            Assert.True(redirected);
-        //        }
+            Assert.True(actual);
+        }
         [Fact]
         public void LogingOutTest()
         {
@@ -105,102 +93,120 @@ namespace website.tests
 
             Assert.True(redirected);
         }
-        //        [Fact]
-        //        public void RegisterWrongUsernameTest()
-        //        {
-        //            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-        //            User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-        //            User u2 = new User { Id = 2, Name = "a1", UserName = "a1", Password = "a2", UserRole = "student" };
-        //            User u3 = new User { Id = 3, Name = "a3", UserName = "a3", Password = "a3", UserRole = "student" };
-        //            User[] users = new User[] { u1, u3 };
-        //            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-        //            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-        //            MockHttpSession mockSession = new MockHttpSession();
-        //            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+        [Fact]
+        public void RegisterWrongUsernameTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User { Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-        //            ProfileController controller = new ProfileController(mock.Object);
-        //            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            RegisterModel rm = new RegisterModel() { UserName = "a1", Password = "1", BirthYear = 1995, Email = "a@a.a", Location = "Stryi", Name = "a"};
+     
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Register(rm, "a").Result is RedirectResult);
 
-        //            bool actual = (bool)(controller.Register(u2) as ViewResult).ViewData["IncorrectLogin"];
+            Assert.True(actual);
+        }
+        [Fact]
+        public void RegisterNullPasswordTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User { Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-        //            Assert.True(actual);
-        //        }
-        //        [Fact]
-        //        public void RegisterNullPasswordTest()
-        //        {
-        //            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-        //            User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-        //            User u2 = new User { Id = 2, Name = "a2", UserName = "a2", Password = null, UserRole = "student" };
-        //            User u3 = new User { Id = 3, Name = "a3", UserName = "a3", Password = "a3", UserRole = "student" };
-        //            User[] users = new User[] { u1, u3 };
-        //            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-        //            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-        //            MockHttpSession mockSession = new MockHttpSession();
-        //            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            RegisterModel rm = new RegisterModel() { UserName = "a1", Password = null, BirthYear = 1995, Email = "a@a.a", Location = "Stryi", Name = "a" };
 
-        //            ProfileController controller = new ProfileController(mock.Object);
-        //            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Register(rm, "a").Result is RedirectResult);
 
-        //            bool actual = (bool)(controller.Register(u2) as ViewResult).ViewData["IncorrectPassword"];
+            Assert.True(actual);
+        }
+        [Fact]
+        public void RegisterNullNameTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User { Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-        //            Assert.True(actual);
-        //        }
-        //        [Fact]
-        //        public void RegisterNullNameTest()
-        //        {
-        //            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-        //            User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-        //            User u2 = new User { Id = 2, Name = null, UserName = "a2", Password = "a2", UserRole = "student" };
-        //            User u3 = new User { Id = 3, Name = "a3", UserName = "a3", Password = "a3", UserRole = "student" };
-        //            User[] users = new User[] { u1, u3 };
-        //            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-        //            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-        //            MockHttpSession mockSession = new MockHttpSession();
-        //            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            RegisterModel rm = new RegisterModel() { UserName = null, Password = "1", BirthYear = 1995, Email = "a@a.a", Location = "Stryi", Name = "a" };
 
-        //            ProfileController controller = new ProfileController(mock.Object);
-        //            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Register(rm, "a").Result is RedirectResult);
 
-        //            bool actual = (bool)(controller.Register(u2) as ViewResult).ViewData["IncorrectName"];
+            Assert.True(actual);
+        }
+        [Fact]
+        public void RegisterWrongYearTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User { Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-        //            Assert.True(actual);
-        //        }
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            RegisterModel rm = new RegisterModel() { UserName = "a", Password = "1", BirthYear = 1, Email = "a@a.a", Location = "Stryi", Name = "a" };
 
-        //        [Fact]
-        //        public void ViewProfileStudentTest()
-        //        {
-        //            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
-        //            User u1 = new User { Id = 1, Name = "a1", UserName = "a1", Password = "a1", UserRole = "student" };
-        //            User u2 = new User { Id = 2, Name = "registered", UserName = "reg", Password = "reg", UserRole = "student" };
-        //            User[] users = new User[]
-        //            {
-        //                new User { Id = 1, Name = "muzychuk", UserName = "anatoliy", Password = "a1", UserRole = "teacher" },
-        //                new User { Id = 2, Name = "registered", UserName = "reg", Password = "reg", UserRole = "student" }
-        //            };
-        //            Course[] courses = new Course[]
-        //            {
-        //                new Course("Проектування програмних систем", "Опис курсу", users[0]),
-        //                new Course("Програмування мовою с++", "Опис курсу", users[0])
-        //            };
-        //            CoursesListener[] listeners = new CoursesListener[]
-        //            {
-        //                new CoursesListener { Id = 2, Accepted = true, RequestedCourse = courses[1], Student = users[1] }
-        //            };
-        //            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
-        //            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
-        //            mock.Setup(m => m.Users).Returns(users.AsQueryable());
-        //            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-        //            MockHttpSession mockSession = new MockHttpSession();
-        //            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Register(rm, "a").Result is RedirectResult);
 
-        //            ProfileController controller = new ProfileController(mock.Object);
-        //            controller.ControllerContext.HttpContext = mockHttpContext.Object;
+            Assert.True(actual);
+        }
+        [Fact]
+        public void RegisterTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User u1 = new User { Name = "a1", UserName = "a1", PasswordHash = "123456" };
+            User[] users = new User[] { u1 };
 
-        //            int expected = 2;
-        //            int actual = ((controller.View(2) as ViewResult).Model as IEnumerable<Course>).Count();
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            RegisterModel rm = new RegisterModel() { UserName = "a", Password = "1", BirthYear = 1995, Email = "a@a.a", Location = "Stryi", Name = "a" };
 
-        //            Assert.Equal(expected, actual);
-        //        }
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = !(controller.Register(rm, "a").Result is RedirectResult);
+
+            Assert.True(actual);
+        }
+        [Fact]
+        public void ViewProfileStudentTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User student = new User { Name = "Бучелла", UserName = "buchyk", PasswordHash = "123456" };
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk", PasswordHash = "123456" };
+            Course ppc = new Course("Програмування мовою с++", "Опис курсу", teacher, Convert.ToDateTime("12.12.2018 19:00"), Convert.ToDateTime("12.05.2019 18:00")) { Id = 2 };
+            ppc.CourseLessons = new List<Lesson>();
+            ppc.CourseLessons.Add(new Lesson("Вступ у мову програмування C++", Convert.ToDateTime("01.09.2017 08:30"), Convert.ToDateTime("01.09.2017 09:50"), Convert.ToDateTime("08.09.2017 09:50")));
+            ppc.CourseLessons.Add(new Lesson("Типи змінних, синтаксис", Convert.ToDateTime("08.09.2017 08:30"), Convert.ToDateTime("08.09.2017 09:50"), Convert.ToDateTime("15.09.2017 09:50")));
+            Course[] courses = new Course[] { ppc };
+            List<User> users = new List<User>();
+            List<CoursesListener> listeners = new List<CoursesListener>() { new CoursesListener() { Id = 1, RequestedCourse = ppc, Student = student, Accepted = true } };
+            users.Add(student);
+            List<string> roles = new List<string>();
+            roles.Add("Student");
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+            userManager.Setup(x => x.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
+
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, null);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "romaniuk.bohdan"),
+                        new Claim(ClaimTypes.Role, "Student")
+                    }, "Authentication"))
+                }
+            };
+
+            int expected = 1;
+            int actual = ((controller.View("buchyk").Result as ViewResult).Model as IEnumerable<Course>).Count();
+
+            Assert.Equal(expected, actual);
+        }
         [Fact]
         public void ViewProfileTeacherTest()
         {

@@ -16,6 +16,16 @@ namespace website.tests
 {
     public class AdminControllerTests
     {
+        private readonly IQueryable<User> users;
+        private Mock<Fake.FakeUserManager> userManager;
+        private Mock<Fake.FakeSignInManager> signInManager;
+
+        public AdminControllerTests()
+        {
+            users = new[] { new User() { UserName = "Bohdan" }, new User { UserName = "Modest" } }
+                .AsQueryable();
+            Fake.FakeIdentitySetuper.Setup(out userManager, out signInManager, users);
+        }
         [Fact]
         public void CourseDeletionTest()
         {
@@ -51,7 +61,7 @@ namespace website.tests
 
             Assert.True(isredirect);
         }
-        /*[Fact]
+        [Fact]
         public void SetTeacherTest()
         {
             Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
@@ -61,7 +71,7 @@ namespace website.tests
 
             mock.Setup(m => m.Users).Returns(users.AsQueryable());
 
-            AdminController controller = new AdminController(mock.Object, null);
+            AdminController controller = new AdminController(mock.Object, userManager.Object);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext
@@ -77,6 +87,6 @@ namespace website.tests
             bool result = controller.SetTeacher("anatoliy.muzychuk").Result is RedirectToRouteResult;
 
             Assert.True(result);
-        }*/
+        }
     }
 }
