@@ -86,26 +86,25 @@ namespace website.tests
 
         //            Assert.True(redirected);
         //        }
-        //        [Fact]
-        //        public void LogingOutTest()
-        //        {
-        //            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+        [Fact]
+        public void LogingOutTest()
+        {
+            ProfileController controller = new ProfileController(null, null, signInManager.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "romaniuk.bohdan"),
+                        new Claim(ClaimTypes.Role, "Student")
+                    }, "Authentication"))
+                }
+            };
+            bool redirected = (controller.Logout().Result is RedirectToActionResult);
 
-        //            Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
-        //            MockHttpSession mockSession = new MockHttpSession();
-        //            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
-        //            mockSession["id"] = "1";
-        //            mockSession["username"] = "a";
-        //            mockSession["role"] = "teacher";
-        //            mockSession["name"] = "misha";
-
-        //            ProfileController controller = new ProfileController(mock.Object);
-        //            controller.ControllerContext.HttpContext = mockHttpContext.Object;
-
-        //            bool redirected = (controller.Logout() is RedirectToRouteResult);
-
-        //            Assert.True(redirected);
-        //        }
+            Assert.True(redirected);
+        }
         //        [Fact]
         //        public void RegisterWrongUsernameTest()
         //        {
