@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Primitives;
 
 namespace website.tests
 {
@@ -358,10 +360,11 @@ namespace website.tests
             //Arrange
             Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
             User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User teacher1 = new User { Name = "Тарасюк С.І.", UserName = "tarasuk" };
             Course pps = new Course("Проектування програмних систем", "Опис курсу", teacher, Convert.ToDateTime("05.03.2018 13:10"), Convert.ToDateTime("12.03.2018 13:10")) { Id = 1 };
             Course[] courses = new Course[] { pps };
             mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
-            userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher);
+            userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher1);
 
             CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
             controller.ControllerContext = new ControllerContext
@@ -370,17 +373,18 @@ namespace website.tests
                 {
                     User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
                     {
-                        new Claim(ClaimTypes.Name, "bohdan.romaniuk"),
+                        new Claim(ClaimTypes.Name, "tarasuk"),
                         new Claim(ClaimTypes.Role, "Teacher")
                     }, "Authentication"))
                 }
             };
 
             //Act
-            var result = controller.AddLesson(1).Result as ViewResult;
+            Task<IActionResult> result = controller.AddLesson(1);
 
             //Assert
-            Assert.True(result.Model == null);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
         }
 
         [Fact]
@@ -393,6 +397,8 @@ namespace website.tests
             Course[] courses = new Course[] { pps };
             mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
             userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher);
+
+            
 
             CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
             controller.ControllerContext = new ControllerContext
@@ -411,7 +417,7 @@ namespace website.tests
             var result = controller.AddLesson(1).Result as ViewResult;
 
             //Assert
-            Assert.True(result.ViewName == "AddLesson");
+            Assert.True(result.Model == null);
         }
 
         [Fact]
@@ -441,8 +447,13 @@ namespace website.tests
             };
 
             string lessonName = "Вступ у мову програмування C#";
+            List<IFormFile> files = new List<IFormFile>();
+            HeaderDictionary dic = new HeaderDictionary(2);
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Disposition", new StringValues("form-data; name=\"files1\"; filename=\"test.txt\"")));
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Type", new StringValues("text/plain")));
+            files.Add(new FormFile(File.Create(@"test.txt"), 2000, 0, "files1", "test.txt") { Headers = dic });
             //Act
-            var result = controller.AddLesson(1, lessonName, "19.03.2018 11:50:00", "19.03.2018 11:50:00", "Опис уроку", "Опис домашки", "19.03.2018 11:50:00", "false", null, null);
+            var result = controller.AddLesson(1, lessonName, "19.03.2018 11:50:00", "19.03.2018 11:50:00", "Опис уроку", "Опис домашки", "19.03.2018 11:50:00", "false", files, files);
 
             //Assert
             Assert.True((result.Result as ViewResult).Model as string == String.Format("Урок \"{0}\" успішно додано!", lessonName));
@@ -475,14 +486,214 @@ namespace website.tests
                     }, "Authentication"))
                 }
             };
+            List<IFormFile> files = new List<IFormFile>();
+            HeaderDictionary dic = new HeaderDictionary(2);
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Disposition", new StringValues("form-data; name=\"files1\"; filename=\"test.txt\"")));
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Type", new StringValues("text/plain")));
+            files.Add(new FormFile(File.Create(@"test1.txt"), 2000, 0, "files", "test1.txt") { Headers = dic });
 
             //Act
-            Task<IActionResult> result = controller.AddHomeWork(1, "Виконав пункт 1", null);
+            Task<IActionResult> result = controller.AddHomeWork(1, "Виконав пункт 1", files);
 
             //Assert
             Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Course")) == true);
             Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "ViewLesson")) == true);
             Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("id", 1)) == true);
+        }
+
+        [Fact]
+        public void AddMarkByTeacher()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk" };
+
+            Lesson pps = new Lesson("Шаблони", DateTime.Now, DateTime.Now, DateTime.Now) { Id = 1 };
+            pps.Posts = new List<Post>();
+            pps.Posts.Add(new Post("Пост", "homework", student, Convert.ToDateTime("2018-05-21 13:00")));
+            Lesson[] lessons = new Lesson[] { pps };
+            User[] users = new User[] { teacher };
+            Post[] posts = new Post[] { new Post("Пост", "homework", student, Convert.ToDateTime("2018-05-21 13:00")) };
+            mock.Setup(m => m.Lessons).Returns(lessons.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            mock.Setup(m => m.Posts).Returns(posts.AsQueryable());
+            userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "anatoliy.muzychuk"),
+                        new Claim(ClaimTypes.Role, "Teacher")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            Task<IActionResult> result = controller.AddMark("5","1","1");
+
+            //Assert
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Course")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "ViewLesson")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("id", 1)) == true);
+        }
+
+        [Fact]
+        public void ViewLocationsCourseOwnerTest()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk", BirthYear=1997 };
+            User student1 = new User { Name = "Радомський М.А.", UserName = "modest.radomskyy", BirthYear=1998 };
+
+            Course[] courses = new Course[] { new Course("Проектування прорамних систем", "D", teacher, Convert.ToDateTime("2018-05-20 14:00"), Convert.ToDateTime("2019-05-20 14:00")) { Id = 1 } };
+            User[] users = new User[] { teacher, student, student1 };
+            CoursesListener[] listeners = new CoursesListener[] {
+                new CoursesListener(1, student, courses[0]) { Accepted = true } ,
+                new CoursesListener(2, student1, courses[0]) { Accepted = true }
+            };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+            userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "anatoliy.muzychuk"),
+                        new Claim(ClaimTypes.Role, "Teacher")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            Task<IActionResult> result = controller.ViewLocations(1);
+
+            //Assert
+            Assert.True((result.Result as ViewResult).Model is  CourseStudentsModel &&
+                ((result.Result as ViewResult).Model as CourseStudentsModel).Students.Count()==1);
+        }
+
+        [Fact]
+        public void ViewLocationsNOTCourseOwnerTest()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher1 = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User teacher2 = new User { Name = "Радомський М.А.", UserName = "modest.radomskyy" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk" };
+
+            Course[] courses = new Course[] { new Course("Проектування прорамних систем", "D", teacher1, Convert.ToDateTime("2018-05-20 14:00"), Convert.ToDateTime("2019-05-20 14:00")) { Id = 1 } };
+            User[] users = new User[] { teacher1, teacher2, student };
+            CoursesListener[] listeners = new CoursesListener[] { new CoursesListener(1, student, courses[0]) { Accepted = true } };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+            userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher2);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "modest.radomskyy"),
+                        new Claim(ClaimTypes.Role, "Teacher")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            Task<IActionResult> result = controller.ViewLocations(1);
+
+            //Assert
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
+        }
+
+        [Fact]
+        public void ViewStudentsCourseOwnerTest()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk" };
+
+            Course[] courses = new Course[] { new Course("Проектування прорамних систем", "D", teacher, Convert.ToDateTime("2018-05-20 14:00"), Convert.ToDateTime("2019-05-20 14:00")) { Id = 1 } };
+            User[] users = new User[] { teacher, student };
+            CoursesListener[] listeners = new CoursesListener[] { new CoursesListener(1, student, courses[0]) { Accepted = true } };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+            userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "anatoliy.muzychuk"),
+                        new Claim(ClaimTypes.Role, "Teacher")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            Task<IActionResult> result = controller.ViewStudents(1);
+
+            //Assert
+            Assert.True((result.Result as ViewResult).Model is CourseStudentsModel &&
+                ((result.Result as ViewResult).Model as CourseStudentsModel).Students.Count() == 1);
+        }
+
+        [Fact]
+        public void ViewStudentsNOTCourseOwnerTest()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher1 = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User teacher2 = new User { Name = "Радомський М.А.", UserName = "modest.radomskyy" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk" };
+
+            Course[] courses = new Course[] { new Course("Проектування прорамних систем", "D", teacher1, Convert.ToDateTime("2018-05-20 14:00"), Convert.ToDateTime("2019-05-20 14:00")) { Id = 1 } };
+            User[] users = new User[] { teacher1, teacher2, student };
+            CoursesListener[] listeners = new CoursesListener[] { new CoursesListener(1, student, courses[0]) { Accepted = true } };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.Users).Returns(users.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+            userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher2);
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "modest.radomskyy"),
+                        new Claim(ClaimTypes.Role, "Teacher")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            Task<IActionResult> result = controller.ViewStudents(1);
+
+            //Assert
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
         }
 
         [Fact]
@@ -794,7 +1005,8 @@ namespace website.tests
             {
                         new User { Name = "muzychuk", UserName = "anatoliy", PasswordHash = "a1"},
                         new User { Name = "registered", UserName = "registered", PasswordHash = "reg", BirthYear = 1986},
-                        new User { Name = "registered2", UserName = "registered2", PasswordHash = "reg", BirthYear = 1989}
+                        new User { Name = "registered2", UserName = "registered2", PasswordHash = "reg", BirthYear = 1989},
+                        new User { Name = "registered3", UserName = "registered3", PasswordHash = "reg", BirthYear = 1956}
             };
             Course[] courses = new Course[]
             {
@@ -803,7 +1015,8 @@ namespace website.tests
             CoursesListener[] listeners = new CoursesListener[]
             {
                         new CoursesListener { Id = 1, Accepted = true, RequestedCourse = courses[0], Student = users[1] },
-                        new CoursesListener { Id = 2, Accepted = true, RequestedCourse = courses[0], Student = users[2] }
+                        new CoursesListener { Id = 2, Accepted = true, RequestedCourse = courses[0], Student = users[2] },
+                        new CoursesListener { Id = 2, Accepted = true, RequestedCourse = courses[0], Student = users[3] }
             };
             mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
             mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
