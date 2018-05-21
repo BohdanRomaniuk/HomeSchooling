@@ -297,7 +297,7 @@ namespace website.Controllers
         [Authorize(Roles ="Teacher")]
         public async Task<IActionResult> AddMark(string MarkValue, string PostId, string LessonId)
         {
-            User teacher = await userManager.GetUserAsync(User);
+            User teacher = await userManager.FindByNameAsync(User.Identity.Name);
             db.AddMark(Convert.ToInt32(PostId), Convert.ToInt32(LessonId), Convert.ToInt32(MarkValue), teacher);
             return RedirectToRoute(new { controller = "Course", action = "ViewLesson", id = Convert.ToInt32(LessonId) });
         }

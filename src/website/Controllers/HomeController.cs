@@ -111,40 +111,40 @@ namespace website.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task<IActionResult> CreateDB()
-        {
-            //Roles
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
-            await roleManager.CreateAsync(new IdentityRole("Teacher"));
-            await roleManager.CreateAsync(new IdentityRole("Student"));
+        //public async Task<IActionResult> CreateDB()
+        //{
+        //    //Roles
+        //    await roleManager.CreateAsync(new IdentityRole("Admin"));
+        //    await roleManager.CreateAsync(new IdentityRole("Teacher"));
+        //    await roleManager.CreateAsync(new IdentityRole("Student"));
 
-            //Users
-            await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Name="Романюк Богдан", Email = "bohdan2307@gmail.com", Location="Скнилів", BirthYear=1997 }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "roman.parobiy", Name="Паробій Роман", Email = "roman.parobiy@gmail.com", Location="Львів", BirthYear=1998 }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "modest.radomskyy", Name="Модест Радомський", Email = "modest.radomskyy@gmail.com", Location = "Львів", BirthYear = 1997 }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "anatoliy.muzychuk", Name="Музичук А.О.", Email = "anatoliy.muzychuk@gmail.com", Location = "Львів", BirthYear = 1970 }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "sviatoslav.tarasyuk", Name = "Тарасюк С.І.", Email = "sviatoslav.tarasyuk@gmail.com", Location = "Львів", BirthYear = 1972 }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "svyatoslav.litynskyy", Name = "Літинський С.В.", Email = "svyatoslav.litynskyy@gmail.com", Location = "Львів", BirthYear = 1988 }, "123456");
-            await userManager.CreateAsync(new User() { UserName = "admin", Name = "Адміністратор", Email = "admin@admin.com", Location = "Засекречено", BirthYear = 1970 }, "123456");
+        //    //Users
+        //    await userManager.CreateAsync(new User() { UserName = "bohdan.romaniuk", Name="Романюк Богдан", Email = "bohdan2307@gmail.com", Location="Скнилів", BirthYear=1997 }, "123456");
+        //    await userManager.CreateAsync(new User() { UserName = "roman.parobiy", Name="Паробій Роман", Email = "roman.parobiy@gmail.com", Location="Львів", BirthYear=1998 }, "123456");
+        //    await userManager.CreateAsync(new User() { UserName = "modest.radomskyy", Name="Модест Радомський", Email = "modest.radomskyy@gmail.com", Location = "Львів", BirthYear = 1997 }, "123456");
+        //    await userManager.CreateAsync(new User() { UserName = "anatoliy.muzychuk", Name="Музичук А.О.", Email = "anatoliy.muzychuk@gmail.com", Location = "Львів", BirthYear = 1970 }, "123456");
+        //    await userManager.CreateAsync(new User() { UserName = "sviatoslav.tarasyuk", Name = "Тарасюк С.І.", Email = "sviatoslav.tarasyuk@gmail.com", Location = "Львів", BirthYear = 1972 }, "123456");
+        //    await userManager.CreateAsync(new User() { UserName = "svyatoslav.litynskyy", Name = "Літинський С.В.", Email = "svyatoslav.litynskyy@gmail.com", Location = "Львів", BirthYear = 1988 }, "123456");
+        //    await userManager.CreateAsync(new User() { UserName = "admin", Name = "Адміністратор", Email = "admin@admin.com", Location = "Засекречено", BirthYear = 1970 }, "123456");
 
-            User bohdan = await userManager.FindByNameAsync("bohdan.romaniuk");
-            User roman = await userManager.FindByNameAsync("roman.parobiy");
-            User modest = await userManager.FindByNameAsync("modest.radomskyy");
-            User muzychuk = await userManager.FindByNameAsync("anatoliy.muzychuk");
-            User tarasyuk = await userManager.FindByNameAsync("sviatoslav.tarasyuk");
-            User litynskyy = await userManager.FindByNameAsync("svyatoslav.litynskyy");
-            User admin = await userManager.FindByNameAsync("admin");
+        //    User bohdan = await userManager.FindByNameAsync("bohdan.romaniuk");
+        //    User roman = await userManager.FindByNameAsync("roman.parobiy");
+        //    User modest = await userManager.FindByNameAsync("modest.radomskyy");
+        //    User muzychuk = await userManager.FindByNameAsync("anatoliy.muzychuk");
+        //    User tarasyuk = await userManager.FindByNameAsync("sviatoslav.tarasyuk");
+        //    User litynskyy = await userManager.FindByNameAsync("svyatoslav.litynskyy");
+        //    User admin = await userManager.FindByNameAsync("admin");
 
-            await userManager.AddToRoleAsync(bohdan, "Student");
-            await userManager.AddToRoleAsync(roman, "Student");
-            await userManager.AddToRoleAsync(modest, "Student");
-            await userManager.AddToRoleAsync(muzychuk, "Teacher");
-            await userManager.AddToRoleAsync(tarasyuk, "Teacher");
-            await userManager.AddToRoleAsync(litynskyy, "Teacher");
-            await userManager.AddToRoleAsync(admin, "Admin");
+        //    await userManager.AddToRoleAsync(bohdan, "Student");
+        //    await userManager.AddToRoleAsync(roman, "Student");
+        //    await userManager.AddToRoleAsync(modest, "Student");
+        //    await userManager.AddToRoleAsync(muzychuk, "Teacher");
+        //    await userManager.AddToRoleAsync(tarasyuk, "Teacher");
+        //    await userManager.AddToRoleAsync(litynskyy, "Teacher");
+        //    await userManager.AddToRoleAsync(admin, "Admin");
 
-            database.Database.Main(new string[] { "Start" });
-            return RedirectToRoute(new { controller = "Home", action = "Index" });
-        }
+        //    database.Database.Main(new string[] { "Start" });
+        //    return RedirectToRoute(new { controller = "Home", action = "Index" });
+        //}
     }
 }

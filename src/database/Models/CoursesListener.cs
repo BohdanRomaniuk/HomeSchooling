@@ -20,6 +20,7 @@ namespace database.Models
         {
             Id = _id;
             Student = _student;
+            RequestedCourse = _requestedCourse;
         }
         public CoursesListener()
         {
