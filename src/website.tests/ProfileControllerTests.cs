@@ -43,6 +43,24 @@ namespace website.tests
             Assert.True(actual);
         }
         [Fact]
+        public void LoginGetTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = (controller.Login() is ViewResult);
+
+            Assert.True(actual);
+        }
+        [Fact]
+        public void RegisterGetTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            ProfileController controller = new ProfileController(mock.Object, userManager.Object, signInManager.Object);
+            bool actual = (controller.Register() is ViewResult);
+
+            Assert.True(actual);
+        }
+        [Fact]
         public void LoginWrongUsernameTest()
         {
             Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();

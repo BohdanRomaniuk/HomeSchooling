@@ -685,6 +685,108 @@ namespace website.tests
             Assert.True(redirect);
         }
         [Fact]
+        public void DeleteFromCourseTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk" };
+            Course pps = new Course("Проектування програмних систем", "Опис курсу", teacher, Convert.ToDateTime("05.03.2018 13:10"), Convert.ToDateTime("12.03.2018 13:10")) { Id = 1 };
+            
+            CoursesListener listener1 = new CoursesListener() { Id = 1, Student = student, RequestedCourse = pps, Accepted = true };
+
+            Course[] courses = new Course[] { pps };
+            CoursesListener[] listeners = new CoursesListener[] { listener1 };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), null);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "bohdan.romaniuk"),
+                        new Claim(ClaimTypes.Role, "Student")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            bool redirect = controller.DeleteFromCourse(1) is RedirectToRouteResult;
+
+            //Assert
+            Assert.True(redirect);
+        }
+        [Fact]
+        public void DeleteFromCourseNotAcceptedTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk" };
+            Course pps = new Course("Проектування програмних систем", "Опис курсу", teacher, Convert.ToDateTime("05.03.2018 13:10"), Convert.ToDateTime("12.03.2018 13:10")) { Id = 1 };
+
+            CoursesListener listener1 = new CoursesListener() { Id = 1, Student = student, RequestedCourse = pps, Accepted = false };
+
+            Course[] courses = new Course[] { pps };
+            CoursesListener[] listeners = new CoursesListener[] { listener1 };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), null);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "bohdan.romaniuk"),
+                        new Claim(ClaimTypes.Role, "Student")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            string expected = "Ви ще не відвідуєте даний курс";
+            string actual = (controller.DeleteFromCourse(1) as ViewResult).Model.ToString();
+
+            //Assert
+            Assert.Equal(expected, actual);
+        }
+        [Fact]
+        public void DeleteFromCourseNotListenerTest()
+        {
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            User student = new User { Name = "Романюк Богдан", UserName = "bohdan.romaniuk" };
+            Course pps = new Course("Проектування програмних систем", "Опис курсу", teacher, Convert.ToDateTime("05.03.2018 13:10"), Convert.ToDateTime("12.03.2018 13:10")) { Id = 1 };
+
+            Course[] courses = new Course[] { pps };
+            CoursesListener[] listeners = new CoursesListener[] { };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+            mock.Setup(m => m.CoursesListeners).Returns(listeners.AsQueryable());
+
+            CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), null);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "bohdan.romaniuk"),
+                        new Claim(ClaimTypes.Role, "Student")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            string expected = "Ви не відвідуєте даний курс";
+            string actual = (controller.DeleteFromCourse(1) as ViewResult).Model.ToString();
+
+            //Assert
+            Assert.Equal(expected, actual);
+        }
+        [Fact]
         public void ViewListenersAgeStats()
         {
             Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
