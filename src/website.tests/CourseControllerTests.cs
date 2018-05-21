@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Primitives;
 
 namespace website.tests
 {
@@ -378,10 +380,11 @@ namespace website.tests
             };
 
             //Act
-            var result = controller.AddLesson(1).Result as ViewResult;
+            Task<IActionResult> result = controller.AddLesson(1);
 
             //Assert
-            Assert.True(result.Model == null);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Home")) == true);
+            Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("action", "Index")) == true);
         }
 
         [Fact]
@@ -394,6 +397,8 @@ namespace website.tests
             Course[] courses = new Course[] { pps };
             mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
             userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(teacher);
+
+            
 
             CourseController controller = new CourseController(mock.Object, new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")), userManager.Object);
             controller.ControllerContext = new ControllerContext
@@ -412,7 +417,7 @@ namespace website.tests
             var result = controller.AddLesson(1).Result as ViewResult;
 
             //Assert
-            Assert.True(result.ViewName == "AddLesson");
+            Assert.True(result.Model == null);
         }
 
         [Fact]
@@ -442,8 +447,13 @@ namespace website.tests
             };
 
             string lessonName = "Вступ у мову програмування C#";
+            List<IFormFile> files = new List<IFormFile>();
+            HeaderDictionary dic = new HeaderDictionary(2);
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Disposition", new StringValues("form-data; name=\"files1\"; filename=\"test.txt\"")));
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Type", new StringValues("text/plain")));
+            files.Add(new FormFile(File.Create(@"test.txt"), 2000, 0, "files1", "test.txt") { Headers = dic });
             //Act
-            var result = controller.AddLesson(1, lessonName, "19.03.2018 11:50:00", "19.03.2018 11:50:00", "Опис уроку", "Опис домашки", "19.03.2018 11:50:00", "false", null, null);
+            var result = controller.AddLesson(1, lessonName, "19.03.2018 11:50:00", "19.03.2018 11:50:00", "Опис уроку", "Опис домашки", "19.03.2018 11:50:00", "false", files, files);
 
             //Assert
             Assert.True((result.Result as ViewResult).Model as string == String.Format("Урок \"{0}\" успішно додано!", lessonName));
@@ -476,9 +486,14 @@ namespace website.tests
                     }, "Authentication"))
                 }
             };
+            List<IFormFile> files = new List<IFormFile>();
+            HeaderDictionary dic = new HeaderDictionary(2);
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Disposition", new StringValues("form-data; name=\"files1\"; filename=\"test.txt\"")));
+            dic.Add(new KeyValuePair<string, StringValues>("Content-Type", new StringValues("text/plain")));
+            files.Add(new FormFile(File.Create(@"test1.txt"), 2000, 0, "files", "test1.txt") { Headers = dic });
 
             //Act
-            Task<IActionResult> result = controller.AddHomeWork(1, "Виконав пункт 1", null);
+            Task<IActionResult> result = controller.AddHomeWork(1, "Виконав пункт 1", files);
 
             //Assert
             Assert.True((result.Result as RedirectToRouteResult).RouteValues.Contains(new KeyValuePair<string, object>("controller", "Course")) == true);

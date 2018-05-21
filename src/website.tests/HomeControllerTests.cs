@@ -49,6 +49,40 @@ namespace website.tests
             //Assert
             Assert.Equal(courses.Length, result.Count());
         }
+
+        [Fact]
+        public void AllCoursesListForStudentTest()
+        {
+            //Arrange
+            Mock<IHomeSchoolingRepository> mock = new Mock<IHomeSchoolingRepository>();
+            User teacher = new User { Name = "Музичук А.О.", UserName = "anatoliy.muzychuk" };
+            Course[] courses = new Course[]
+            {
+                new Course("Проектування програмних систем", "Опис курсу", teacher, Convert.ToDateTime("05.03.2018 13:10"), Convert.ToDateTime("12.03.2018 13:10")) { Category = "1", Id=1},
+                new Course("Програмування мовою с++", "Опис курсу", teacher, Convert.ToDateTime("05.03.2018 13:10"), Convert.ToDateTime("12.03.2018 13:10")) { Category = "1", Id=2}
+            };
+            mock.Setup(m => m.Courses).Returns(courses.AsQueryable());
+
+            HomeController controller = new HomeController(mock.Object, null, null);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, "modest"),
+                        new Claim(ClaimTypes.Role, "Student")
+                    }, "Authentication"))
+                }
+            };
+
+            //Act
+            var result = ((controller.Index() as ViewResult).Model as HomeCoursesViewModel).Courses;
+
+            //Assert
+            Assert.Equal(courses.Length, result.Count());
+        }
+
         [Fact]
         public void CategoryCoursesListTest()
         {

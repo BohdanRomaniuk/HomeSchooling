@@ -11,6 +11,7 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Http.Headers;
 
 namespace website.Controllers
 {
@@ -93,15 +94,7 @@ namespace website.Controllers
             {
                 ViewData["IsCourseListener"] = true;
             }
-            var marks = from mark in currentLesson.Posts
-                        where mark.PostMark != null
-                        select mark.PostMark;
-            //var marks = from listener in db.CoursesListeners.Include(s => s.Student).Include(s => s.RequestedCourse)
-            //            where listener.RequestedCourse.Id == currentCourseId
-            //            join mark in currentLesson.Posts on listener.Student.Id equals mark.PostMark.Student.Id into nn
-            //            from elem in nn.DefaultIfEmpty()
-            //            select new { Student = elem.PostMark.Student.Name, MarkValue = elem.PostMark.MarkValue };
-
+            var marks = from mark in currentLesson.Posts where mark.PostMark != null select mark.PostMark;
             return View(new LessonViewModel(currentLesson, marks.ToList()));
         }
 
