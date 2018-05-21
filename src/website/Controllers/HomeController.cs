@@ -28,6 +28,8 @@ namespace website.Controllers
 
         public IActionResult Index(string name = null, string category=null)
         {
+            ViewData["SearchText"] = (name != null && !String.IsNullOrEmpty(name)) ? name : "";
+            ViewData["SearchCategory"] = (category != null && category!="Всі курси") ? category : "Всі курси";
             IQueryable<Course> allCourses;
             if (name == null)
             {

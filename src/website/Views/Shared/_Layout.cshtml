@@ -33,7 +33,16 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Головна</a></li>
                     <form method="get" asp-controller="Home" asp-action="Index" class="navbar-form navbar-right">
                         <div class="form-group">
-                            <input type="text" name="name" class="form-control input-sm" placeholder="Введіть назву курсу">
+                            <input type="text" name="name" class="form-control input-sm" placeholder="Введіть назву курсу" value="@ViewData["SearchText"]">
+                            @if (User?.IsInRole("Admin") ?? true)
+                            {
+                            <select name="category" class="form-control input-sm" asp-for="@ViewData["SearchCategory"]">
+                                <option>Всі курси</option>
+                                <option>Комп'ютерні науки</option>
+                                <option>Математичні науки</option>
+                                <option>Гуманітарні науки</option>
+                            </select>
+                            }
                         </div>
                         <button type="submit" class="btn btn-default btn-sm">Шукати</button>
                     </form>
