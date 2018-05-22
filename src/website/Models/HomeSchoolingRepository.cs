@@ -117,5 +117,28 @@ namespace website.Models
             context.Remove(course);
             context.SaveChanges();
         }
+
+        public void ApproveUserToSystem(string username)
+        {
+            var selecteduser = from user in context.Users
+                               where user.UserName == username
+                               select user;
+            if (selecteduser != null)
+            {
+                selecteduser.SingleOrDefault().Approved = true;
+                context.SaveChanges();
+            }
+        }
+        public void RejectUserToSystem(string username)
+        {
+            var selecteduser = from user in context.Users
+                               where user.UserName == username
+                               select user;
+            if (selecteduser != null)
+            {
+                context.Remove(selecteduser);
+                context.SaveChanges();
+            }
+        }
     }
 }
