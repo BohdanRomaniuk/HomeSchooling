@@ -39,5 +39,17 @@ namespace website.Controllers
             db.DeleteCourse(id);
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
+        [Authorize(Roles = "Admin")]
+        public IActionResult ApproveUser(string username)
+        {
+            db.ApproveUserToSystem(username);
+            return RedirectToRoute(new { controller = "Admin", action = "ApprovingList" });
+        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult RejectUser(string username)
+        {
+            db.RejectUserToSystem(username);
+            return RedirectToRoute(new { controller = "Admin", action = "ApprovingList" });
+        }
     }
 }

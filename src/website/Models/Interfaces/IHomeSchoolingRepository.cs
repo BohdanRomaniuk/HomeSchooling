@@ -26,6 +26,7 @@ namespace website.Models
         void AddUser(User toAdd);
         void SetTeacher(string name);
         void DeleteCourse(int courseId);
-
+        void ApproveUserToSystem(string username);
+        void RejectUserToSystem(string username);
     }
 }
