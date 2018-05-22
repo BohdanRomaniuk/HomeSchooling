@@ -1,0 +1,34 @@
+﻿@using database.Models
+@model IQueryable<User>
+@{
+    ViewData["Title"] = "Список запитів";
+}
+<h2>Список запитів на сайт</h2>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Ім'я і прізвище</th>
+            <th>Логін</th>
+            <th>Email</th>
+            <th>Місце проживання</th>
+            <th>Рік народження</th>
+            <th>Функції</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (User user in Model)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.Location</td>
+                <td>@user.BirthYear</td>
+                <td>
+                    <button type="button" class="btn btn-success" asp-controller="Admin" asp-action="ApproveUser" asp-route-username="@user.UserName">Підтвердити</button>
+                    <button type="button" class="btn btn-danger" asp-controller="Admin" asp-action="RejectUser" asp-route-username="@user.UserName">Видалити користувача</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -33,6 +33,13 @@ namespace website.Controllers
             return RedirectToRoute(new { controller = "Profile", action = "View", name = name });
         }
 
+        [HttpGet]
+        public IActionResult ApprovingList()
+        {
+            IQueryable<User> notApprovedUsers = db.Users.Where(u => u.Approved == false);
+            return View(notApprovedUsers);
+        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult DeleteCourse(int id)
         {

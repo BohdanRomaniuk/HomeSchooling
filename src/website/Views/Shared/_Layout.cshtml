@@ -51,6 +51,10 @@
                         if (User.IsInRole("Teacher")) {
                             <li style="float:right;"><a asp-area="" asp-controller="Course" asp-action="ViewRequests" style="float:right;">Заявки</a></li>
                         }
+                        if(User.IsInRole("Admin"))
+                        {
+                            <li style="float:right;"><a asp-area="" asp-controller="Admin" asp-action="ApprovingList" style="float:right;">Заявки на сайт</a></li>
+                        }
                         <li style="float:right;"><a asp-area="" asp-controller="Profile" asp-action="View" asp-route-name="@User?.Identity?.Name" style="float:right; font-weight:bold">@User?.Identity?.Name</a></li>
                     }
                     else
