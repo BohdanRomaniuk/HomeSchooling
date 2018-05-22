@@ -58,7 +58,8 @@ namespace website.Controllers
             {
                 if (HttpContext.User.Identity.IsAuthenticated)
                 {
-                    if (HttpContext.User.IsInRole("Student"))
+                    bool approved = _context.Users.Where(u => u.UserName == HttpContext.User.Identity.Name).SingleOrDefault().Approved;
+                    if (HttpContext.User.IsInRole("Student") && approved)
                     {
                         bool? show;
                         var acc = _context.CoursesListeners.Where(c => c.Student.UserName == HttpContext.User.Identity.Name).Where(c => c.RequestedCourse.Id == course.Id);
