@@ -48,6 +48,25 @@ namespace website.tests
             Assert.Equal(testobj1.LessonId, testId);
 
         }
+        [Fact]
+        public void MarksTest()
+        {
+            //Arrange
+            Lesson testcurrentlesson = new Lesson("text1", DateTime.Today, DateTime.Today, DateTime.Today, false);
+            LessonViewModel testobj1 = new LessonViewModel(testcurrentlesson, null);
+            int n = 2;
+            List<Mark> temp = new List<Mark>(n);
+            for(int i=0;i<n;++i)
+            {
+                temp.Add(new Mark(new User(),new User(),i,DateTime.Today,new Lesson()));
+            }
+            testobj1.Marks = temp;
+          
+            
+            //Assert
+            Assert.Equal(testobj1.Marks, temp);
+
+        }
 
         [Fact]
         public void LessonNameTest()
