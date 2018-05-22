@@ -136,7 +136,7 @@ namespace website.Models
                                select user;
             if (selecteduser != null)
             {
-                context.Remove(selecteduser);
+                context.Remove(selecteduser.FirstOrDefault());
                 context.SaveChanges();
             }
         }

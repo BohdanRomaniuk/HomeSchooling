@@ -25,8 +25,8 @@
                 <td>@user.Location</td>
                 <td>@user.BirthYear</td>
                 <td>
-                    <button type="button" class="btn btn-success" asp-controller="Admin" asp-action="ApproveUser" asp-route-username="@user.UserName">Підтвердити</button>
-                    <button type="button" class="btn btn-danger" asp-controller="Admin" asp-action="RejectUser" asp-route-username="@user.UserName">Видалити користувача</button>
+                    <a class="btn btn-success" asp-controller="Admin" asp-action="ApproveUser" asp-route-username="@user.UserName">Підтвердити</a>
+                    <a class="btn btn-danger" asp-controller="Admin" asp-action="RejectUser" asp-route-username="@user.UserName">Видалити користувача</a>
                 </td>
             </tr>
         }
