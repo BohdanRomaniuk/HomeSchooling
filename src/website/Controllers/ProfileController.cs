@@ -44,7 +44,8 @@ namespace website.Controllers
                     Email = details.Email,
                     Name = details.Name,
                     Location = details.Location,
-                    BirthYear = details.BirthYear
+                    BirthYear = details.BirthYear,
+                    Approved = false
                 };
                 bool correctYear = true;
                 if (details.BirthYear > 2015 || details.BirthYear < 1899)
